@@ -450,32 +450,43 @@
                 <!-- Call to Action & Video buttons -->
                 <div class="flex flex-wrap items-center gap-4 pt-2">
                     <button onclick="openRegisterModal('Hero CTA')" class="flex-1 sm:flex-initial bg-brand-pink hover:bg-brand-pinkHover text-white px-8 py-3.5 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all text-center">
-                        Đăng ký chương trình này
+                        Đăng ký chương trình
                     </button>
                     <a href="#gioi-thieu" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 border border-brand-teal text-brand-teal hover:bg-brand-teal/5 bg-white px-6 py-3.5 rounded-xl font-medium transition-all text-center">
                         <i data-lucide="help-circle" class="w-5 h-5 text-brand-teal"></i>
-                        Tìm hiểu thêm về dự án
+                        Tìm hiểu về dự án
                     </a>
                 </div>
             </div>
 
             <!-- Right Media Content (Video & Image) -->
             <div class="lg:col-span-5 w-full md:max-w-2xl md:mx-auto">
-                <div class="relative bg-slate-950 rounded-2xl overflow-hidden shadow-2xl aspect-video lg:aspect-square flex flex-col justify-end group">
-                    <!-- Image Cover -->
-                    <div class="absolute inset-0 bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800');"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/30 to-transparent"></div>
-                    
-                    <!-- Play button overlay -->
-                    <button onclick="playIntroVideo()" class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-white/90 hover:bg-white text-brand-pink flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 group/btn z-10">
-                        <i data-lucide="play" class="w-8 h-8 fill-brand-pink ml-1"></i>
-                    </button>
-                    
-                    <!-- Small Video Info -->
-                    <div class="relative p-6 z-10 text-white">
+                <div class="relative bg-slate-950 rounded-2xl overflow-hidden shadow-2xl group">
+                    <!-- Image + Play area -->
+                    <div class="relative aspect-video lg:aspect-square">
+                        <div class="absolute inset-0 bg-cover bg-center opacity-80 group-hover:scale-105 transition-transform duration-700" style="background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800');"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent lg:from-slate-950 lg:via-slate-900/30"></div>
+
+                        <!-- Play button overlay -->
+                        <button onclick="playIntroVideo()" class="absolute inset-0 m-auto w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/90 hover:bg-white text-brand-pink flex items-center justify-center shadow-2xl transition-all hover:scale-110 active:scale-95 z-10">
+                            <i data-lucide="play" class="w-7 h-7 sm:w-8 sm:h-8 fill-brand-pink ml-1"></i>
+                        </button>
+
+                        <!-- Video info overlay (desktop only) -->
+                        <div class="hidden lg:block absolute bottom-0 left-0 right-0 p-6 z-10 text-white">
+                            <span class="text-xs font-semibold tracking-wider text-brand-orange uppercase mb-1 block">Video Giới Thiệu</span>
+                            <h4 class="font-bold text-lg leading-tight">Hành trình 3 năm thầm lặng mang con chữ, cái nghề tới trẻ em nghèo</h4>
+                            <p class="text-xs text-gray-300 mt-1 flex items-center gap-1">
+                                <i data-lucide="clock" class="w-3 h-3"></i> Thời lượng: 4 phút 15 giây
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Video info below image (mobile & tablet) -->
+                    <div class="lg:hidden p-4 sm:p-5 text-white">
                         <span class="text-xs font-semibold tracking-wider text-brand-orange uppercase mb-1 block">Video Giới Thiệu</span>
-                        <h4 class="font-bold text-lg leading-tight">Hành trình 3 năm thầm lặng mang con chữ, cái nghề tới trẻ em nghèo</h4>
-                        <p class="text-xs text-gray-300 mt-1 flex items-center gap-1">
+                        <h4 class="font-bold text-base sm:text-lg leading-snug">Hành trình 3 năm thầm lặng mang con chữ, cái nghề tới trẻ em nghèo</h4>
+                        <p class="text-xs text-gray-300 mt-2 flex items-center gap-1">
                             <i data-lucide="clock" class="w-3 h-3"></i> Thời lượng: 4 phút 15 giây
                         </p>
                     </div>
