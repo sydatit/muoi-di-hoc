@@ -96,6 +96,14 @@
             overscroll-behavior-y: contain;
             scroll-snap-align: start;
             scroll-snap-stop: always;
+            /* Hide inner section scrollbars (page 2 overscroll flash); keep .page-scroll bar */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .snap-page::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
         }
         /* Main page scrollbar only: thin orange thumb, transparent track (no cream strip) */
         .page-scroll {
