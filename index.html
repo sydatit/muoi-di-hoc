@@ -166,16 +166,47 @@
             stroke-width: 0;
         }
         .cta-register {
+            position: relative;
+            overflow: hidden;
             font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
             background: #E85312;
             border-radius: 12px;
             border: none;
-            box-shadow: 0 4px 14px rgba(232, 83, 18, 0.35);
+            box-shadow: 0 6px 18px rgba(160, 50, 5, 0.14);
             letter-spacing: 0.06em;
+            transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .cta-register .lucide {
+            transition: transform 0.2s ease;
+        }
+        .cta-register::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            left: -60%;
+            background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            animation: cta-shine 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes cta-shine {
+            0%, 55% { left: -60%; }
+            75%, 100% { left: 120%; }
         }
         .cta-register:hover {
             background: #c94708;
-            box-shadow: 0 6px 18px rgba(232, 83, 18, 0.42);
+            box-shadow: 0 8px 22px rgba(160, 50, 5, 0.2);
+        }
+        .cta-register:hover .lucide {
+            transform: translateX(3px);
+        }
+        .cta-register:active {
+            background: #c94708;
+            box-shadow: 0 4px 12px rgba(160, 50, 5, 0.16);
+        }
+        .cta-register:active .lucide {
+            transform: translateX(3px);
         }
         .schedule-icon .lucide {
             width: 1.4rem;
@@ -224,13 +255,19 @@
             .p1-hover-card,
             .p1-video,
             .p1-achievement .lucide,
-            .cta-register {
+            .cta-register,
+            .cta-register .lucide {
                 transition: none;
+            }
+            .cta-register::after {
+                animation: none;
             }
             .p1-hover-card:hover,
             .p1-video:hover,
             .p1-achievement:hover .lucide,
-            .cta-register:hover {
+            .cta-register:hover,
+            .cta-register:hover .lucide,
+            .cta-register:active .lucide {
                 transform: none;
             }
         }
