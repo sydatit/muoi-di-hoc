@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Chrome measurement / local browser profiles
+.chrome-measure-profile/
+.chrome-measure-profile2/
+
+# Raw activity photos (use compressed assets/images instead)
+activities/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Logs and caches
+*.log
+npm-debug.log*
+.cache/
