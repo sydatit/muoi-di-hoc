@@ -6,6 +6,9 @@
     <meta name="google" content="notranslate">
     <title>Muối Đi Học - Dự án dạy nghề phi lợi nhuận cho cộng đồng</title>
     <link rel="icon" type="image/png" href="favicon.png" sizes="64x64">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,6 +28,9 @@
                             earth: '#faf9f6', // Nền màu kem ấm, tạo cảm giác mộc mạc, chân thật
                             dark: '#1e293b',  // Chữ xám tối dễ đọc
                         }
+                    },
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                     }
                 }
             }
@@ -85,27 +91,38 @@
             background: linear-gradient(90deg, transparent, #f7941d 20%, #f7941d 80%, transparent);
         }
         .youtube-o-logo {
-            width: 0.78em;
-            height: 0.56em;
-            border-radius: 0.18em;
+            width: 0.9em;
+            height: 0.68em;
+            border-radius: 0.2em;
             background: #ff0000;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            margin: 0 0.02em;
-            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.25);
+            margin: 0 0.01em;
+            box-shadow: 0 3px 10px rgba(255, 0, 0, 0.28);
             vertical-align: middle;
             position: relative;
-            top: -0.02em;
+            top: -0.04em;
         }
         .youtube-o-logo .lucide {
-            width: 38%;
-            height: 38%;
+            width: 42%;
+            height: 42%;
             color: #fff;
             fill: #fff;
             margin-left: 6%;
             stroke-width: 0;
+        }
+        .cta-register {
+            font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+            background: linear-gradient(180deg, #ef6c24 0%, #f4511e 100%);
+            border-radius: 12px;
+            box-shadow: 0 10px 28px rgba(244, 81, 30, 0.42);
+            letter-spacing: 0.06em;
+        }
+        .cta-register:hover {
+            filter: brightness(1.05);
+            box-shadow: 0 12px 32px rgba(244, 81, 30, 0.52);
         }
         .schedule-icon .lucide {
             width: 2rem;
@@ -486,14 +503,14 @@
                                 <span class="program-heading-line" aria-hidden="true"></span>
                                 <div class="inline-flex items-center gap-2 shrink-0">
                                     <span class="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
-                                    <p class="text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-orange whitespace-nowrap">
+                                    <p class="font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-orange whitespace-nowrap">
                                         Chương trình tiếp theo:
                                     </p>
                                 </div>
                                 <span class="program-heading-line" aria-hidden="true"></span>
                             </div>
 
-                            <h1 class="flex items-center justify-center gap-[0.02em] text-[clamp(2.6rem,7.5vw,4.75rem)] font-black tracking-[-0.02em] text-slate-900 leading-none uppercase">
+                            <h1 class="font-montserrat flex items-center justify-center gap-[0.01em] text-[clamp(3rem,8.5vw,5.5rem)] font-black tracking-[-0.03em] text-slate-900 leading-none uppercase">
                                 <span>Y</span>
                                 <span class="youtube-o-logo" aria-hidden="true">
                                     <i data-lucide="play"></i>
@@ -501,7 +518,7 @@
                                 <span>UTUBE</span>
                             </h1>
 
-                            <h2 class="text-[clamp(1.2rem,3.2vw,1.9rem)] font-extrabold tracking-tight text-slate-900 uppercase leading-tight">
+                            <h2 class="font-montserrat text-[clamp(1.3rem,3.4vw,2.05rem)] font-extrabold tracking-tight text-slate-900 uppercase leading-tight">
                                 Ý tưởng đến thu nhập
                             </h2>
                             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
@@ -611,16 +628,16 @@
                 </div>
 
                 <!-- CTA spanning both columns -->
-                <div class="mt-5 sm:mt-6 space-y-2 max-w-xl mx-auto">
+                <div class="mt-5 sm:mt-6 space-y-2 max-w-sm mx-auto w-full">
                     <button
                         onclick="openRegisterModal('Page 1 CTA')"
-                        class="w-full inline-flex items-center justify-center gap-3 bg-brand-orange hover:brightness-110 text-white px-6 py-4 sm:py-5 rounded-2xl font-extrabold tracking-wide uppercase shadow-[0_10px_30px_rgba(247,148,29,0.45)] hover:shadow-[0_14px_36px_rgba(247,148,29,0.55)] transition-all text-base sm:text-lg">
+                        class="cta-register w-full inline-flex items-center justify-center gap-2.5 text-white px-6 py-3.5 sm:py-4 font-extrabold uppercase transition-all text-[1.05rem] sm:text-[1.15rem]">
                         Đăng ký ngay
-                        <span class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/25 flex items-center justify-center shrink-0">
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                         </span>
                     </button>
-                    <p class="text-center text-xs sm:text-sm text-gray-500">
+                    <p class="text-center text-[11px] sm:text-xs text-slate-500">
                         Số lượng có hạn - Đăng ký sớm để giữ chỗ!
                     </p>
                     <button
