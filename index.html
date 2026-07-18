@@ -2998,7 +2998,6 @@
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
             let sectionVisible = false;
-            let soundUnlocked = false;
             let tapStart = null;
 
             // Keep muted autoplay reliable on mobile WebViews / older iOS.
@@ -3029,11 +3028,16 @@
 
             observer.observe(section);
 
-            // Only unmute from an intentional tap on the video itself.
+            // Tap the video itself to toggle sound: mute → unmute → mute → …
             // Document-level pointerdown used to unmute on any page touch; on Chrome
             // Android that pauses muted autoplay, leaving the clip stuck until scroll-back.
-            const unlockSoundFromVideoTap = () => {
-                if (soundUnlocked || !sectionVisible) return;
+            const toggleSoundFromVideoTap = () => {
+                if (!sectionVisible) return;
+
+                if (!video.muted) {
+                    video.muted = true;
+                    return;
+                }
 
                 video.muted = false;
                 video.volume = 1;
@@ -3049,9 +3053,7 @@
                         // Some Android Chrome builds unmute + pause without rejecting play().
                         if (sectionVisible && video.paused) {
                             recoverMutedPlayback();
-                            return;
                         }
-                        soundUnlocked = true;
                     }).catch(() => {
                         recoverMutedPlayback();
                     });
@@ -3059,9 +3061,7 @@
                     requestAnimationFrame(() => {
                         if (sectionVisible && video.paused) {
                             recoverMutedPlayback();
-                            return;
                         }
-                        soundUnlocked = true;
                     });
                 }
             };
@@ -3074,8 +3074,7 @@
             }, { passive: true });
 
             videoHost.addEventListener('pointerup', (event) => {
-                if (!tapStart || soundUnlocked) {
-                    tapStart = null;
+                if (!tapStart) {
                     return;
                 }
                 const dx = event.clientX - tapStart.x;
@@ -3083,7 +3082,7 @@
                 tapStart = null;
                 // Ignore swipes so fullpage page changes from the video area stay mute-safe.
                 if (Math.hypot(dx, dy) > 12) return;
-                unlockSoundFromVideoTap();
+                toggleSoundFromVideoTap();
             }, { passive: true });
 
             videoHost.addEventListener('pointercancel', () => {
