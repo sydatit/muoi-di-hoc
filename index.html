@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
-    <title>Hß║ít Muß╗æi Y├¬u Th╞░╞íng - Dß╗▒ ├ín dß║íy nghß╗ü phi lß╗úi nhuß║¡n cho cß╗Öng ─æß╗ông</title>
+    <title>Hạt Muối Yêu Thương - Dự án dạy nghề phi lợi nhuận cho cộng đồng</title>
     <link rel="icon" type="image/png" href="favicon.png" sizes="64x64">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,14 +21,18 @@
                             teal: '#00a896',
                             blue: '#0072bc',
                             orange: '#f7941d',
-                            rust: '#FD6924',
+                            rust: '#E85312',
                             pinkHover: '#d01377',
                             tealHover: '#008e7f',
                         },
                         neutral: {
-                            earth: '#faf9f6', // Nß╗ün m├áu kem ß║Ñm, tß║ío cß║úm gi├íc mß╗Öc mß║íc, ch├ón thß║¡t
-                            dark: '#1e293b',  // Chß╗» x├ím tß╗æi dß╗à ─æß╗ìc
+                            earth: '#faf9f6', // Nền màu kem ấm, tạo cảm giác mộc mạc, chân thật
+                            dark: '#1e293b',  // Chữ xám tối dễ đọc
                         }
+                    },
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        script: ['Dancing Script', 'cursive', 'ui-serif', 'serif'],
                     }
                 }
             }
@@ -34,6 +41,9 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        :root {
+            --header-h: 4.25rem;
+        }
         .gradient-text {
             background: linear-gradient(135deg, #ed1b8d 0%, #00a896 50%, #0072bc 100%);
             -webkit-background-clip: text;
@@ -86,7 +96,7 @@
             height: 1px;
             flex: 1 1 0;
             max-width: 4.5rem;
-            background: linear-gradient(90deg, transparent, #FD6924 20%, #FD6924 80%, transparent);
+            background: linear-gradient(90deg, transparent, #E85312 20%, #E85312 80%, transparent);
         }
         .youtube-o-logo {
             width: 0.9em;
@@ -101,7 +111,7 @@
             box-shadow: 0 3px 10px rgba(255, 0, 0, 0.28);
             vertical-align: middle;
             position: relative;
-            top: -0.04em;
+            top: 0.02em;
         }
         .youtube-o-logo .lucide {
             width: 42%;
@@ -114,32 +124,32 @@
         .cta-register {
             font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
             background: linear-gradient(180deg,
-                #e85d04 0%,
-                #f48c06 30%,
-                #ffb703 50%,
-                #f48c06 70%,
-                #e85d04 100%);
+                #c94c02 0%,
+                #e07404 30%,
+                #f59e0b 50%,
+                #e07404 70%,
+                #c94c02 100%);
             border-radius: 12px;
-            border: 1px solid rgba(255, 200, 90, 0.9);
+            border: 1px solid rgba(245, 180, 70, 0.9);
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.45),
-                inset 0 -2px 6px rgba(180, 60, 0, 0.35),
-                inset 0 0 0 1px rgba(255, 215, 130, 0.5),
-                0 4px 12px rgba(230, 90, 10, 0.35);
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -2px 6px rgba(150, 50, 0, 0.4),
+                inset 0 0 0 1px rgba(250, 195, 105, 0.45),
+                0 4px 12px rgba(200, 75, 5, 0.4);
             letter-spacing: 0.06em;
         }
         .cta-register:hover {
             filter: brightness(1.05);
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.45),
-                inset 0 -2px 6px rgba(180, 60, 0, 0.35),
-                inset 0 0 0 1px rgba(255, 215, 130, 0.5),
-                0 6px 16px rgba(230, 90, 10, 0.45);
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -2px 6px rgba(150, 50, 0, 0.4),
+                inset 0 0 0 1px rgba(250, 195, 105, 0.45),
+                0 6px 16px rgba(200, 75, 5, 0.5);
         }
         .schedule-icon .lucide {
             width: 1.4rem;
             height: 1.4rem;
-            stroke: #FD6924;
+            stroke: #E85312;
             stroke-width: 2.25;
             fill: none;
         }
@@ -149,9 +159,48 @@
                 height: 2.25rem;
             }
         }
+        /* Page 1 (#chuong-trinh): subtle hover interactions (desktop pointer only) */
+        .p1-hover-card,
+        .p1-video {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .p1-achievement .lucide {
+            transition: transform 0.2s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .p1-hover-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 28px rgba(120, 60, 20, 0.12);
+            }
+            .p1-video:hover {
+                transform: scale(1.01);
+                box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35);
+            }
+            .p1-achievement:hover .lucide {
+                transform: scale(1.12);
+            }
+            .cta-register:hover {
+                transform: translateY(-2px);
+            }
+            .cta-register:active {
+                transform: translateY(0);
+            }
+        }
         @media (prefers-reduced-motion: reduce) {
             .page-scroll {
                 scroll-behavior: auto;
+            }
+            .p1-hover-card,
+            .p1-video,
+            .p1-achievement .lucide,
+            .cta-register {
+                transition: none;
+            }
+            .p1-hover-card:hover,
+            .p1-video:hover,
+            .p1-achievement:hover .lucide,
+            .cta-register:hover {
+                transform: none;
             }
         }
 
@@ -294,7 +343,7 @@
             #gioi-thieu .page2-vision h3 {
                 font-size: 0.64rem;
                 letter-spacing: 0.1em;
-                color: #FD6924;
+                color: #E85312;
             }
             #gioi-thieu .page2-vision p,
             #gioi-thieu .page2-vision li {
@@ -328,7 +377,7 @@
             #gioi-thieu .page2-programs .program-heading-line {
                 max-width: 2.1rem;
             }
-            /* Programs: vertical list ΓÇö thumbnail left, title/desc right */
+            /* Programs: vertical list — thumbnail left, title/desc right */
             #gioi-thieu .page2-program-grid {
                 display: flex;
                 flex-direction: column;
@@ -446,7 +495,7 @@
             }
         }
 
-        /* Short phones: light scale only ΓÇö never hide programs */
+        /* Short phones: light scale only — never hide programs */
         @media (max-width: 639px) and (max-height: 700px) {
             #gioi-thieu > .max-w-6xl {
                 gap: 0.28rem;
@@ -457,7 +506,7 @@
             }
         }
 
-        /* Page 3: Hß║ít Muß╗æi Y├¬u Th╞░╞íng ΓÇö fit one desktop viewport */
+        /* Page 3: Hạt Muối Yêu Thương — fit one desktop viewport */
         #ve-chung-toi {
             display: flex;
             flex-direction: column;
@@ -481,89 +530,147 @@
         .p3-hero {
             flex: 0 0 auto;
             text-align: center;
-            max-width: 40rem;
+            max-width: 48rem;
             margin-inline: auto;
+        }
+        .p3-hero-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(0.85rem, 2vw, 1.4rem);
+            text-align: left;
         }
         .p3-hero-logo {
-            height: clamp(2.4rem, 5.2svh, 3.25rem);
+            display: block;
+            height: clamp(4.5rem, 10svh, 7rem);
             width: auto;
-            margin-inline: auto;
-            object-fit: contain;
+            aspect-ratio: 1;
+            flex-shrink: 0;
+        }
+        .p3-hero-brand-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
         .p3-hero-title {
-            margin-top: 0.35rem;
-            font-size: clamp(1.15rem, 2.1svh + 0.55rem, 1.75rem);
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            line-height: 1.15;
-            color: #9b3b2e;
+            margin: 0;
+            font-size: clamp(2rem, 3.5svh + 0.35rem, 3rem);
+            font-weight: 900;
+            letter-spacing: -0.025em;
+            line-height: 0.92;
+            color: #5a4034;
+        }
+        .p3-hero-title span {
+            display: block;
+            white-space: nowrap;
         }
         .p3-hero-tagline {
-            margin-top: 0.15rem;
-            font-size: clamp(0.75rem, 1.2svh + 0.35rem, 0.9rem);
-            font-weight: 600;
-            font-style: italic;
-            color: #df7555;
+            margin-top: clamp(0.3rem, 0.8svh, 0.55rem);
+            font-size: clamp(0.95rem, 1.4svh + 0.3rem, 1.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: #8f4435;
         }
         .p3-hero-desc {
-            margin: 0.35rem auto 0;
-            max-width: 36rem;
+            margin: clamp(0.45rem, 1svh, 0.7rem) auto 0;
+            max-width: 40rem;
             font-size: clamp(0.72rem, 1.1svh + 0.35rem, 0.875rem);
             line-height: 1.4;
             color: #475569;
         }
         .p3-hero-contacts {
-            margin-top: 0.45rem;
+            margin-top: clamp(0.45rem, 1svh, 0.7rem);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
+            gap: clamp(0.55rem, 1.4vw, 0.9rem);
         }
         .p3-hero-contacts a {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.55rem;
             border-radius: 999px;
-            border: 1px solid #e7b5a8;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 0.3rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #8f4435;
-            box-shadow: 0 1px 2px rgba(117, 63, 53, 0.06);
+            border: 1px solid rgba(231, 181, 168, 0.72);
+            background: rgba(255, 255, 255, 0.94);
+            padding: 0.35rem 0.85rem 0.35rem 0.4rem;
+            min-width: 11rem;
+            color: #5a4034;
+            box-shadow: 0 4px 12px rgba(117, 63, 53, 0.09);
             transition: transform 160ms ease, background-color 160ms ease;
         }
         .p3-hero-contacts a:hover {
             background: #fff;
             transform: translateY(-1px);
         }
+        .p3-contact-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 1.9rem;
+            height: 1.9rem;
+            flex: 0 0 1.9rem;
+            border-radius: 999px;
+        }
+        .p3-contact-icon svg {
+            width: 0.95rem;
+            height: 0.95rem;
+        }
+        .p3-contact-icon--facebook {
+            color: #fff;
+            background: #1877f2;
+        }
+        .p3-contact-icon--email {
+            color: #d86145;
+            background: #fff1eb;
+        }
+        .p3-contact-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            line-height: 1.12;
+            text-align: left;
+        }
+        .p3-contact-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #8f6a5f;
+        }
+        .p3-contact-value {
+            margin-top: 0.12rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #5a4034;
+        }
         .p3-card {
             border: 1px solid rgba(244, 170, 151, 0.28);
-            border-radius: 1.1rem;
+            border-radius: 1.25rem;
             background: rgba(255, 255, 255, 0.94);
             box-shadow: 0 10px 28px rgba(117, 63, 53, 0.07);
-            padding: 0.7rem 0.85rem;
+            padding: 0.75rem 0.9rem;
             min-height: 0;
         }
-        .p3-media-panel {
+        .p3-main-panel {
             flex: 1 1 auto;
             min-height: 0;
             display: flex;
             flex-direction: column;
         }
-        .p3-media-grid {
+        .p3-main-grid {
             display: grid;
             grid-template-columns: minmax(0, 7fr) minmax(14rem, 5fr);
-            gap: 0.85rem;
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 0.85rem 1rem;
             flex: 1 1 auto;
             min-height: 0;
             align-items: stretch;
         }
-        .p3-media-grid > section {
+        .p3-main-grid > section,
+        .p3-main-grid > article {
             display: flex;
             flex-direction: column;
             min-height: 0;
+            min-width: 0;
         }
         .p3-section-heading {
             display: flex;
@@ -591,46 +698,19 @@
             color: #8c4033;
             line-height: 1.2;
         }
-        .p3-lower-grid {
-            display: grid;
-            grid-template-columns: minmax(14rem, 4fr) minmax(0, 8fr);
-            gap: 0.85rem;
-            flex: 0 1 auto;
-            min-height: 0;
-        }
         .p3-about-card {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
-        .p3-about-icon {
-            display: grid;
-            width: 1.85rem;
-            height: 1.85rem;
-            place-items: center;
-            border-radius: 999px;
-            background: #fff7ed;
-            color: #ec6d45;
-            margin-bottom: 0.4rem;
-        }
-        .p3-about-icon .lucide {
-            width: 0.95rem;
-            height: 0.95rem;
-        }
-        .p3-about-card h3 {
-            font-size: 0.72rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            color: #8c4033;
         }
         .p3-about-card p {
-            margin-top: 0.35rem;
+            margin-top: 0.15rem;
+            flex: 1 1 auto;
             font-size: 0.75rem;
-            line-height: 1.4;
+            line-height: 1.45;
             color: #475569;
         }
         .p3-about-cta {
-            margin-top: 0.55rem;
+            margin-top: auto;
             display: inline-flex;
             width: fit-content;
             align-items: center;
@@ -694,32 +774,62 @@
             background: #f5ede8;
         }
         .p3-award-image {
+            position: relative;
+            display: grid;
             aspect-ratio: 4 / 3;
             max-height: min(14svh, 7.5rem);
-            border: 1px solid #f0dfd8;
-            background: #f8f4f1;
+            padding: 0.42rem;
+            border: none;
+            border-radius: 0.55rem;
+            background:
+                linear-gradient(145deg, #f8e7a8 0%, #e0b44a 22%, #bf9540 48%, #f4d78a 72%, #c9a24a 100%);
+            box-shadow:
+                0 2px 0 rgba(140, 96, 20, 0.35),
+                0 6px 14px rgba(120, 80, 20, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.55),
+                inset 0 0 0 1px rgba(160, 110, 30, 0.35);
+        }
+        .p3-award-image::before {
+            content: '';
+            position: absolute;
+            inset: 0.28rem;
+            border-radius: 0.35rem;
+            border: 1px solid rgba(255, 236, 180, 0.85);
+            box-shadow: inset 0 0 0 1px rgba(140, 96, 20, 0.35);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .p3-award-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            object-fit: cover;
+            border-radius: 0.28rem;
+            background: #fffaf2;
+            box-shadow: inset 0 0 0 1px rgba(180, 130, 40, 0.25);
         }
         .p3-carousel-arrow {
             position: absolute;
             top: calc(50% - 0.7rem);
             z-index: 2;
             display: grid;
-            width: 1.65rem;
-            height: 1.65rem;
+            width: 1.7rem;
+            height: 1.7rem;
             place-items: center;
             border-radius: 999px;
-            color: #9a3e27;
-            background: rgba(255, 255, 255, 0.94);
-            box-shadow: 0 4px 14px rgba(76, 38, 31, 0.16);
+            color: #fff;
+            background: #ef754c;
+            box-shadow: 0 4px 12px rgba(239, 117, 76, 0.35);
             transform: translateY(-50%);
             transition: transform 160ms ease, background-color 160ms ease;
         }
         .p3-carousel-arrow .lucide {
-            width: 0.85rem;
-            height: 0.85rem;
+            width: 0.9rem;
+            height: 0.9rem;
         }
         .p3-carousel-arrow:hover {
-            background: #fff5ef;
+            background: #dc623c;
             transform: translateY(-50%) scale(1.06);
         }
         .p3-carousel-arrow:focus-visible,
@@ -844,19 +954,38 @@
                 gap: 0.45rem;
             }
             .p3-hero-logo {
-                height: clamp(2.1rem, 4.5svh, 2.75rem);
+                height: clamp(3.5rem, 8svh, 4.5rem);
             }
             .p3-hero-title {
-                font-size: clamp(1.05rem, 1.8svh + 0.45rem, 1.45rem);
+                font-size: clamp(1.55rem, 2.8svh + 0.25rem, 2rem);
+            }
+            .p3-hero-tagline {
+                margin-top: 0.2rem;
+                font-size: clamp(0.8rem, 1.15svh + 0.2rem, 0.95rem);
             }
             .p3-hero-desc {
+                margin-top: 0.3rem;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
+            .p3-hero-contacts {
+                margin-top: 0.3rem;
+            }
+            .p3-hero-contacts a {
+                padding-block: 0.25rem;
+            }
+            .p3-contact-icon {
+                width: 1.65rem;
+                height: 1.65rem;
+                flex-basis: 1.65rem;
+            }
             .p3-card {
-                padding: 0.5rem 0.65rem;
+                padding: 0.55rem 0.7rem;
+            }
+            .p3-main-grid {
+                gap: 0.65rem 0.85rem;
             }
             .p3-activity-image {
                 height: min(15svh, 7.75rem);
@@ -873,9 +1002,17 @@
             }
         }
         @media (max-width: 900px) {
-            .p3-media-grid,
-            .p3-lower-grid {
+            .p3-main-grid {
                 grid-template-columns: 1fr;
+                grid-template-rows: none;
+            }
+            .p3-hero-brand {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.45rem;
+            }
+            .p3-hero-brand-text {
+                align-items: center;
             }
             .p3-video-column {
                 max-width: 36rem;
@@ -902,9 +1039,8 @@
                 border-radius: 0.95rem;
                 padding: 0.75rem;
             }
-            .p3-media-grid,
-            .p3-lower-grid {
-                gap: 0.75rem;
+            .p3-main-grid {
+                gap: 0.85rem;
             }
             .p3-hero-contacts {
                 flex-direction: column;
@@ -928,10 +1064,10 @@
 
     <!-- HEADER / NAVIGATION -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3 group">
+        <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2 lg:gap-4">
+            <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-1 lg:flex-none lg:w-[230px] xl:w-auto">
                 <!-- SVG Recreating the logo from logo-muoi-2.png -->
-                <div class="w-10 h-10 group-hover:scale-105 transition-transform">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 group-hover:scale-105 transition-transform">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         width="100%" viewBox="0 0 640 640" enable-background="new 0 0 640 640" xml:space="preserve">
                     <path fill="#FEFEFF" opacity="1.000000" stroke="none" 
@@ -976,6 +1112,7 @@
                         C266.500122,500.239441 253.619080,513.151978 239.798569,527.006348 
                         C243.611664,530.456970 247.662155,534.122375 252.211700,538.288757 
                     z"/>
+                    <g id="hmyt-logo-mark">
                     <path fill="#07A99E" opacity="1.000000" stroke="none" 
                         d="
                     M502.225861,382.760895 
@@ -1247,31 +1384,33 @@
                         C189.607361,347.331177 206.853897,364.443939 224.034592,381.621429 
                         C230.148041,387.733734 236.291428,393.816101 242.513153,400.245300 
                     z"/>
+                    </g>
                     </svg>
                 </div>
-                <div>
-                    <span class="font-bold text-lg tracking-tight text-neutral-dark block leading-tight">Hß║ít Muß╗æi Y├¬u Th╞░╞íng</span>
-                    <span class="text-xs text-brand-teal font-semibold">Dß╗▒ ├ín nghß╗ü phi lß╗úi nhuß║¡n</span>
+                <div class="min-w-0">
+                    <span class="font-bold text-sm sm:text-lg tracking-tight text-neutral-dark block leading-tight">Muối Đi Học</span>
+                    <span class="block text-[10px] sm:text-xs leading-tight text-brand-teal font-semibold whitespace-normal">Dự án dạy nghề phi lợi nhuận cho cộng đồng</span>
+                    <span class="block text-[9px] sm:text-[10px] leading-tight text-gray-400 whitespace-normal">Tổ chức bởi Hạt Muối Yêu Thương</span>
                 </div>
             </a>
             
-            <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium text-gray-600">
-                <a href="#chuong-trinh" class="hover:text-brand-pink transition-colors">Ch╞░╞íng tr├¼nh tiß║┐p theo</a>
-                <a href="#gioi-thieu" class="hover:text-brand-blue transition-colors">Vß╗ü Hß║ít Muß╗æi</a>
-                <a href="#ve-chung-toi" class="hover:text-brand-orange transition-colors">Vß╗ü ch├║ng t├┤i</a>
+            <nav class="hidden lg:flex shrink-0 items-center gap-3 xl:gap-6 text-xs xl:text-sm font-medium text-gray-600">
+                <a href="#chuong-trinh" class="hover:text-brand-pink transition-colors">Chương trình tiếp theo</a>
+                <a href="#gioi-thieu" class="hover:text-brand-blue transition-colors">Dự Án Muối Đi Học</a>
+                <a href="#ve-chung-toi" class="hover:text-brand-orange transition-colors">Về chúng tôi</a>
             </nav>
 
-            <button onclick="openRegisterModal('Header Button')" class="bg-brand-pink hover:bg-brand-pinkHover text-white px-5 py-2 rounded-full text-sm font-medium shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
-                ─É─âng k├╜ ngay
+            <button onclick="openRegisterModal('Header Button')" class="shrink-0 max-w-[8.75rem] sm:max-w-none bg-brand-pink hover:bg-brand-pinkHover text-white px-3 sm:px-4 py-2 rounded-full text-[10px] sm:text-xs xl:text-sm leading-tight font-medium text-center whitespace-normal shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                Tham gia chương trình tiếp theo
             </button>
         </div>
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-grow">
+    <main id="pageScroll" class="page-scroll flex-grow">
         
-        <!-- PAGE 1: CH╞»╞áNG TR├îNH TIß║╛P THEO -->
-        <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-center border-b border-gray-100 bg-[#f7f7f5]">
+        <!-- PAGE 1: CHƯƠNG TRÌNH TIẾP THEO -->
+        <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-center border-b border-gray-100 bg-[#fffaf5]">
             <div class="w-full max-w-6xl mx-auto px-4 py-2 sm:py-4">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-5 lg:gap-x-8 lg:gap-y-4 items-start">
 
@@ -1283,7 +1422,7 @@
                                 <div class="inline-flex items-center gap-2 shrink-0">
                                     <span class="w-1.5 h-1.5 rounded-full bg-brand-rust animate-pulse"></span>
                                     <p class="font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-rust whitespace-nowrap">
-                                        Ch╞░╞íng tr├¼nh tiß║┐p theo:
+                                        Chương trình tiếp theo:
                                     </p>
                                 </div>
                                 <span class="program-heading-line" aria-hidden="true"></span>
@@ -1298,22 +1437,22 @@
                             </h1>
 
                             <h2 class="font-montserrat text-[clamp(1rem,3vw,2.05rem)] font-extrabold tracking-tight text-slate-900 uppercase leading-tight">
-                                ├¥ t╞░ß╗ƒng ─æß║┐n thu nhß║¡p
+                                Ý tưởng đến thu nhập
                             </h2>
                             <p class="text-[11px] sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
-                                Biß║┐n ├╜ t╞░ß╗ƒng th├ánh nß╗Öi dung gi├í trß╗ï v├á x├óy dß╗▒ng k├¬nh Youtube ─æß╗â tß║ío thu nhß║¡p bß╗ün vß╗»ng.
+                                Biến ý tưởng thành nội dung giá trị và xây dựng kênh Youtube để tạo thu nhập bền vững.
                             </p>
                         </div>
 
                         <!-- Time / Location -->
-                        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-2 divide-x divide-gray-100">
+                        <div class="p1-hover-card bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-2 divide-x divide-gray-100">
                             <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
                                 <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="calendar-days"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
-                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thß╗¥i gian</p>
-                                    <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chß╗º nhß║¡t, ng├áy 19/7/2026</p>
+                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thời gian</p>
+                                    <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
@@ -1321,10 +1460,10 @@
                                     <i data-lucide="map-pin"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
-                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">─Éß╗ïa ─æiß╗âm</p>
+                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Địa điểm</p>
                                     <p class="text-xs sm:text-[0.95rem] font-bold leading-snug">
-                                        <span class="text-brand-rust">Ph├▓ng hß╗Öi thß║úo Biblio,</span>
-                                        <span class="block text-slate-800 font-semibold">Ngß╗Ñy Nh╞░ Kon Tum, H├á Nß╗Öi</span>
+                                        <span class="text-brand-rust">Phòng hội thảo Biblio,</span>
+                                        <span class="block text-slate-800 font-semibold">Ngụy Như Kon Tum, Hà Nội</span>
                                     </p>
                                 </div>
                             </div>
@@ -1332,19 +1471,19 @@
                     </div>
 
                     <!-- Row 1 Right: Speaker (bottom edge aligned with schedule card) -->
-                    <div class="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
+                    <div class="p1-hover-card relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
                         <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
                         <div class="relative p-3.5 sm:p-6 space-y-1 sm:space-y-2">
-                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuy├¬n gia</p>
-                            <h3 class="font-script text-3xl sm:text-5xl font-bold text-slate-900 leading-none">Mr V─ân</h3>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuyên gia</p>
+                            <h3 class="font-script text-3xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
                             <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                Chuy├¬n gia ─æ├áo tß║ío &amp; x├óy dß╗▒ng k├¬nh YouTube gi├║p h├áng tr─âm k├¬nh bß║¡t kiß║┐m tiß╗ün v├á ph├ít triß╗ân bß╗ün vß╗»ng.
+                                Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Row 2 Left: Program video (full column width = schedule card width) -->
-                    <div class="relative w-full h-[22svh] sm:h-auto sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-2 order-2 lg:order-none">
+                    <!-- Row 2 Left: Program video (aspect-video drives lg row-2 height) -->
+                    <div class="p1-video relative w-full h-[22svh] sm:h-auto sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-2 lg:self-start order-2 lg:order-none">
                         <video
                             id="pageOneVideo"
                             class="absolute inset-0 w-full h-full object-cover"
@@ -1353,39 +1492,34 @@
                             loop
                             playsinline
                             preload="metadata"
-                            poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200"
-                            aria-label="Video giß╗¢i thiß╗çu ch╞░╞íng tr├¼nh YouTube">
-                            <source src="IMG_3536.MOV" type="video/mp4">
+                            aria-label="Video giới thiệu chương trình YouTube">
+                            <source src="IMG_3540.mp4" type="video/mp4">
+                            <source src="IMG_3540.MOV" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ phát video này.
                         </video>
-                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
-                        <div class="absolute left-3 right-3 bottom-3 z-10 text-white">
-                            <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wide drop-shadow">
-                                Giß╗¢i thiß╗çu ch╞░╞íng tr├¼nh YouTube ΓÇô ├¥ t╞░ß╗ƒng ─æß║┐n thu nhß║¡p
-                            </p>
-                        </div>
                     </div>
 
-                    <!-- Row 2 Right: Achievements (same height as video) -->
-                    <div class="bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
-                        <h2 class="text-xs sm:text-base font-extrabold uppercase tracking-wider text-brand-rust mb-2 sm:mb-6">
-                            Mß╗Öt sß╗æ th├ánh t├¡ch nß╗òi bß║¡t
+                    <!-- Row 2 Right: Achievements (match video height; min-h-0 + overflow so content cannot grow the row) -->
+                    <div class="p1-hover-card bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:overflow-hidden lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
+                        <h2 class="text-xs sm:text-base font-bold uppercase tracking-wider text-brand-rust mb-2 sm:mb-6 lg:mb-3 shrink-0">
+                            Một số thành tích nổi bật
                         </h2>
-                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col lg:justify-evenly">
-                            <li class="flex items-center gap-3 sm:gap-5 py-2 sm:py-5 first:pt-0">
+                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col min-h-0 lg:justify-evenly">
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="dollar-sign" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">YouTuber Triß╗çu ─æ├┤</span>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">YouTuber Triệu đô</span>
                             </li>
-                            <li class="flex items-center gap-3 sm:gap-5 py-2 sm:py-5">
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="calendar" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">13 n─âm Kinh nghiß╗çm</span>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">13 năm Kinh nghiệm</span>
                             </li>
-                            <li class="flex items-center gap-3 sm:gap-5 py-2 sm:py-5">
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="play" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">7 K├¬nh N├║t Bß║íc + 2 K├¬nh N├║t V├áng</span>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">7 Kênh Nút Bạc + 2 Kênh Nút Vàng</span>
                             </li>
-                            <li class="flex items-center gap-3 sm:gap-5 py-2 sm:py-5 last:pb-0">
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="users" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">Hß╗ù trß╗ú h├áng tr─âm K├¬nh Bß║¡t Kiß║┐m Tiß╗ün</span>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">Hỗ trợ hàng trăm Kênh Bật Kiếm Tiền</span>
                             </li>
                         </ul>
                     </div>
@@ -1396,17 +1530,17 @@
                     <button
                         onclick="openRegisterModal('Page 1 CTA')"
                         class="cta-register w-full inline-flex items-center justify-center gap-2.5 text-white px-4 py-2 sm:py-3.5 font-extrabold uppercase transition-all text-base sm:text-[1.45rem] whitespace-nowrap">
-                        ─É─âng k├╜ ngay
+                        Đăng ký ngay
                         <i data-lucide="arrow-right" class="w-5 h-5 sm:w-7 sm:h-7 shrink-0"></i>
                     </button>
                     <p class="text-center text-[10px] sm:text-xs text-slate-500">
-                        Sß╗æ l╞░ß╗úng c├│ hß║ín - ─É─âng k├╜ sß╗¢m ─æß╗â giß╗» chß╗ù!
+                        Số lượng có hạn - Đăng ký sớm để giữ chỗ!
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 2: Dß╗░ ├üN MUß╗ÉI ─ÉI Hß╗îC -->
+        <!-- PAGE 2: DỰ ÁN MUỐI ĐI HỌC -->
         <section id="gioi-thieu" class="snap-page snap-page-scrollable bg-[#fffaf5] border-b border-gray-100 py-6 sm:py-8 lg:py-10">
             <div class="max-w-6xl mx-auto px-4 space-y-6 sm:space-y-8 lg:space-y-10">
 
@@ -1416,18 +1550,18 @@
                     <!-- Left: Project intro -->
                     <div class="page2-intro lg:col-span-7 space-y-4 sm:space-y-5">
                         <div class="page2-intro-copy space-y-2 sm:space-y-3">
-                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-brand-rust block">Giß╗¢i thiß╗çu dß╗▒ ├ín</span>
-                            <h2 class="font-montserrat text-3xl sm:text-4xl lg:text-[2.75rem] font-black text-slate-900 leading-none">Muß╗æi ─æi hß╗ìc</h2>
-                            <p class="text-base sm:text-lg font-bold text-slate-800">Dß╗▒ ├ín dß║íy nghß╗ü phi lß╗úi nhuß║¡n cho cß╗Öng ─æß╗ông</p>
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-brand-rust block">Giới thiệu dự án</span>
+                            <h2 class="font-montserrat text-3xl sm:text-4xl lg:text-[2.75rem] font-black text-slate-900 leading-none">Muối đi học</h2>
+                            <p class="text-base sm:text-lg font-bold text-slate-800">Dự án dạy nghề phi lợi nhuận cho cộng đồng</p>
                             <p class="text-sm sm:text-[0.95rem] text-slate-600 leading-relaxed">
-                                Muß╗æi ─Éi Hß╗ìc l├á dß╗▒ ├ín dß║íy nghß╗ü phi lß╗úi nhuß║¡n thuß╗Öc CLB Hß║ít Muß╗æi Y├¬u Th╞░╞íng, kß║┐t nß╗æi chuy├¬n gia v├á ng╞░ß╗¥i c├│ kinh nghiß╗çm ─æß╗â chia sß║╗ kiß║┐n thß╗⌐c thß╗▒c tiß╗àn, gi├║p cß╗Öng ─æß╗ông c├│ th├¬m kß╗╣ n─âng, c╞í hß╗Öi v├á ─æß╗Öng lß╗▒c ph├ít triß╗ân bß╗ün vß╗»ng.
+                                Muối Đi Học là dự án dạy nghề phi lợi nhuận thuộc CLB Hạt Muối Yêu Thương, kết nối chuyên gia và người có kinh nghiệm để chia sẻ kiến thức thực tiễn, giúp cộng đồng có thêm kỹ năng, cơ hội và động lực phát triển bền vững.
                             </p>
                         </div>
 
                         <blockquote class="page2-quote relative pl-5 sm:pl-6 border-l-2 border-brand-rust/40">
                             <i data-lucide="quote" class="w-5 h-5 text-brand-rust mb-1.5" aria-hidden="true"></i>
                             <p class="text-sm sm:text-base font-semibold text-brand-rust leading-relaxed italic">
-                                ΓÇ£Ch├║ng t├┤i tin rß║▒ng, ai c┼⌐ng xß╗⌐ng ─æ├íng c├│ c╞í hß╗Öi hß╗ìc tß║¡p ─æß╗â thay ─æß╗òi cuß╗Öc sß╗æng v├á tß║ío ra gi├í trß╗ï cho x├ú hß╗Öi.ΓÇ¥
+                                “Chúng tôi tin rằng, ai cũng xứng đáng có cơ hội học tập để thay đổi cuộc sống và tạo ra giá trị cho xã hội.”
                             </p>
                         </blockquote>
 
@@ -1436,25 +1570,25 @@
                                 <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
                                     <i data-lucide="hand-heart" class="w-5 h-5"></i>
                                 </span>
-                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Phi lß╗úi nhuß║¡n 100%</p>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Phi lợi nhuận 100%</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
                                 <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
                                     <i data-lucide="users" class="w-5 h-5"></i>
                                 </span>
-                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">V├¼ cß╗Öng ─æß╗ông, v├¼ t╞░╞íng lai</p>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Vì cộng đồng, vì tương lai</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
                                 <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
                                     <i data-lucide="book-open" class="w-5 h-5"></i>
                                 </span>
-                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Kiß║┐n thß╗⌐c thß╗▒c tiß╗àn, dß╗à ├íp dß╗Ñng</p>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Kiến thức thực tiễn, dễ áp dụng</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
                                 <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
                                     <i data-lucide="handshake" class="w-5 h-5"></i>
                                 </span>
-                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">─Éß╗ông h├ánh l├óu d├ái</p>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Đồng hành lâu dài</p>
                             </div>
                         </div>
                     </div>
@@ -1466,9 +1600,9 @@
                                 <i data-lucide="eye" class="w-5 h-5"></i>
                             </span>
                             <div class="min-w-0 space-y-1.5">
-                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Tß║ºm nh├¼n</h3>
+                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Tầm nhìn</h3>
                                 <p class="text-sm text-slate-600 leading-relaxed">
-                                    Trß╗ƒ th├ánh cß║ºu nß╗æi tin cß║¡y gi├║p cß╗Öng ─æß╗ông tiß║┐p cß║¡n kiß║┐n thß╗⌐c, kß╗╣ n─âng v├á c╞í hß╗Öi ph├ít triß╗ân nghß╗ü nghiß╗çp mß╗Öt c├ích bß╗ün vß╗»ng.
+                                    Trở thành cầu nối tin cậy giúp cộng đồng tiếp cận kiến thức, kỹ năng và cơ hội phát triển nghề nghiệp một cách bền vững.
                                 </p>
                             </div>
                         </div>
@@ -1480,12 +1614,12 @@
                                 <i data-lucide="target" class="w-5 h-5"></i>
                             </span>
                             <div class="min-w-0 space-y-2">
-                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Sß╗⌐ mß╗çnh</h3>
+                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Sứ mệnh</h3>
                                 <ul class="space-y-1.5 text-sm text-slate-600 leading-relaxed list-disc pl-4">
-                                    <li>Kß║┐t nß╗æi chuy├¬n gia v├á ng╞░ß╗¥i c├│ kinh nghiß╗çm thß╗▒c tß║┐</li>
-                                    <li>Trao ΓÇ£cß║ºn c├óuΓÇ¥ ΓÇö kß╗╣ n─âng ├íp dß╗Ñng ─æ╞░ß╗úc ngay</li>
-                                    <li>Tß╗ò chß╗⌐c ch╞░╞íng tr├¼nh hß╗ìc miß╗àn ph├¡, dß╗à tiß║┐p cß║¡n</li>
-                                    <li>X├óy dß╗▒ng cß╗Öng ─æß╗ông hß╗ìc tß║¡p ─æß╗ông h├ánh l├óu d├ái</li>
+                                    <li>Kết nối chuyên gia và người có kinh nghiệm thực tế</li>
+                                    <li>Trao “cần câu” — kỹ năng áp dụng được ngay</li>
+                                    <li>Tổ chức chương trình học miễn phí, dễ tiếp cận</li>
+                                    <li>Xây dựng cộng đồng học tập đồng hành lâu dài</li>
                                 </ul>
                             </div>
                         </div>
@@ -1497,7 +1631,7 @@
                     <div class="flex items-center justify-center gap-3 sm:gap-4">
                         <span class="program-heading-line" aria-hidden="true"></span>
                         <h3 class="font-montserrat text-xs sm:text-sm font-extrabold uppercase tracking-[0.16em] text-slate-900 whitespace-nowrap">
-                            C├íc ch╞░╞íng tr├¼nh ─æ├ú tß╗ò chß╗⌐c
+                            Các chương trình đã tổ chức
                         </h3>
                         <span class="program-heading-line" aria-hidden="true"></span>
                     </div>
@@ -1507,7 +1641,7 @@
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
                                     src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&q=80&w=800"
-                                    alt="Ch╞░╞íng tr├¼nh YouTube ΓÇô ├¥ t╞░ß╗ƒng ─æß║┐n thu nhß║¡p"
+                                    alt="Chương trình YouTube – Ý tưởng đến thu nhập"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -1517,8 +1651,8 @@
                                         <i data-lucide="youtube" class="w-4 h-4"></i>
                                     </span>
                                     <div class="min-w-0">
-                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">YouTube ΓÇô ├¥ t╞░ß╗ƒng ─æß║┐n thu nhß║¡p</h4>
-                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">─Éß╗ïnh h╞░ß╗¢ng x├óy k├¬nh v├á bß║¡t kiß║┐m tiß╗ün bß╗ün vß╗»ng.</p>
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">YouTube – Ý tưởng đến thu nhập</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Định hướng xây kênh và bật kiếm tiền bền vững.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1528,7 +1662,7 @@
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
                                     src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800"
-                                    alt="Ch╞░╞íng tr├¼nh Canva ΓÇô Thiß║┐t kß║┐ c╞í bß║ún"
+                                    alt="Chương trình Canva – Thiết kế cơ bản"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -1538,8 +1672,8 @@
                                         <i data-lucide="palette" class="w-4 h-4"></i>
                                     </span>
                                     <div class="min-w-0">
-                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Canva ΓÇô Thiß║┐t kß║┐ c╞í bß║ún</h4>
-                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Kß╗╣ n─âng thiß║┐t kß║┐ ─æß╗ô hß╗ìa c╞í bß║ún cho hß╗ìc tß║¡p v├á c├┤ng viß╗çc.</p>
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Canva – Thiết kế cơ bản</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Kỹ năng thiết kế đồ họa cơ bản cho học tập và công việc.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1549,7 +1683,7 @@
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
                                     src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800"
-                                    alt="Ch╞░╞íng tr├¼nh Kß╗╣ n─âng giao tiß║┐p v├á thuyß║┐t tr├¼nh"
+                                    alt="Chương trình Kỹ năng giao tiếp và thuyết trình"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -1559,8 +1693,8 @@
                                         <i data-lucide="messages-square" class="w-4 h-4"></i>
                                     </span>
                                     <div class="min-w-0">
-                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kß╗╣ n─âng giao tiß║┐p &amp; thuyß║┐t tr├¼nh</h4>
-                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Tß╗▒ tin giao tiß║┐p v├á thuyß║┐t tr├¼nh hiß╗çu quß║ú tr╞░ß╗¢c ─æ├ím ─æ├┤ng.</p>
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kỹ năng giao tiếp &amp; thuyết trình</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Tự tin giao tiếp và thuyết trình hiệu quả trước đám đông.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1570,7 +1704,7 @@
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
                                     src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800"
-                                    alt="Ch╞░╞íng tr├¼nh Kinh doanh online ΓÇô Bß║»t ─æß║ºu tß╗½ ─æ├óu?"
+                                    alt="Chương trình Kinh doanh online – Bắt đầu từ đâu?"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -1580,8 +1714,8 @@
                                         <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                                     </span>
                                     <div class="min-w-0">
-                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kinh doanh online ΓÇô Bß║»t ─æß║ºu tß╗½ ─æ├óu?</h4>
-                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">─Éß╗ïnh h╞░ß╗¢ng v├á x├óy nß╗ün tß║úng khß╗ƒi ─æß║ºu kinh doanh online.</p>
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kinh doanh online – Bắt đầu từ đâu?</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Định hướng và xây nền tảng khởi đầu kinh doanh online.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1591,59 +1725,86 @@
             </div>
         </section>
 
-        <!-- PAGE 3: Vß╗Ç CH├ÜNG T├öI -->
+        <!-- PAGE 3: VỀ CHÚNG TÔI -->
         <section id="ve-chung-toi" class="snap-page snap-page-scrollable" aria-labelledby="hmyt-title">
             <div class="p3-container">
                 <header class="p3-hero">
-                    <img src="logo.png" alt="Biß╗âu tr╞░ng Hß║ít Muß╗æi Y├¬u Th╞░╞íng" class="p3-hero-logo">
-                    <h2 id="hmyt-title" class="p3-hero-title">Hß║áT MUß╗ÉI Y├èU TH╞»╞áNG</h2>
-                    <p class="p3-hero-tagline">Th╞░╞íng nhau hß║ít muß╗æi sß║╗ ─æ├┤i</p>
+                    <div class="p3-hero-brand">
+                        <svg class="p3-hero-logo" viewBox="0 0 640 640" role="img" aria-label="Biểu trưng Hạt Muối Yêu Thương">
+                            <use href="#hmyt-logo-mark"></use>
+                        </svg>
+                        <div class="p3-hero-brand-text">
+                            <h2 id="hmyt-title" class="p3-hero-title">
+                                <span>HẠT MUỐI</span>
+                                <span>YÊU THƯƠNG</span>
+                            </h2>
+                            <p class="p3-hero-tagline">Thương nhau hạt muối sẻ đôi</p>
+                        </div>
+                    </div>
                     <p class="p3-hero-desc">
-                        Hß║ít Muß╗æi Y├¬u Th╞░╞íng l├á tß╗ò chß╗⌐c phi lß╗úi nhuß║¡n kß║┐t nß╗æi nhß╗»ng tß║Ñm l├▓ng tß╗¡ tß║┐, c├╣ng vun ─æß║»p c╞í hß╗Öi hß╗ìc tß║¡p, sinh kß║┐ v├á mß╗Öt t╞░╞íng lai tß╗æt ─æß║╣p h╞ín cho cß╗Öng ─æß╗ông.
+                        Hạt Muối Yêu Thương là tổ chức phi lợi nhuận với sứ mệnh kết nối cộng đồng, lan tỏa yêu thương và hỗ trợ những hoàn cảnh khó khăn trên khắp mọi miền.
                     </p>
                     <div class="p3-hero-contacts">
                         <a href="https://www.facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer">
-                            <i data-lucide="facebook" class="h-3.5 w-3.5 text-[#1877f2]" aria-hidden="true"></i>
-                            Hß║ít Muß╗æi Y├¬u Th╞░╞íng
+                            <span class="p3-contact-icon p3-contact-icon--facebook" aria-hidden="true">
+                                <i data-lucide="facebook"></i>
+                            </span>
+                            <span class="p3-contact-copy">
+                                <span class="p3-contact-label">Fanpage</span>
+                                <span class="p3-contact-value">Hạt Muối Yêu Thương</span>
+                            </span>
                         </a>
                         <a href="mailto:hatmuoiyeuthuong@gmail.com">
-                            <i data-lucide="mail" class="h-3.5 w-3.5 text-[#e66b49]" aria-hidden="true"></i>
-                            hatmuoiyeuthuong@gmail.com
+                            <span class="p3-contact-icon p3-contact-icon--email" aria-hidden="true">
+                                <i data-lucide="mail"></i>
+                            </span>
+                            <span class="p3-contact-copy">
+                                <span class="p3-contact-label">Email</span>
+                                <span class="p3-contact-value">hatmuoiyeuthuong@gmail.com</span>
+                            </span>
                         </a>
                     </div>
                 </header>
 
-                <div class="p3-card p3-media-panel">
-                    <div class="p3-media-grid">
+                <div class="p3-card p3-main-panel">
+                    <div class="p3-main-grid">
                         <section aria-labelledby="activities-title">
                             <div class="p3-section-heading">
                                 <span class="bg-rose-50 text-[#ed6a53]"><i data-lucide="heart" aria-hidden="true"></i></span>
-                                <h3 id="activities-title">H├îNH ß║óNH HOß║áT ─Éß╗ÿNG</h3>
+                                <h3 id="activities-title">HÌNH ẢNH HOẠT ĐỘNG</h3>
                             </div>
-                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="5200" aria-label="H├¼nh ß║únh hoß║ít ─æß╗Öng Hß║ít Muß╗æi Y├¬u Th╞░╞íng">
+                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="5200" aria-label="Hình ảnh hoạt động Hạt Muối Yêu Thương">
                                 <div class="p3-carousel-viewport">
                                     <div class="p3-carousel-track">
-                                        <figure class="p3-carousel-slide" role="group" aria-label="1 tr├¬n 4">
-                                            <div class="p3-activity-image"><img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&amp;fit=crop&amp;q=82&amp;w=700" alt="T├¼nh nguyß╗çn vi├¬n ─æß╗ông h├ánh c├╣ng trß║╗ em v├╣ng cao" loading="lazy"></div>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="1 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/481211911_122258607530029670_5344184557419073162_n.jpg" alt="Đội tình nguyện Hạt Muối Yêu Thương cùng biểu ngữ và bà con địa phương" loading="lazy"></div>
                                         </figure>
-                                        <figure class="p3-carousel-slide" role="group" aria-label="2 tr├¬n 4">
-                                            <div class="p3-activity-image"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&amp;fit=crop&amp;q=82&amp;w=700" alt="Trß║╗ em trong mß╗Öt ch╞░╞íng tr├¼nh hß╗ù trß╗ú cß╗Öng ─æß╗ông" loading="lazy"></div>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="2 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/481471679_122260921874029670_3776664956483542030_n.jpg" alt="Tình nguyện viên mang hàng hỗ trợ tại vùng cao" loading="lazy"></div>
                                         </figure>
-                                        <figure class="p3-carousel-slide" role="group" aria-label="3 tr├¬n 4">
-                                            <div class="p3-activity-image"><img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&amp;fit=crop&amp;q=82&amp;w=700" alt="Hß╗ìc vi├¬n tham gia lß╗¢p hß╗ìc thß╗▒c h├ánh" loading="lazy"></div>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="3 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/486326233_122266709654029670_624485205111674117_n.jpg" alt="Trao quà hỗ trợ cho bà con ngoài trời" loading="lazy"></div>
                                         </figure>
-                                        <figure class="p3-carousel-slide" role="group" aria-label="4 tr├¬n 4">
-                                            <div class="p3-activity-image"><img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&amp;fit=crop&amp;q=82&amp;w=700" alt="C├íc t├¼nh nguyß╗çn vi├¬n chuß║⌐n bß╗ï qu├á hß╗ù trß╗ú" loading="lazy"></div>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="4 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/472209047_122244600800029670_4031512693485418194_n.jpg" alt="Trao quà Trung thu cho em nhỏ tại bản Tả Lủng" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="5 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/485281486_122264315558029670_4713486801383152084_n.jpg" alt="Đội tình nguyện áo vàng Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="6 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/486608135_122266710248029670_6720309262998812553_n.jpg" alt="Tình nguyện viên phân loại đồ hỗ trợ cộng đồng" loading="lazy"></div>
                                         </figure>
                                     </div>
                                 </div>
-                                <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem ß║únh hoß║ít ─æß╗Öng tr╞░ß╗¢c"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
-                                <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem ß║únh hoß║ít ─æß╗Öng tiß║┐p theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
-                                <div class="p3-carousel-dots" aria-label="Chß╗ìn ß║únh hoß║ít ─æß╗Öng">
-                                    <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem ß║únh hoß║ít ─æß╗Öng 1"></button>
-                                    <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem ß║únh hoß║ít ─æß╗Öng 2"></button>
-                                    <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem ß║únh hoß║ít ─æß╗Öng 3"></button>
-                                    <button type="button" class="p3-carousel-dot" data-slide="3" aria-label="Xem ß║únh hoß║ít ─æß╗Öng 4"></button>
+                                <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem ảnh hoạt động trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+                                <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem ảnh hoạt động tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+                                <div class="p3-carousel-dots" aria-label="Chọn ảnh hoạt động">
+                                    <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem ảnh hoạt động 1"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem ảnh hoạt động 2"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem ảnh hoạt động 3"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="3" aria-label="Xem ảnh hoạt động 4"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="4" aria-label="Xem ảnh hoạt động 5"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="5" aria-label="Xem ảnh hoạt động 6"></button>
                                 </div>
                             </div>
                         </section>
@@ -1651,112 +1812,84 @@
                         <section class="p3-video-column" aria-labelledby="intro-video-title">
                             <div class="p3-section-heading">
                                 <span class="bg-red-50 text-red-600"><i data-lucide="video" aria-hidden="true"></i></span>
-                                <h3 id="intro-video-title">VIDEO GIß╗ÜI THIß╗åU</h3>
+                                <h3 id="intro-video-title">VIDEO GIỚI THIỆU</h3>
                             </div>
-                            <button type="button" onclick="playIntroVideo()" class="p3-video-poster group" aria-label="Ph├ít video giß╗¢i thiß╗çu Hß║ít Muß╗æi Y├¬u Th╞░╞íng">
-                                <img src="PTH04767.jpg" alt="" loading="lazy">
+                            <button type="button" onclick="playIntroVideo()" class="p3-video-poster group" aria-label="Phát video giới thiệu Hạt Muối Yêu Thương">
+                                <img src="activities/482011579_122261208350029670_8723631038913041069_n.jpg" alt="Tình nguyện viên trao quà hỗ trợ ngoài trời" loading="lazy">
                                 <span class="p3-video-poster-label">
                                     <span class="p3-video-play"><i data-lucide="play" aria-hidden="true"></i></span>
-                                    <strong>Lan tß╗Åa y├¬u th╞░╞íng</strong>
-                                    <span>V├¼ mß╗Öt cß╗Öng ─æß╗ông tß╗æt ─æß║╣p h╞ín</span>
+                                    <strong>HẠT MUỐI YÊU THƯƠNG</strong>
+                                    <span>Lan tỏa yêu thương · Vì một cộng đồng tốt đẹp hơn</span>
                                 </span>
                             </button>
                         </section>
-                    </div>
-                </div>
 
-                <div class="p3-lower-grid">
-                    <article class="p3-card p3-about-card">
-                        <span class="p3-about-icon"><i data-lucide="users-round" aria-hidden="true"></i></span>
-                        <h3>Vß╗Ç Hß║áT MUß╗ÉI Y├èU TH╞»╞áNG</h3>
-                        <p>
-                            Tß╗½ nhß╗»ng ─æ├│ng g├│p nhß╗Å b├⌐ nh╞░ng bß╗ün bß╗ë, HMYT triß╗ân khai c├íc hoß║ít ─æß╗Öng gi├ío dß╗Ñc, thiß╗çn nguyß╗çn v├á hß╗ù trß╗ú sinh kß║┐ minh bß║ích, thiß║┐t thß╗▒c tß║íi nhiß╗üu ─æß╗ïa ph╞░╞íng.
-                        </p>
-                        <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="p3-about-cta">
-                            T├îM HIß╗éU TH├èM <i data-lucide="arrow-right" class="h-3.5 w-3.5" aria-hidden="true"></i>
-                        </a>
-                    </article>
+                        <article class="p3-about-card" aria-labelledby="about-hmyt-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-orange-50 text-[#ec6d45]"><i data-lucide="users-round" aria-hidden="true"></i></span>
+                                <h3 id="about-hmyt-title">VỀ HẠT MUỐI YÊU THƯƠNG</h3>
+                            </div>
+                            <p>
+                                Hạt Muối Yêu Thương được thành lập với mong muốn lan tỏa những giá trị tốt đẹp, kết nối trái tim và chung tay xây dựng một cộng đồng nhân ái, nơi mọi người cùng chia sẻ, giúp đỡ và tạo nên những thay đổi tích cực cho xã hội.
+                            </p>
+                            <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="p3-about-cta">
+                                TÌM HIỂU THÊM <i data-lucide="arrow-right" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                            </a>
+                        </article>
 
-                    <section class="p3-card min-w-0" aria-labelledby="recognition-title">
-                        <div class="p3-section-heading">
-                            <span class="bg-amber-50 text-amber-600"><i data-lucide="award" aria-hidden="true"></i></span>
-                            <h3 id="recognition-title">Sß╗░ GHI NHß║¼N</h3>
-                        </div>
-                        <div class="p3-carousel" data-carousel data-desktop-visible="3" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="6200" aria-label="Giß║Ñy khen v├á sß╗▒ ghi nhß║¡n">
-                            <div class="p3-carousel-viewport">
-                                <div class="p3-carousel-track">
-                                    <figure class="p3-carousel-slide" role="group" aria-label="1 tr├¬n 3">
-                                        <div class="p3-award-image"><img src="6253649885844410607.jpg" alt="Giß║Ñy khen ghi nhß║¡n hoß║ít ─æß╗Öng cß╗ºa Hß║ít Muß╗æi Y├¬u Th╞░╞íng" loading="lazy"></div>
-                                    </figure>
-                                    <figure class="p3-carousel-slide" role="group" aria-label="2 tr├¬n 3">
-                                        <div class="p3-award-image"><img src="6253649885844410608.jpg" alt="Giß║Ñy chß╗⌐ng nhß║¡n d├ánh cho Hß║ít Muß╗æi Y├¬u Th╞░╞íng" loading="lazy"></div>
-                                    </figure>
-                                    <figure class="p3-carousel-slide" role="group" aria-label="3 tr├¬n 3">
-                                        <div class="p3-award-image"><img src="6253649885844410609.jpg" alt="Giß║Ñy khen v├¼ ─æ├│ng g├│p t├¡ch cß╗▒c cho cß╗Öng ─æß╗ông" loading="lazy"></div>
-                                    </figure>
+                        <section class="min-w-0" aria-labelledby="recognition-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-amber-50 text-amber-600"><i data-lucide="award" aria-hidden="true"></i></span>
+                                <h3 id="recognition-title">SỰ GHI NHẬN</h3>
+                            </div>
+                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="6200" aria-label="Giấy khen và sự ghi nhận">
+                                <div class="p3-carousel-viewport">
+                                    <div class="p3-carousel-track">
+                                        <figure class="p3-carousel-slide" role="group" aria-label="1 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410607.jpg" alt="Giấy khen ghi nhận hoạt động của Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="2 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410608.jpg" alt="Giấy chứng nhận dành cho Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="3 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410609.jpg" alt="Giấy khen vì đóng góp tích cực cho cộng đồng" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="4 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410607.jpg" alt="Giấy khen ghi nhận đóng góp của Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                    </div>
+                                </div>
+                                <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem giấy khen trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+                                <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem giấy khen tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+                                <div class="p3-carousel-dots" aria-label="Chọn giấy khen">
+                                    <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem giấy khen 1"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem giấy khen 2"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem giấy khen 3"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="3" aria-label="Xem giấy khen 4"></button>
                                 </div>
                             </div>
-                            <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem giß║Ñy khen tr╞░ß╗¢c"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
-                            <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem giß║Ñy khen tiß║┐p theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
-                            <div class="p3-carousel-dots" aria-label="Chß╗ìn giß║Ñy khen">
-                                <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem giß║Ñy khen 1"></button>
-                                <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem giß║Ñy khen 2"></button>
-                                <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem giß║Ñy khen 3"></button>
-                            </div>
-                        </div>
-                    </section>
+                        </section>
+                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-950 text-slate-400 text-xs py-8 border-t border-slate-900">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="text-center md:text-left space-y-1">
-                <p class="font-bold text-sm text-slate-200">Muß╗æi ─Éi Hß╗ìc - CLB Hß║ít Muß╗æi Y├¬u Th╞░╞íng (HMYT)</p>
-                <p>─Éß╗ïa chß╗ë v─ân ph├▓ng li├¬n lß║íc: Tß║ºng 3, Nh├á v─ân ho├í cß╗Öng ─æß╗ông ph╞░ß╗¥ng, Viß╗çt Nam</p>
-                <p>Website ch├¡nh thß╗⌐c: www.muoidihoc.com</p>
-                <div class="flex items-center justify-center md:justify-start gap-3 pt-2">
-                    <a href="https://www.facebook.com/hatmuoiyeuthuong"
-                       target="_blank" rel="noopener noreferrer"
-                       aria-label="Facebook Hß║ít Muß╗æi Y├¬u Th╞░╞íng"
-                       class="p-2 rounded-full bg-slate-800 hover:bg-[#1877F2] text-slate-300 hover:text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.youtube.com/@HatMuoiYeuThuong"
-                       target="_blank" rel="noopener noreferrer"
-                       aria-label="YouTube Hß║ít Muß╗æi Y├¬u Th╞░╞íng"
-                       class="p-2 rounded-full bg-slate-800 hover:bg-[#FF0000] text-slate-300 hover:text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true">
-                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            <div class="text-center md:text-right text-slate-500">
-                <p>&copy; 2026 Muß╗æi ─Éi Hß╗ìc. Dß╗▒ ├ín phi lß╗úi nhuß║¡n v├¼ cß╗Öng ─æß╗ông.</p>
-            </div>
-        </div>
-    </footer>
-
     <!-- REGISTRATION POPUP MODAL -->
     <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300">
         <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalCard">
             <!-- Header Modal -->
             <div class="bg-brand-pink p-6 pr-14 text-white relative shrink-0">
-                <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="─É├│ng form ─æ─âng k├╜">
+                <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng form đăng ký">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
-                <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">─É─âng k├╜ tham gia</span>
-                <h3 id="registerModalTitle" class="text-xl font-bold leading-snug">Muß╗æi ─Éi Hß╗ìc Youtube: Tß╗½ ├¥ T╞░ß╗ƒng ─Éß║┐n Thu Nhß║¡p</h3>
+                <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">Đăng ký tham gia</span>
+                <h3 id="registerModalTitle" class="text-xl font-bold leading-snug">Muối Đi Học Youtube: Từ Ý Tưởng Đến Thu Nhập</h3>
                 <p class="text-xs text-white/80 mt-2 leading-relaxed">
-                    T├¼m hiß╗âu th├¬m vß╗ü ch├║ng t├┤i v├á dß╗▒ ├ín Muß╗æi ─Éi Hß╗ìc ΓÇö
+                    Tìm hiểu thêm về chúng tôi và dự án Muối Đi Học —
                     <a href="https://facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Fanpage</a>
-                    ┬╖
+                    ·
                     <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Website</a>
                 </p>
             </div>
@@ -1775,43 +1908,43 @@
                     <div class="rounded-xl border border-brand-orange/30 bg-orange-50 p-3 flex gap-3">
                         <i data-lucide="calendar-clock" class="w-5 h-5 text-brand-orange shrink-0 mt-0.5"></i>
                         <div>
-                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange">Thß╗¥i gian</p>
-                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Sß╗▒ kiß╗çn diß╗àn ra l├║c 14h ng├áy 19/7/2026</p>
+                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange">Thời gian</p>
+                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Sự kiện diễn ra lúc 14h ngày 19/7/2026</p>
                         </div>
                     </div>
                     <div class="rounded-xl border border-brand-pink/20 bg-pink-50 p-3 flex gap-3">
                         <i data-lucide="map-pin" class="w-5 h-5 text-brand-pink shrink-0 mt-0.5"></i>
                         <div>
-                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-pink">─Éß╗ïa ─æiß╗âm</p>
-                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Ph├▓ng hß╗Öi thß║úo Biblio, 79 Ngß╗Ñy Nh╞░ Kon Tum, H├á Nß╗Öi</p>
+                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-pink">Địa điểm</p>
+                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Phòng hội thảo Biblio, 79 Ngụy Như Kon Tum, Hà Nội</p>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="fullName">Hß╗ì v├á T├¬n <span class="text-red-500">*</span></label>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="fullName">Họ và Tên <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                             <i data-lucide="user" class="w-4 h-4"></i>
                         </span>
-                        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Nguyß╗àn V─ân A" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Nguyễn Văn A" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
                     </div>
                     <p id="fullNameError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="age">─Éß╗Ö tuß╗òi <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="age">Độ tuổi <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                                 <i data-lucide="cake" class="w-4 h-4"></i>
                             </span>
-                            <input type="number" id="age" name="age" required min="10" max="100" inputmode="numeric" placeholder="V├¡ dß╗Ñ: 24" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                            <input type="number" id="age" name="age" required min="10" max="100" inputmode="numeric" placeholder="Ví dụ: 24" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
                         </div>
                         <p id="ageError" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="phoneNumber">Sß╗æ ─æiß╗çn thoß║íi <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="phoneNumber">Số điện thoại <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                                 <i data-lucide="phone" class="w-4 h-4"></i>
@@ -1823,34 +1956,34 @@
                 </div>
 
                 <fieldset>
-                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kinh nghiß╗çm cß╗ºa bß║ín vß╗ü l├ám Youtube <span class="text-red-500">*</span></legend>
+                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kinh nghiệm của bạn về làm Youtube <span class="text-red-500">*</span></legend>
                     <div id="youtubeExperienceGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Kh├┤ng c├│" required class="peer sr-only">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Kh├┤ng c├│</span>
+                            <input type="radio" name="youtubeExperience" value="Không có" required class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Không có</span>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Mß╗¢i t├¼m hiß╗âu" class="peer sr-only">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Mß╗¢i t├¼m hiß╗âu</span>
+                            <input type="radio" name="youtubeExperience" value="Mới tìm hiểu" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Mới tìm hiểu</span>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="D╞░ß╗¢i 6 th├íng" class="peer sr-only">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">D╞░ß╗¢i 6 th├íng</span>
+                            <input type="radio" name="youtubeExperience" value="Dưới 6 tháng" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Dưới 6 tháng</span>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Khoß║úng 1 n─âm" class="peer sr-only">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Khoß║úng 1 n─âm</span>
+                            <input type="radio" name="youtubeExperience" value="Khoảng 1 năm" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Khoảng 1 năm</span>
                         </label>
                         <label class="cursor-pointer sm:col-span-2">
-                            <input type="radio" name="youtubeExperience" value="Tr├¬n 1 n─âm" class="peer sr-only">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Tr├¬n 1 n─âm</span>
+                            <input type="radio" name="youtubeExperience" value="Trên 1 năm" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Trên 1 năm</span>
                         </label>
                     </div>
                     <p id="youtubeExperienceError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </fieldset>
 
                 <fieldset>
-                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cß║úm nhß║¡n cß╗ºa bß║ín vß╗ü tiß╗üm n─âng tß║ío ra thu nhß║¡p tß╗½ viß╗çc l├ám Youtube (theo thang ─æiß╗âm 10) <span class="text-red-500">*</span></legend>
+                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cảm nhận của bạn về tiềm năng tạo ra thu nhập từ việc làm Youtube (theo thang điểm 10) <span class="text-red-500">*</span></legend>
                     <div id="incomePotentialGroup" class="grid grid-cols-6 sm:grid-cols-11 gap-1.5">
                         <label class="cursor-pointer"><input type="radio" name="incomePotential" value="0" required class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">0</span></label>
                         <label class="cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">1</span></label>
@@ -1865,33 +1998,33 @@
                         <label class="cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">10</span></label>
                     </div>
                     <div class="flex justify-between text-[11px] text-gray-500 mt-1.5">
-                        <span>Kh├┤ng c├│</span>
-                        <span>─Éß╗º sß╗æng</span>
-                        <span>Thu nhß║¡p cao</span>
+                        <span>Không có</span>
+                        <span>Đủ sống</span>
+                        <span>Thu nhập cao</span>
                     </div>
                     <p id="incomePotentialError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </fieldset>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="expertQuestion">C├óu hß╗Åi muß╗æn ─æ╞░ß╗úc chuy├¬n gia trß║ú lß╗¥i (nß║┐u c├│)</label>
-                    <textarea id="expertQuestion" name="expertQuestion" rows="3" placeholder="Nhß║¡p c├óu hß╗Åi cß╗ºa bß║ín..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all"></textarea>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="expertQuestion">Câu hỏi muốn được chuyên gia trả lời (nếu có)</label>
+                    <textarea id="expertQuestion" name="expertQuestion" rows="3" placeholder="Nhập câu hỏi của bạn..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all"></textarea>
                 </div>
 
                 <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
                     <div class="flex items-center gap-2 text-amber-800 mb-3">
                         <i data-lucide="triangle-alert" class="w-5 h-5 shrink-0"></i>
-                        <h4 class="font-bold">L╞░u ├╜</h4>
+                        <h4 class="font-bold">Lưu ý</h4>
                     </div>
                     <div class="space-y-2.5 text-xs leading-relaxed text-amber-950/80">
-                        <p>Ch╞░╞íng tr├¼nh nß║▒m trong dß╗▒ ├ín Dß║íy nghß╗ü cho cß╗Öng ─æß╗ông "Muß╗æi ─æi hß╗ìc" do Hß║ít Muß╗æi Y├¬u Th╞░╞íng tß╗ò chß╗⌐c. Ch╞░╞íng tr├¼nh ho├án to├án phi lß╗úi nhuß║¡n (miß╗àn ph├¡ 100% hß╗ìc ph├¡), kh├┤ng k├¿m theo bß║Ñt kß╗│ hoß║ít ─æß╗Öng th╞░╞íng mß║íi hay b├ín kh├│a hß╗ìc n├áo.</p>
-                        <p>V├¼ ch╞░╞íng tr├¼nh m╞░ß╗ún kh├┤ng gian tß║íi hß╗Öi tr╞░ß╗¥ng/qu├ín cafe, c├íc bß║ín tham gia vui l├▓ng tß╗▒ thanh to├ín chi ph├¡ n╞░ß╗¢c uß╗æng v├á gß╗¡i xe. ─Éß╗â hß╗ù trß╗ú qu├ín chuß║⌐n bß╗ï chu ─æ├ío nhß║Ñt, BTC sß║╜ thu hß╗Ö khoß║ún ph├¡ n├áy tr╞░ß╗¢c (khoß║úng 50.000─æ - 80.000─æ t├╣y ─æß╗ïa ─æiß╗âm, ─æ├ú bao gß╗ôm n╞░ß╗¢c v├á v├⌐ xe).</p>
-                        <p>Nß║┐u ─æ├ú ─æ─âng k├╜ nh╞░ng bß║¡n ─æß╗Öt xuß║Ñt, bß║ín vui l├▓ng b├ío tr╞░ß╗¢c cho BTC 24 giß╗¥ tr╞░ß╗¢c khi diß╗àn ra ch╞░╞íng tr├¼nh ─æß╗â ─æ╞░ß╗úc ho├án lß║íi chi ph├¡ nh├⌐!</p>
-                        <p>Hß║ít Muß╗æi Y├¬u Th╞░╞íng l├á cß║ºu nß╗æi ─æ╞░a c├íc chuy├¬n gia trong nhiß╗üu l─⌐nh vß╗▒c ─æß║┐n chia sß║╗ v├á ─æ├áo tß║ío nghß╗ü cho cß╗Öng ─æß╗ông. Ch╞░╞íng tr├¼nh ╞░u ti├¬n gi├í trß╗ï ß╗⌐ng dß╗Ñng thß╗▒c tß║┐ v├á kinh nghiß╗çm cß╗ºa chuy├¬n gia h╞ín l├á nhß╗»ng l├╜ thuyß║┐t s├ích vß╗ƒ. Mong c├íc bß║ín ─æ├│n nhß║¡n tinh thß║ºn n├áy vß╗¢i mß╗Öt t├óm thß║┐ cß╗ƒi mß╗ƒ.</p>
-                        <p class="font-semibold">BTC sß║╜ li├¬n hß╗ç lß║íi vß╗¢i bß║ín ─æß╗â x├íc nhß║¡n sau khi ─æ─âng k├╜.</p>
+                        <p>Chương trình nằm trong dự án Dạy nghề cho cộng đồng "Muối đi học" do Hạt Muối Yêu Thương tổ chức. Chương trình hoàn toàn phi lợi nhuận (miễn phí 100% học phí), không kèm theo bất kỳ hoạt động thương mại hay bán khóa học nào.</p>
+                        <p>Vì chương trình mượn không gian tại hội trường/quán cafe, các bạn tham gia vui lòng tự thanh toán chi phí nước uống và gửi xe. Để hỗ trợ quán chuẩn bị chu đáo nhất, BTC sẽ thu hộ khoản phí này trước (khoảng 50.000đ - 80.000đ tùy địa điểm, đã bao gồm nước và vé xe).</p>
+                        <p>Nếu đã đăng ký nhưng bận đột xuất, bạn vui lòng báo trước cho BTC 24 giờ trước khi diễn ra chương trình để được hoàn lại chi phí nhé!</p>
+                        <p>Hạt Muối Yêu Thương là cầu nối đưa các chuyên gia trong nhiều lĩnh vực đến chia sẻ và đào tạo nghề cho cộng đồng. Chương trình ưu tiên giá trị ứng dụng thực tế và kinh nghiệm của chuyên gia hơn là những lý thuyết sách vở. Mong các bạn đón nhận tinh thần này với một tâm thế cởi mở.</p>
+                        <p class="font-semibold">BTC sẽ liên hệ lại với bạn để xác nhận sau khi đăng ký.</p>
                     </div>
                     <label id="acknowledgementGroup" class="mt-4 flex items-start gap-2.5 cursor-pointer rounded-lg border border-amber-300 bg-white/70 p-3">
                         <input type="checkbox" id="acknowledgement" name="acknowledgement" required class="mt-0.5 h-4 w-4 rounded border-amber-400 text-brand-pink focus:ring-brand-pink">
-                        <span class="text-sm font-semibold text-slate-800">T├┤i ─æ├ú hiß╗âu <span class="text-red-500">*</span></span>
+                        <span class="text-sm font-semibold text-slate-800">Tôi đã hiểu <span class="text-red-500">*</span></span>
                     </label>
                     <p id="acknowledgementError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
@@ -1899,7 +2032,7 @@
                 <div class="pt-2">
                     <button type="submit" id="submitBtn" class="w-full bg-brand-pink hover:bg-brand-pinkHover text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
                         <i data-lucide="send" class="w-4 h-4"></i>
-                        ─É─âng K├╜
+                        Đăng Ký
                     </button>
                 </div>
             </form>
@@ -1912,8 +2045,8 @@
             <i data-lucide="check-circle" class="w-5 h-5"></i>
         </div>
         <div>
-            <p class="font-bold text-sm text-slate-100" id="toastTitle">─É─âng k├╜ th├ánh c├┤ng!</p>
-            <p class="text-xs text-slate-400 mt-0.5" id="toastMsg">Ch├║ng t├┤i sß║╜ sß╗¢m li├¬n hß╗ç lß║íi vß╗¢i bß║ín.</p>
+            <p class="font-bold text-sm text-slate-100" id="toastTitle">Đăng ký thành công!</p>
+            <p class="text-xs text-slate-400 mt-0.5" id="toastMsg">Chúng tôi sẽ sớm liên hệ lại với bạn.</p>
         </div>
     </div>
 
@@ -1921,7 +2054,7 @@
     <div id="videoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 hidden" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle" onclick="closeIntroVideo()">
         <div class="relative w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/10" onclick="event.stopPropagation()">
             <!-- Close Video -->
-            <button type="button" onclick="closeIntroVideo()" class="absolute top-4 right-4 z-10 text-white hover:text-red-400 bg-black/60 hover:bg-black p-2 rounded-full transition-all" aria-label="─É├│ng video giß╗¢i thiß╗çu">
+            <button type="button" onclick="closeIntroVideo()" class="absolute top-4 right-4 z-10 text-white hover:text-red-400 bg-black/60 hover:bg-black p-2 rounded-full transition-all" aria-label="Đóng video giới thiệu">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <!-- Demo Youtube Video / Video Mockup -->
@@ -1929,9 +2062,9 @@
                 <div class="w-16 h-16 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center animate-pulse">
                     <i data-lucide="video" class="w-8 h-8"></i>
                 </div>
-                <h3 id="videoModalTitle" class="font-bold text-lg text-white">Bß║»t ─æß║ºu tr├¼nh ph├ít Video giß╗¢i thiß╗çu dß╗▒ ├ín</h3>
-                <p class="text-xs text-slate-400 max-w-sm">Trong bß║ún thß╗▒c tß║┐, bß║ín chß╗ë viß╗çc d├ín link Iframe YouTube hoß║╖c video m├íy chß╗º cß╗ºa HMYT v├áo ─æ├óy ─æß╗â ph├ít trß╗▒c tiß║┐p.</p>
-                <button type="button" onclick="closeIntroVideo()" class="px-5 py-2 bg-brand-pink text-white rounded-lg text-xs font-semibold">─É├│ng tr├¼nh xem</button>
+                <h3 id="videoModalTitle" class="font-bold text-lg text-white">Bắt đầu trình phát Video giới thiệu dự án</h3>
+                <p class="text-xs text-slate-400 max-w-sm">Trong bản thực tế, bạn chỉ việc dán link Iframe YouTube hoặc video máy chủ của HMYT vào đây để phát trực tiếp.</p>
+                <button type="button" onclick="closeIntroVideo()" class="px-5 py-2 bg-brand-pink text-white rounded-lg text-xs font-semibold">Đóng trình xem</button>
             </div>
         </div>
     </div>
@@ -1942,7 +2075,7 @@
         <button onclick="toggleDevConsole()" class="bg-slate-900 text-white hover:bg-slate-800 p-3.5 rounded-full shadow-2xl flex items-center justify-center gap-2 transition-all border border-slate-700 hover:scale-105 group hidden">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <i data-lucide="terminal" class="w-5 h-5 text-emerald-400"></i>
-            <span class="text-xs font-semibold hidden md:inline text-slate-300">Bß║úng theo d├╡i Tracking (D├ánh cho Dev)</span>
+            <span class="text-xs font-semibold hidden md:inline text-slate-300">Bảng theo dõi Tracking (Dành cho Dev)</span>
         </button>
 
         <!-- Dev Console Panel -->
@@ -1950,7 +2083,7 @@
             <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <i data-lucide="sliders" class="w-4 h-4 text-emerald-400"></i>
-                    <span class="font-bold text-slate-200">Dß╗» Liß╗çu Kh├ích Xem Thß╗▒c Tß║┐</span>
+                    <span class="font-bold text-slate-200">Dữ Liệu Khách Xem Thực Tế</span>
                 </div>
                 <button onclick="toggleDevConsole()" class="text-slate-400 hover:text-white">
                     <i data-lucide="minimize-2" class="w-3.5 h-3.5"></i>
@@ -1960,41 +2093,41 @@
             <div class="p-4 space-y-3 divide-y divide-slate-900">
                 <!-- Row: Visitor ID -->
                 <div class="pt-0 flex justify-between items-start">
-                    <span class="text-slate-500">ID Kh├ích (Visitor ID):</span>
+                    <span class="text-slate-500">ID Khách (Visitor ID):</span>
                     <span id="dev_visitorId" class="text-emerald-400 text-right font-semibold break-all select-all"></span>
                 </div>
                 
                 <!-- Row: Campaign Parameter -->
                 <div class="pt-2 flex justify-between items-center">
-                    <span class="text-slate-500">Tham sß╗æ "cd" (Campaign):</span>
+                    <span class="text-slate-500">Tham số "cd" (Campaign):</span>
                     <span id="dev_cd" class="text-amber-400 font-bold bg-amber-950/50 px-2 py-0.5 rounded border border-amber-900/30"></span>
                 </div>
 
                 <!-- Row: Time spent -->
                 <div class="pt-2 flex justify-between items-center">
-                    <span class="text-slate-500">Thß╗¥i gian tr├¬n web:</span>
-                    <span id="dev_time" class="text-blue-400 font-bold">0 gi├óy</span>
+                    <span class="text-slate-500">Thời gian trên web:</span>
+                    <span id="dev_time" class="text-blue-400 font-bold">0 giây</span>
                 </div>
 
                 <!-- Row: Link Click Count -->
                 <div class="pt-2 flex justify-between items-center">
-                    <span class="text-slate-500">Sß╗æ click li├¬n kß║┐t:</span>
-                    <span id="dev_clicks" class="text-purple-400 font-bold">0 lß║ºn</span>
+                    <span class="text-slate-500">Số click liên kết:</span>
+                    <span id="dev_clicks" class="text-purple-400 font-bold">0 lần</span>
                 </div>
 
                 <!-- Row: Form completion status -->
                 <div class="pt-2 flex justify-between items-center">
-                    <span class="text-slate-500">─É├ú ─æ─âng k├╜ (Form)?</span>
-                    <span id="dev_form_status" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-950 text-red-400 border border-red-900/40">Ch╞░a ─É─âng K├╜</span>
+                    <span class="text-slate-500">Đã đăng ký (Form)?</span>
+                    <span id="dev_form_status" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-950 text-red-400 border border-red-900/40">Chưa Đăng Ký</span>
                 </div>
 
                 <!-- Action Button in Dev panel -->
                 <div class="pt-3 space-y-2">
                     <p class="text-[10px] text-slate-500 leading-normal italic">
-                        * ─Éß╗â thß╗¡ nghiß╗çm tham sß╗æ campaign, bß║ín h├úy d├ín th├¬m <code class="text-amber-300">?cd=ytb_muoi_di_hoc</code> v├áo ─æu├┤i URL tr├¬n tr├¼nh duyß╗çt v├á tß║úi lß║íi trang nh├⌐!
+                        * Để thử nghiệm tham số campaign, bạn hãy dán thêm <code class="text-amber-300">?cd=ytb_muoi_di_hoc</code> vào đuôi URL trên trình duyệt và tải lại trang nhé!
                     </p>
                     <button onclick="resetTrackingDemo()" class="w-full py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded text-center text-[10px] text-slate-400 hover:text-white transition-all">
-                        Reset dß╗» liß╗çu Tracking vß╗ü mß║╖c ─æß╗ïnh
+                        Reset dữ liệu Tracking về mặc định
                     </button>
                 </div>
             </div>
@@ -2007,11 +2140,11 @@
     <!-- ============================================== -->
     <script>
         // -------------------------------------------------------------
-        // 1. CHß╗¿C N─éNG TRACKING KH├üCH H├ÇNG (DEVELOPER REQUIREMENTS)
+        // 1. CHỨC NĂNG TRACKING KHÁCH HÀNG (DEVELOPER REQUIREMENTS)
         // -------------------------------------------------------------
         const trackingState = {
             visitorId: '',
-            cd: 'N/A (Truy cß║¡p trß╗▒c tiß║┐p)',
+            cd: 'N/A (Truy cập trực tiếp)',
             timeSpent: 0,
             clicks: 0,
             isFormCompleted: false,
@@ -2071,16 +2204,16 @@
             const devClicks = document.getElementById('dev_clicks');
             if(devId) devId.innerText = trackingState.visitorId;
             if(devCd) devCd.innerText = trackingState.cd;
-            if(devTime) devTime.innerText = trackingState.timeSpent + ' gi├óy';
-            if(devClicks) devClicks.innerText = trackingState.clicks + ' lß║ºn';
+            if(devTime) devTime.innerText = trackingState.timeSpent + ' giây';
+            if(devClicks) devClicks.innerText = trackingState.clicks + ' lần';
             
             const formStatusEl = document.getElementById('dev_form_status');
             if (formStatusEl) {
                 if (trackingState.isFormCompleted) {
-                    formStatusEl.innerText = '─É├ú Ho├án Th├ánh';
+                    formStatusEl.innerText = 'Đã Hoàn Thành';
                     formStatusEl.className = 'px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-900/40';
                 } else {
-                    formStatusEl.innerText = 'Ch╞░a ─É─âng K├╜';
+                    formStatusEl.innerText = 'Chưa Đăng Ký';
                     formStatusEl.className = 'px-2 py-0.5 rounded text-[10px] font-semibold bg-red-950 text-red-400 border border-red-900/40';
                 }
             }
@@ -2099,7 +2232,7 @@
         }
 
         // -------------------------------------------------------------
-        // 2. LOGIC Mß╗₧ POPUP & FORM SUBMISSION
+        // 2. LOGIC MỞ POPUP & FORM SUBMISSION
         // -------------------------------------------------------------
         function openRegisterModal(entryPointName) {
             trackingState.entryPoint = entryPointName;
@@ -2210,7 +2343,7 @@
                     page.scrollTop = 0;
                     return;
                 }
-                // Entering from above ΓåÆ top; from below ΓåÆ bottom so reverse swipe can leave immediately.
+                // Entering from above → top; from below → bottom so reverse swipe can leave immediately.
                 page.scrollTop = fromIndex > index ? maxScroll : 0;
             };
 
@@ -2450,13 +2583,20 @@
             const section = document.getElementById('chuong-trinh');
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
+            let sectionVisible = false;
+
+            const tryPlay = () => {
+                const playPromise = video.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(() => {});
+                }
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio > 0.45) {
-                        const playPromise = video.play();
-                        if (playPromise && typeof playPromise.catch === 'function') {
-                            playPromise.catch(() => {});
-                        }
+                    sectionVisible = entry.isIntersecting && entry.intersectionRatio > 0.45;
+                    if (sectionVisible) {
+                        tryPlay();
                     } else {
                         video.pause();
                     }
@@ -2464,10 +2604,18 @@
             }, { threshold: [0.45, 0.7] });
 
             observer.observe(section);
-        }
 
-        window.openProgramDetailModal = openProgramDetailModal;
-        window.closeProgramDetailModal = closeProgramDetailModal;
+            const unlockSound = () => {
+                video.muted = false;
+                video.volume = 1;
+                if (sectionVisible) tryPlay();
+                document.removeEventListener('pointerdown', unlockSound);
+                document.removeEventListener('keydown', unlockSound);
+            };
+
+            document.addEventListener('pointerdown', unlockSound, { once: true });
+            document.addEventListener('keydown', unlockSound, { once: true });
+        }
 
         function showToast(title, message) {
             const toast = document.getElementById('toast');
@@ -2574,42 +2722,42 @@
             clearGroupError('acknowledgementGroup', 'acknowledgementError');
 
             if (!fullName) {
-                markError(setFieldError('fullName', 'fullNameError', 'Vui l├▓ng nhß║¡p hß╗ì v├á t├¬n.'));
+                markError(setFieldError('fullName', 'fullNameError', 'Vui lòng nhập họ và tên.'));
                 isValid = false;
             }
 
             if (!age) {
-                markError(setFieldError('age', 'ageError', 'Vui l├▓ng nhß║¡p ─æß╗Ö tuß╗òi.'));
+                markError(setFieldError('age', 'ageError', 'Vui lòng nhập độ tuổi.'));
                 isValid = false;
             } else if (Number(age) < 10 || Number(age) > 100) {
-                markError(setFieldError('age', 'ageError', 'Vui l├▓ng nhß║¡p ─æß╗Ö tuß╗òi tß╗½ 10 ─æß║┐n 100.'));
+                markError(setFieldError('age', 'ageError', 'Vui lòng nhập độ tuổi từ 10 đến 100.'));
                 isValid = false;
             }
 
             if (!phone) {
-                markError(setFieldError('phoneNumber', 'phoneError', 'Vui l├▓ng nhß║¡p sß╗æ ─æiß╗çn thoß║íi.'));
+                markError(setFieldError('phoneNumber', 'phoneError', 'Vui lòng nhập số điện thoại.'));
                 isValid = false;
             } else if (!isValidVietnamesePhone(phone)) {
                 markError(setFieldError(
                     'phoneNumber',
                     'phoneError',
-                    'Sß╗æ ─æiß╗çn thoß║íi kh├┤ng hß╗úp lß╗ç. Vui l├▓ng nhß║¡p 10 sß╗æ, bß║»t ─æß║ºu bß║▒ng 03, 05, 07, 08 hoß║╖c 09.'
+                    'Số điện thoại không hợp lệ. Vui lòng nhập 10 số, bắt đầu bằng 03, 05, 07, 08 hoặc 09.'
                 ));
                 isValid = false;
             }
 
             if (!youtubeExperience) {
-                markError(setGroupError('youtubeExperienceGroup', 'youtubeExperienceError', 'Vui l├▓ng chß╗ìn kinh nghiß╗çm l├ám Youtube.'));
+                markError(setGroupError('youtubeExperienceGroup', 'youtubeExperienceError', 'Vui lòng chọn kinh nghiệm làm Youtube.'));
                 isValid = false;
             }
 
             if (!incomePotential) {
-                markError(setGroupError('incomePotentialGroup', 'incomePotentialError', 'Vui l├▓ng chß╗ìn mß╗Öt mß╗⌐c ─æiß╗âm tß╗½ 0 ─æß║┐n 10.'));
+                markError(setGroupError('incomePotentialGroup', 'incomePotentialError', 'Vui lòng chọn một mức điểm từ 0 đến 10.'));
                 isValid = false;
             }
 
             if (!acknowledgement) {
-                markError(setGroupError('acknowledgementGroup', 'acknowledgementError', 'Bß║ín cß║ºn x├íc nhß║¡n ─æ├ú hiß╗âu c├íc l╞░u ├╜ tr╞░ß╗¢c khi ─æ─âng k├╜.'));
+                markError(setGroupError('acknowledgementGroup', 'acknowledgementError', 'Bạn cần xác nhận đã hiểu các lưu ý trước khi đăng ký.'));
                 isValid = false;
             }
 
@@ -2637,7 +2785,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                ─Éang gß╗¡i ─æ─âng k├╜...
+                Đang gửi đăng ký...
             `;
 
             const expertQuestionEl = document.getElementById('expertQuestion');
@@ -2647,36 +2795,36 @@
             const formData = {
                 visitorId: trackingState.visitorId,
                 campaignCd: trackingState.cd,
-                timeSpent: trackingState.timeSpent + ' gi├óy',
-                clicks: trackingState.clicks + ' lß║ºn',
+                timeSpent: trackingState.timeSpent + ' giây',
+                clicks: trackingState.clicks + ' lần',
                 entryPoint: trackingState.entryPoint,
                 fullName: document.getElementById('fullName').value.trim(),
                 age: document.getElementById('age').value.trim(),
                 phone: document.getElementById('phoneNumber').value.trim(),
                 youtubeExperience: youtubeExperience ? youtubeExperience.value : '',
                 incomePotential: incomePotential ? incomePotential.value : '',
-                expertQuestion: expertQuestion || 'Kh├┤ng c├│ c├óu hß╗Åi',
+                expertQuestion: expertQuestion || 'Không có câu hỏi',
                 acknowledgement: document.getElementById('acknowledgement').checked,
-                // Giß╗» c├íc kh├│a c┼⌐ ─æß╗â Google Apps Script hiß╗çn tß║íi vß║½n c├│ thß╗â xß╗¡ l├╜ t╞░╞íng th├¡ch.
-                email: 'Kh├┤ng thu thß║¡p',
-                message: expertQuestion || 'Kh├┤ng c├│ c├óu hß╗Åi',
+                // Giữ các khóa cũ để Google Apps Script hiện tại vẫn có thể xử lý tương thích.
+                email: 'Không thu thập',
+                message: expertQuestion || 'Không có câu hỏi',
                 submittedAt: new Date().toLocaleString('vi-VN')
             };
 
             const webAppUrl = "https://script.google.com/macros/s/AKfycbxutSomf-NS02ZhPuhcPsI9KhmbMJf7eDFHNdkt4BrF5ow8yCzI2GYLTbU6_yaGdcnj/exec";
 
-            // Gß╗¡i dß╗» liß╗çu thß╗▒c tß║┐ tß╗¢i Google Apps Script Web App sß╗¡ dß╗Ñng POST fetch api
+            // Gửi dữ liệu thực tế tới Google Apps Script Web App sử dụng POST fetch api
             fetch(webAppUrl, {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
-                    'Content-Type': 'text/plain;charset=utf-8' // Sß╗¡ dß╗Ñng text/plain gi├║p bß╗Å qua b╞░ß╗¢c kiß╗âm tra preflight CORS tß╗½ Apps Script
+                    'Content-Type': 'text/plain;charset=utf-8' // Sử dụng text/plain giúp bỏ qua bước kiểm tra preflight CORS từ Apps Script
                 },
                 body: JSON.stringify(formData)
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error("Mß║íng kh├┤ng ß╗òn ─æß╗ïnh hoß║╖c lß╗ùi m├íy chß╗º Apps Script.");
+                    throw new Error("Mạng không ổn định hoặc lỗi máy chủ Apps Script.");
                 }
                 return response.json();
             })
@@ -2693,23 +2841,23 @@
                     submitBtn.innerHTML = originalContent;
 
                     showToast(
-                        "─É─âng k├╜ th├ánh c├┤ng!",
-                        "Ch├║ng t├┤i sß║╜ sß╗¢m li├¬n hß╗ç lß║íi vß╗¢i bß║ín."
+                        "Đăng ký thành công!",
+                        "Chúng tôi sẽ sớm liên hệ lại với bạn."
                     );
                 } else {
-                    throw new Error(result.message || "Kh├┤ng thß╗â l╞░u dß╗» liß╗çu.");
+                    throw new Error(result.message || "Không thể lưu dữ liệu.");
                 }
             })
             .catch(error => {
-                console.error("Lß╗ùi gß╗¡i dß╗» liß╗çu tuyß╗ân sinh:", error);
+                console.error("Lỗi gửi dữ liệu tuyển sinh:", error);
                 
-                // Kh├┤i phß╗Ñc n├║t bß║Ñm vß╗ü trß║íng th├íi gß╗æc ─æß╗â ng╞░ß╗¥i d├╣ng c├│ thß╗â gß╗¡i lß║íi khi mß║íng ß╗òn ─æß╗ïnh
+                // Khôi phục nút bấm về trạng thái gốc để người dùng có thể gửi lại khi mạng ổn định
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
 
                 showToast(
-                    "Lß╗ùi kß║┐t nß╗æi!",
-                    "Kh├┤ng thß╗â l╞░u th├┤ng tin v├áo Google Sheet. H├úy kiß╗âm tra kß║┐t nß╗æi mß║íng hoß║╖c quyß╗ün truy cß║¡p cß╗ºa Web App."
+                    "Lỗi kết nối!",
+                    "Không thể lưu thông tin vào Google Sheet. Hãy kiểm tra kết nối mạng hoặc quyền truy cập của Web App."
                 );
             });
 
@@ -2881,12 +3029,9 @@
             document.addEventListener('keydown', (event) => {
                 if (event.key !== 'Escape') return;
                 const registerModal = document.getElementById('registerModal');
-                const detailModal = document.getElementById('programDetailModal');
                 const videoModal = document.getElementById('videoModal');
                 if (registerModal && !registerModal.classList.contains('hidden')) {
                     closeRegisterModal();
-                } else if (detailModal && !detailModal.classList.contains('hidden')) {
-                    closeProgramDetailModal();
                 } else if (videoModal && !videoModal.classList.contains('hidden')) {
                     closeIntroVideo();
                 }
