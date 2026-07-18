@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
-    <title>Muối Đi Học - Dự án dạy nghề phi lợi nhuận cho cộng đồng</title>
+    <title>Hạt Muối Yêu Thương - Dự án dạy nghề phi lợi nhuận cho cộng đồng</title>
     <link rel="icon" type="image/png" href="favicon.png" sizes="64x64">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
                             teal: '#00a896',
                             blue: '#0072bc',
                             orange: '#f7941d',
-                            rust: '#974335',
+                            rust: '#E85312',
                             pinkHover: '#d01377',
                             tealHover: '#008e7f',
                         },
@@ -74,15 +74,20 @@
             overflow-y: auto;
             overscroll-behavior-y: contain;
             scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
+            scroll-behavior: auto;
+        }
+        /* JS full-page controller owns paging; keep snap off to avoid end-of-section hitch */
+        .page-scroll.js-fullpage {
+            scroll-snap-type: none;
         }
         .snap-page {
+            height: 100%;
             min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
             scroll-snap-align: start;
             scroll-snap-stop: always;
-        }
-        .snap-page-scrollable {
-            overflow-y: auto;
         }
         body.modal-open .page-scroll {
             overflow: hidden;
@@ -91,7 +96,7 @@
             height: 1px;
             flex: 1 1 0;
             max-width: 4.5rem;
-            background: linear-gradient(90deg, transparent, #974335 20%, #974335 80%, transparent);
+            background: linear-gradient(90deg, transparent, #E85312 20%, #E85312 80%, transparent);
         }
         .youtube-o-logo {
             width: 0.9em;
@@ -106,7 +111,7 @@
             box-shadow: 0 3px 10px rgba(255, 0, 0, 0.28);
             vertical-align: middle;
             position: relative;
-            top: -0.04em;
+            top: 0.02em;
         }
         .youtube-o-logo .lucide {
             width: 42%;
@@ -118,19 +123,33 @@
         }
         .cta-register {
             font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
-            background: linear-gradient(180deg, #ef6c24 0%, #f4511e 100%);
+            background: linear-gradient(180deg,
+                #c94c02 0%,
+                #e07404 30%,
+                #f59e0b 50%,
+                #e07404 70%,
+                #c94c02 100%);
             border-radius: 12px;
-            box-shadow: 0 10px 28px rgba(244, 81, 30, 0.42);
+            border: 1px solid rgba(245, 180, 70, 0.9);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -2px 6px rgba(150, 50, 0, 0.4),
+                inset 0 0 0 1px rgba(250, 195, 105, 0.45),
+                0 4px 12px rgba(200, 75, 5, 0.4);
             letter-spacing: 0.06em;
         }
         .cta-register:hover {
             filter: brightness(1.05);
-            box-shadow: 0 12px 32px rgba(244, 81, 30, 0.52);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                inset 0 -2px 6px rgba(150, 50, 0, 0.4),
+                inset 0 0 0 1px rgba(250, 195, 105, 0.45),
+                0 6px 16px rgba(200, 75, 5, 0.5);
         }
         .schedule-icon .lucide {
-            width: 2rem;
-            height: 2rem;
-            stroke: #974335;
+            width: 1.4rem;
+            height: 1.4rem;
+            stroke: #E85312;
             stroke-width: 2.25;
             fill: none;
         }
@@ -140,23 +159,960 @@
                 height: 2.25rem;
             }
         }
+        /* Page 1 (#chuong-trinh): subtle hover interactions (desktop pointer only) */
+        .p1-hover-card,
+        .p1-video {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .p1-achievement .lucide {
+            transition: transform 0.2s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .p1-hover-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 28px rgba(120, 60, 20, 0.12);
+            }
+            .p1-video:hover {
+                transform: scale(1.01);
+                box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35);
+            }
+            .p1-achievement:hover .lucide {
+                transform: scale(1.12);
+            }
+            .cta-register:hover {
+                transform: translateY(-2px);
+            }
+            .cta-register:active {
+                transform: translateY(0);
+            }
+        }
         @media (prefers-reduced-motion: reduce) {
             .page-scroll {
                 scroll-behavior: auto;
             }
+            .p1-hover-card,
+            .p1-video,
+            .p1-achievement .lucide,
+            .cta-register {
+                transition: none;
+            }
+            .p1-hover-card:hover,
+            .p1-video:hover,
+            .p1-achievement:hover .lucide,
+            .cta-register:hover {
+                transform: none;
+            }
+        }
+
+        /* Page 2 (#gioi-thieu): mobile matches stacked sample (no carousel / no 2-col V-M) */
+        @media (max-width: 639px) {
+            #gioi-thieu {
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+                overflow-x: hidden;
+                overflow-y: auto;
+                padding-top: 0.35rem;
+                padding-bottom: 0.4rem;
+            }
+            #gioi-thieu > .max-w-6xl {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 0.42rem;
+                padding-left: 0.9rem;
+                padding-right: 0.9rem;
+            }
+            #gioi-thieu > .max-w-6xl > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-top > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-intro > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-intro-copy > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-vision > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-programs > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-vision .min-w-0 > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-vision ul > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .page2-program-grid article > div:last-child > :not([hidden]) ~ :not([hidden]) {
+                margin-top: 0 !important;
+            }
+            #gioi-thieu .page2-top {
+                display: flex;
+                flex-direction: column;
+                gap: 0.4rem;
+                flex: 0 0 auto;
+            }
+            #gioi-thieu .page2-intro {
+                display: flex;
+                flex-direction: column;
+                gap: 0.32rem;
+            }
+            #gioi-thieu .page2-intro-copy {
+                display: flex;
+                flex-direction: column;
+                gap: 0.15rem;
+            }
+            #gioi-thieu .page2-intro-copy > span {
+                font-size: 0.6rem;
+                letter-spacing: 0.14em;
+            }
+            #gioi-thieu .page2-intro-copy h2 {
+                font-size: 1.35rem;
+                line-height: 1.05;
+            }
+            #gioi-thieu .page2-intro-copy > p:first-of-type {
+                font-size: 0.74rem;
+                line-height: 1.2;
+            }
+            #gioi-thieu .page2-intro-copy > p:last-of-type {
+                font-size: 0.64rem;
+                line-height: 1.3;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            #gioi-thieu .page2-quote {
+                padding-left: 0.6rem;
+                border-left-width: 2px;
+            }
+            #gioi-thieu .page2-quote > .lucide {
+                display: block;
+                width: 0.85rem;
+                height: 0.85rem;
+                margin-bottom: 0.12rem;
+            }
+            #gioi-thieu .page2-quote p {
+                font-size: 0.64rem;
+                line-height: 1.3;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            #gioi-thieu .page2-values {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 0.25rem;
+                padding-top: 0;
+            }
+            #gioi-thieu .page2-values > div {
+                gap: 0.15rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 1.55rem;
+                height: 1.55rem;
+            }
+            #gioi-thieu .page2-values .lucide {
+                width: 0.75rem;
+                height: 0.75rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.5rem;
+                line-height: 1.12;
+            }
+            /* Vision + Mission: two stacked rows, icon left / copy right */
+            #gioi-thieu .page2-vision {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                padding: 0.55rem 0.65rem;
+                gap: 0.45rem;
+                border-radius: 0.85rem;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+            }
+            #gioi-thieu .page2-vision > .border-t {
+                display: block;
+                margin: 0;
+                border-color: #f1f5f9;
+            }
+            #gioi-thieu .page2-vision > div.flex {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 0.65rem;
+            }
+            #gioi-thieu .page2-vision > div.flex > span {
+                width: 1.85rem;
+                height: 1.85rem;
+            }
+            #gioi-thieu .page2-vision .lucide {
+                width: 0.9rem;
+                height: 0.9rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.64rem;
+                letter-spacing: 0.1em;
+                color: #E85312;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.6rem;
+                line-height: 1.3;
+            }
+            #gioi-thieu .page2-vision .min-w-0 {
+                display: flex;
+                flex-direction: column;
+                gap: 0.15rem;
+            }
+            #gioi-thieu .page2-vision ul {
+                display: flex;
+                flex-direction: column;
+                gap: 0.1rem;
+                padding-left: 0.9rem;
+            }
+            #gioi-thieu .page2-programs {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+                flex: 0 0 auto;
+            }
+            #gioi-thieu .page2-programs > div:first-child {
+                gap: 0.4rem;
+            }
+            #gioi-thieu .page2-programs h3 {
+                font-size: 0.62rem;
+                letter-spacing: 0.12em;
+            }
+            #gioi-thieu .page2-programs .program-heading-line {
+                max-width: 2.1rem;
+            }
+            /* Programs: vertical list — thumbnail left, title/desc right */
+            #gioi-thieu .page2-program-grid {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                gap: 0.35rem;
+                overflow: visible;
+                margin-inline: 0;
+                padding-inline: 0;
+                padding-bottom: 0;
+                scroll-snap-type: none;
+            }
+            #gioi-thieu .page2-program-grid article {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: stretch;
+                border-radius: 0.7rem;
+                min-height: 0;
+                overflow: hidden;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child {
+                flex: 0 0 36%;
+                width: 36%;
+                max-width: 7.5rem;
+                aspect-ratio: 4 / 3 !important;
+                height: auto;
+                min-height: 3.75rem;
+                max-height: none;
+                align-self: stretch;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            #gioi-thieu .page2-program-grid article > div:last-child {
+                flex: 1 1 auto;
+                min-width: 0;
+                padding: 0.35rem 0.45rem;
+                display: flex;
+                align-items: center;
+            }
+            #gioi-thieu .page2-program-grid article > div:last-child > div {
+                gap: 0.35rem;
+                align-items: flex-start;
+                width: 100%;
+            }
+            #gioi-thieu .page2-program-grid article span {
+                width: 1.25rem;
+                height: 1.25rem;
+                border-radius: 0.32rem;
+            }
+            #gioi-thieu .page2-program-grid article span .lucide {
+                width: 0.65rem;
+                height: 0.65rem;
+            }
+            #gioi-thieu .page2-program-grid h4 {
+                font-size: 0.66rem;
+                line-height: 1.2;
+                display: block;
+                overflow: visible;
+                -webkit-line-clamp: unset;
+            }
+            #gioi-thieu .page2-program-grid p {
+                display: block;
+                font-size: 0.55rem;
+                line-height: 1.25;
+                margin-top: 0.1rem;
+                color: #64748b;
+            }
+        }
+
+        /* Mid phones: modest compaction, keep stacked layout */
+        @media (max-width: 639px) and (max-height: 820px) {
+            #gioi-thieu {
+                padding-top: 0.28rem;
+                padding-bottom: 0.32rem;
+            }
+            #gioi-thieu > .max-w-6xl {
+                gap: 0.35rem;
+            }
+            #gioi-thieu .page2-top,
+            #gioi-thieu .page2-programs {
+                gap: 0.3rem;
+            }
+            #gioi-thieu .page2-intro {
+                gap: 0.25rem;
+            }
+            #gioi-thieu .page2-intro-copy h2 {
+                font-size: 1.22rem;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 0.45rem 0.55rem;
+                gap: 0.35rem;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.56rem;
+                line-height: 1.25;
+            }
+            #gioi-thieu .page2-program-grid {
+                gap: 0.3rem;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child {
+                flex-basis: 34%;
+                width: 34%;
+                max-width: 6.85rem;
+                min-height: 3.4rem;
+            }
+            #gioi-thieu .page2-program-grid article > div:last-child {
+                padding: 0.28rem 0.4rem;
+            }
+        }
+
+        /* Short phones: light scale only — never hide programs */
+        @media (max-width: 639px) and (max-height: 700px) {
+            #gioi-thieu > .max-w-6xl {
+                gap: 0.28rem;
+                zoom: 0.9;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child {
+                min-height: 3.15rem;
+            }
+        }
+
+        /* Page 3: Hạt Muối Yêu Thương — fit one desktop viewport */
+        #ve-chung-toi {
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(255, 255, 255, 0.85) 0 7rem, transparent 18rem),
+                radial-gradient(circle at 92% 4%, rgba(250, 192, 203, 0.42) 0 8rem, transparent 22rem),
+                linear-gradient(180deg, #fff8f1 0%, #fff3f3 52%, #fff8f0 100%);
+        }
+        .p3-container {
+            width: min(100% - 2rem, 72rem);
+            margin-inline: auto;
+            padding-block: 0.75rem 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            flex: 1 1 auto;
+            min-height: 0;
+            box-sizing: border-box;
+        }
+        .p3-hero {
+            flex: 0 0 auto;
+            text-align: center;
+            max-width: 48rem;
+            margin-inline: auto;
+        }
+        .p3-hero-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(0.85rem, 2vw, 1.4rem);
+            text-align: left;
+        }
+        .p3-hero-logo {
+            display: block;
+            height: clamp(4.5rem, 10svh, 7rem);
+            width: auto;
+            aspect-ratio: 1;
+            flex-shrink: 0;
+        }
+        .p3-hero-brand-text {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .p3-hero-title {
+            margin: 0;
+            font-size: clamp(2rem, 3.5svh + 0.35rem, 3rem);
+            font-weight: 900;
+            letter-spacing: -0.025em;
+            line-height: 0.92;
+            color: #5a4034;
+        }
+        .p3-hero-title span {
+            display: block;
+            white-space: nowrap;
+        }
+        .p3-hero-tagline {
+            margin-top: clamp(0.3rem, 0.8svh, 0.55rem);
+            font-size: clamp(0.95rem, 1.4svh + 0.3rem, 1.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            color: #8f4435;
+        }
+        .p3-hero-desc {
+            margin: clamp(0.45rem, 1svh, 0.7rem) auto 0;
+            max-width: 40rem;
+            font-size: clamp(0.72rem, 1.1svh + 0.35rem, 0.875rem);
+            line-height: 1.4;
+            color: #475569;
+        }
+        .p3-hero-contacts {
+            margin-top: clamp(0.45rem, 1svh, 0.7rem);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(0.55rem, 1.4vw, 0.9rem);
+        }
+        .p3-hero-contacts a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            border-radius: 999px;
+            border: 1px solid rgba(231, 181, 168, 0.72);
+            background: rgba(255, 255, 255, 0.94);
+            padding: 0.35rem 0.85rem 0.35rem 0.4rem;
+            min-width: 11rem;
+            color: #5a4034;
+            box-shadow: 0 4px 12px rgba(117, 63, 53, 0.09);
+            transition: transform 160ms ease, background-color 160ms ease;
+        }
+        .p3-hero-contacts a:hover {
+            background: #fff;
+            transform: translateY(-1px);
+        }
+        .p3-contact-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 1.9rem;
+            height: 1.9rem;
+            flex: 0 0 1.9rem;
+            border-radius: 999px;
+        }
+        .p3-contact-icon svg {
+            width: 0.95rem;
+            height: 0.95rem;
+        }
+        .p3-contact-icon--facebook {
+            color: #fff;
+            background: #1877f2;
+        }
+        .p3-contact-icon--email {
+            color: #d86145;
+            background: #fff1eb;
+        }
+        .p3-contact-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 0;
+            line-height: 1.12;
+            text-align: left;
+        }
+        .p3-contact-label {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #8f6a5f;
+        }
+        .p3-contact-value {
+            margin-top: 0.12rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #5a4034;
+        }
+        .p3-card {
+            border: 1px solid rgba(244, 170, 151, 0.28);
+            border-radius: 1.25rem;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 10px 28px rgba(117, 63, 53, 0.07);
+            padding: 0.75rem 0.9rem;
+            min-height: 0;
+        }
+        .p3-main-panel {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .p3-main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 7fr) minmax(14rem, 5fr);
+            grid-template-rows: auto minmax(0, 1fr);
+            gap: 0.85rem 1rem;
+            flex: 1 1 auto;
+            min-height: 0;
+            align-items: stretch;
+        }
+        .p3-main-grid > section,
+        .p3-main-grid > article {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            min-width: 0;
+        }
+        .p3-section-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.4rem;
+            flex: 0 0 auto;
+        }
+        .p3-section-heading > span {
+            display: grid;
+            width: 1.65rem;
+            height: 1.65rem;
+            place-items: center;
+            border-radius: 999px;
+            flex-shrink: 0;
+        }
+        .p3-section-heading > span .lucide {
+            width: 0.8rem;
+            height: 0.8rem;
+        }
+        .p3-section-heading h3 {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            color: #8c4033;
+            line-height: 1.2;
+        }
+        .p3-about-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .p3-about-card p {
+            margin-top: 0.15rem;
+            flex: 1 1 auto;
+            font-size: 0.75rem;
+            line-height: 1.45;
+            color: #475569;
+        }
+        .p3-about-cta {
+            margin-top: auto;
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            gap: 0.35rem;
+            border-radius: 999px;
+            background: #ef754c;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(239, 117, 76, 0.28);
+            transition: transform 160ms ease, background-color 160ms ease;
+        }
+        .p3-about-cta:hover {
+            background: #dc623c;
+            transform: translateY(-1px);
+        }
+        .p3-carousel {
+            position: relative;
+            min-width: 0;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .p3-carousel-viewport {
+            overflow: hidden;
+            border-radius: 0.75rem;
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+        .p3-carousel-track {
+            display: flex;
+            height: 100%;
+            transform: translate3d(0, 0, 0);
+            transition: transform 520ms cubic-bezier(.22, .8, .28, 1);
+            will-change: transform;
+        }
+        .p3-carousel-slide {
+            flex: 0 0 calc(100% / var(--carousel-visible, 1));
+            min-width: 0;
+            padding: 0 0.28rem;
+            height: 100%;
+        }
+        .p3-carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .p3-activity-image,
+        .p3-award-image {
+            height: 100%;
+            min-height: 0;
+            border-radius: 0.65rem;
+            overflow: hidden;
+        }
+        .p3-activity-image {
+            aspect-ratio: 4 / 3;
+            max-height: min(18svh, 9.5rem);
+            background: #f5ede8;
+        }
+        .p3-award-image {
+            position: relative;
+            display: grid;
+            aspect-ratio: 4 / 3;
+            max-height: min(14svh, 7.5rem);
+            padding: 0.42rem;
+            border: none;
+            border-radius: 0.55rem;
+            background:
+                linear-gradient(145deg, #f8e7a8 0%, #e0b44a 22%, #bf9540 48%, #f4d78a 72%, #c9a24a 100%);
+            box-shadow:
+                0 2px 0 rgba(140, 96, 20, 0.35),
+                0 6px 14px rgba(120, 80, 20, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.55),
+                inset 0 0 0 1px rgba(160, 110, 30, 0.35);
+        }
+        .p3-award-image::before {
+            content: '';
+            position: absolute;
+            inset: 0.28rem;
+            border-radius: 0.35rem;
+            border: 1px solid rgba(255, 236, 180, 0.85);
+            box-shadow: inset 0 0 0 1px rgba(140, 96, 20, 0.35);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .p3-award-image img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            object-fit: cover;
+            border-radius: 0.28rem;
+            background: #fffaf2;
+            box-shadow: inset 0 0 0 1px rgba(180, 130, 40, 0.25);
+        }
+        .p3-carousel-arrow {
+            position: absolute;
+            top: calc(50% - 0.7rem);
+            z-index: 2;
+            display: grid;
+            width: 1.7rem;
+            height: 1.7rem;
+            place-items: center;
+            border-radius: 999px;
+            color: #fff;
+            background: #ef754c;
+            box-shadow: 0 4px 12px rgba(239, 117, 76, 0.35);
+            transform: translateY(-50%);
+            transition: transform 160ms ease, background-color 160ms ease;
+        }
+        .p3-carousel-arrow .lucide {
+            width: 0.9rem;
+            height: 0.9rem;
+        }
+        .p3-carousel-arrow:hover {
+            background: #dc623c;
+            transform: translateY(-50%) scale(1.06);
+        }
+        .p3-carousel-arrow:focus-visible,
+        .p3-carousel-dot:focus-visible {
+            outline: 3px solid rgba(237, 27, 141, 0.35);
+            outline-offset: 2px;
+        }
+        .p3-carousel-arrow[data-direction="prev"] { left: -0.35rem; }
+        .p3-carousel-arrow[data-direction="next"] { right: -0.35rem; }
+        .p3-carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.35rem;
+            margin-top: 0.45rem;
+            flex: 0 0 auto;
+        }
+        .p3-carousel-dot {
+            width: 0.4rem;
+            height: 0.4rem;
+            border-radius: 999px;
+            background: #e4c5bc;
+            transition: width 180ms ease, background-color 180ms ease;
+        }
+        .p3-carousel-dot[aria-current="true"] {
+            width: 1.15rem;
+            background: #ec6d45;
+        }
+        .p3-video-poster {
+            position: relative;
+            isolation: isolate;
+            display: flex;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: min(22svh, 11.5rem);
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background: #4d322e;
+            text-align: center;
+            flex: 0 1 auto;
+        }
+        .p3-video-poster::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(20, 10, 8, 0.16), rgba(20, 10, 8, 0.68));
+        }
+        .p3-video-poster > img {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .p3-video-poster-label {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+        .p3-video-play {
+            display: grid;
+            width: 3.25rem;
+            height: 2.25rem;
+            place-items: center;
+            border-radius: 0.75rem;
+            background: #dc2626;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+            transition: transform 160ms ease;
+        }
+        .p3-video-poster:hover .p3-video-play {
+            transform: scale(1.08);
+        }
+        .p3-video-play .lucide {
+            width: 1.1rem;
+            height: 1.1rem;
+            fill: #fff;
+        }
+        .p3-video-poster-label > strong {
+            margin-top: 0.55rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .p3-video-poster-label > span {
+            margin-top: 0.15rem;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        @media (min-width: 1024px) {
+            #ve-chung-toi {
+                overflow: hidden;
+            }
+            .p3-container {
+                height: 100%;
+                justify-content: space-between;
+            }
+            .p3-activity-image {
+                aspect-ratio: auto;
+                height: min(18svh, 9.5rem);
+                max-height: none;
+            }
+            .p3-award-image {
+                aspect-ratio: auto;
+                height: min(14svh, 7.5rem);
+                max-height: none;
+            }
+            .p3-video-poster {
+                aspect-ratio: auto;
+                height: min(22svh, 11.5rem);
+                max-height: none;
+            }
+        }
+        @media (min-width: 1024px) and (max-height: 760px) {
+            .p3-container {
+                padding-block: 0.45rem 0.55rem;
+                gap: 0.45rem;
+            }
+            .p3-hero-logo {
+                height: clamp(3.5rem, 8svh, 4.5rem);
+            }
+            .p3-hero-title {
+                font-size: clamp(1.55rem, 2.8svh + 0.25rem, 2rem);
+            }
+            .p3-hero-tagline {
+                margin-top: 0.2rem;
+                font-size: clamp(0.8rem, 1.15svh + 0.2rem, 0.95rem);
+            }
+            .p3-hero-desc {
+                margin-top: 0.3rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .p3-hero-contacts {
+                margin-top: 0.3rem;
+            }
+            .p3-hero-contacts a {
+                padding-block: 0.25rem;
+            }
+            .p3-contact-icon {
+                width: 1.65rem;
+                height: 1.65rem;
+                flex-basis: 1.65rem;
+            }
+            .p3-card {
+                padding: 0.55rem 0.7rem;
+            }
+            .p3-main-grid {
+                gap: 0.65rem 0.85rem;
+            }
+            .p3-activity-image {
+                height: min(15svh, 7.75rem);
+            }
+            .p3-award-image {
+                height: min(11.5svh, 6rem);
+            }
+            .p3-video-poster {
+                height: min(18svh, 9.25rem);
+            }
+            .p3-video-poster-label > strong {
+                margin-top: 0.35rem;
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 1023px) {
+            .p3-main-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: none;
+            }
+            .p3-hero-brand {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.45rem;
+            }
+            .p3-hero-brand-text {
+                align-items: center;
+            }
+            .p3-video-column {
+                max-width: 36rem;
+                width: 100%;
+                margin-inline: auto;
+            }
+            .p3-activity-image {
+                max-height: min(28svh, 12rem);
+            }
+            .p3-award-image {
+                max-height: min(24svh, 11rem);
+            }
+            .p3-video-poster {
+                max-height: min(32svh, 14rem);
+            }
+        }
+        @media (max-width: 639px) {
+            .p3-container {
+                width: min(100% - 1rem, 72rem);
+                padding-block: 0.85rem 1.1rem;
+                gap: 0.75rem;
+            }
+            .p3-card {
+                border-radius: 0.95rem;
+                padding: 0.75rem;
+            }
+            .p3-main-grid {
+                gap: 0.85rem;
+            }
+            .p3-hero-contacts {
+                flex-direction: column;
+            }
+            .p3-carousel-arrow[data-direction="prev"] { left: 0.15rem; }
+            .p3-carousel-arrow[data-direction="next"] { right: 0.15rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .p3-carousel-track,
+            .p3-carousel-arrow,
+            .p3-carousel-dot,
+            .p3-hero-contacts a,
+            .p3-about-cta,
+            .p3-video-play {
+                transition: none;
+            }
         }
     </style>
 </head>
-<body class="bg-neutral-earth text-neutral-dark font-sans selection:bg-brand-pink/20 antialiased h-svh flex flex-col overflow-hidden">
+<body class="bg-neutral-earth text-neutral-dark font-sans selection:bg-brand-pink/20 antialiased min-h-screen flex flex-col">
 
     <!-- HEADER / NAVIGATION -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3 group">
+        <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2 lg:gap-4">
+            <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-1 lg:flex-none lg:w-[230px] xl:w-auto">
                 <!-- SVG Recreating the logo from logo-muoi-2.png -->
-                <div class="w-12 h-12 group-hover:scale-105 transition-transform">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 group-hover:scale-105 transition-transform">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         width="100%" viewBox="0 0 640 640" enable-background="new 0 0 640 640" xml:space="preserve">
+                    <path fill="#FEFEFF" opacity="1.000000" stroke="none" 
+                        d="
+                    M365.000000,641.000000 
+                        C243.333359,641.000000 122.166710,641.000000 1.000049,641.000000 
+                        C1.000033,427.666718 1.000033,214.333450 1.000016,1.000135 
+                        C214.333237,1.000090 427.666473,1.000090 640.999756,1.000045 
+                        C640.999878,214.333191 640.999878,427.666382 640.999939,640.999756 
+                        C549.166687,641.000000 457.333344,641.000000 365.000000,641.000000 
+                    M364.041351,205.992355 
+                        C362.756683,204.996033 361.351227,204.121353 360.206451,202.984207 
+                        C350.877563,193.717773 342.055389,183.877045 332.167969,175.255966 
+                        C323.077179,167.329483 313.724762,158.835846 302.979797,153.825928 
+                        C259.619446,133.609024 218.158661,137.580231 180.548859,167.981003 
+                        C157.627884,186.508484 145.180832,211.222656 142.067230,240.525269 
+                        C141.354874,247.229324 141.230484,253.995834 140.340485,261.195618 
+                        C123.256554,278.260040 106.082893,295.235748 89.107491,312.407471 
+                        C54.496887,347.418335 46.762482,399.346649 69.528595,442.861542 
+                        C101.118835,503.242706 181.253754,521.313904 234.888321,479.234619 
+                        C250.495300,466.990112 263.673248,451.649536 278.712494,437.752655 
+                        C280.303711,438.855530 282.096008,439.754486 283.454193,441.093719 
+                        C293.771027,451.266571 303.585632,461.988922 314.338715,471.671631 
+                        C347.867584,501.862885 386.581818,509.696777 429.006836,495.082581 
+                        C473.002625,479.927307 501.559662,438.150574 501.557465,391.576843 
+                        C501.557343,388.638184 501.992950,385.699554 502.693268,382.390900 
+                        C519.822815,365.350708 537.193359,348.544586 554.026550,331.216553 
+                        C580.550049,303.913391 591.206543,271.111755 584.536987,233.632278 
+                        C577.092163,191.796173 552.736328,162.572098 512.904114,148.435455 
+                        C472.214783,133.994598 434.186188,141.431595 401.301208,169.830750 
+                        C388.346588,181.018250 376.869965,193.917206 364.041351,205.992355 
+                    M386.302094,134.801361 
+                        C391.876068,129.207657 397.450043,123.613960 402.179779,118.867493 
+                        C388.783295,105.314514 375.983185,92.364838 363.899567,80.140045 
+                        C351.301483,92.760429 338.440521,105.644135 326.250366,117.855888 
+                        C338.602692,130.365906 351.399658,143.326279 364.761383,156.858627 
+                        C371.663788,149.796585 378.740387,142.556320 386.302094,134.801361 
+                    M252.211700,538.288757 
+                        C261.036743,547.303406 269.861786,556.318115 278.343872,564.982483 
+                        C291.984222,551.395752 304.918701,538.512085 317.481049,525.999084 
+                        C304.791931,513.186768 291.965118,500.235474 279.280518,487.427704 
+                        C266.500122,500.239441 253.619080,513.151978 239.798569,527.006348 
+                        C243.611664,530.456970 247.662155,534.122375 252.211700,538.288757 
+                    z"/>
+                    <g id="hmyt-logo-mark">
                     <path fill="#07A99E" opacity="1.000000" stroke="none" 
                         d="
                     M502.225861,382.760895 
@@ -428,23 +1384,24 @@
                         C189.607361,347.331177 206.853897,364.443939 224.034592,381.621429 
                         C230.148041,387.733734 236.291428,393.816101 242.513153,400.245300 
                     z"/>
+                    </g>
                     </svg>
                 </div>
-                <div>
-                    <span class="font-bold text-lg tracking-tight text-neutral-dark block leading-tight">Muối Đi Học</span>
-                    <span class="text-[11px] sm:text-xs text-brand-teal font-semibold leading-tight">Dự án dạy nghề phi lợi nhuận cho cộng đồng</span>
+                <div class="min-w-0">
+                    <span class="font-bold text-sm sm:text-lg tracking-tight text-neutral-dark block leading-tight">Muối Đi Học</span>
+                    <span class="block text-[10px] sm:text-xs leading-tight text-brand-teal font-semibold whitespace-normal">Dự án dạy nghề phi lợi nhuận cho cộng đồng</span>
+                    <span class="block text-[9px] sm:text-[10px] leading-tight text-gray-400 whitespace-normal">Tổ chức bởi Hạt Muối Yêu Thương</span>
                 </div>
             </a>
             
-            <nav class="hidden md:flex items-center gap-5 lg:gap-7 text-sm font-medium text-gray-600">
+            <nav class="hidden lg:flex shrink-0 items-center gap-3 xl:gap-6 text-xs xl:text-sm font-medium text-gray-600">
                 <a href="#chuong-trinh" class="hover:text-brand-pink transition-colors">Chương trình tiếp theo</a>
                 <a href="#gioi-thieu" class="hover:text-brand-blue transition-colors">Dự Án Muối Đi Học</a>
                 <a href="#ve-chung-toi" class="hover:text-brand-orange transition-colors">Về chúng tôi</a>
             </nav>
 
-            <button onclick="openRegisterModal('Header Button')" class="bg-brand-pink hover:bg-brand-pinkHover text-white px-3 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0 max-w-[10.5rem] sm:max-w-none leading-tight">
-                <span class="sm:hidden">Tham gia</span>
-                <span class="hidden sm:inline">Tham gia chương trình tiếp theo</span>
+            <button onclick="openRegisterModal('Header Button')" class="shrink-0 max-w-[8.75rem] sm:max-w-none bg-brand-pink hover:bg-brand-pinkHover text-white px-3 sm:px-4 py-2 rounded-full text-[10px] sm:text-xs xl:text-sm leading-tight font-medium text-center whitespace-normal shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+                Tham gia chương trình tiếp theo
             </button>
         </div>
     </header>
@@ -453,13 +1410,13 @@
     <main id="pageScroll" class="page-scroll flex-grow">
         
         <!-- PAGE 1: CHƯƠNG TRÌNH TIẾP THEO -->
-        <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-center border-b border-gray-100 bg-[#f7f7f5]">
-            <div class="w-full max-w-6xl mx-auto px-4 py-3 sm:py-4">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-x-8 lg:gap-y-4 items-start">
+        <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-center border-b border-gray-100 bg-[#fffaf5]">
+            <div class="w-full max-w-6xl mx-auto px-4 py-2 sm:py-4">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-5 lg:gap-x-8 lg:gap-y-4 items-start">
 
                     <!-- Row 1 Left: Program title + schedule -->
-                    <div class="lg:col-span-7 lg:col-start-1 lg:row-start-1 space-y-3 sm:space-y-4 order-1 lg:order-none">
-                        <div class="text-center space-y-2 sm:space-y-2.5">
+                    <div class="lg:col-span-7 lg:col-start-1 lg:row-start-1 space-y-2 sm:space-y-4 order-1 lg:order-none">
+                        <div class="text-center space-y-1 sm:space-y-2.5">
                             <div class="flex items-center justify-center gap-2 sm:gap-3">
                                 <span class="program-heading-line" aria-hidden="true"></span>
                                 <div class="inline-flex items-center gap-2 shrink-0">
@@ -471,7 +1428,7 @@
                                 <span class="program-heading-line" aria-hidden="true"></span>
                             </div>
 
-                            <h1 class="font-montserrat flex items-center justify-center gap-[0.01em] text-[clamp(2.5rem,7vw,4.5rem)] font-black tracking-[-0.03em] text-slate-900 leading-none uppercase">
+                            <h1 class="font-montserrat flex items-center justify-center gap-[0.01em] text-[clamp(1.9rem,6.5vw,4.5rem)] font-black tracking-[-0.03em] text-slate-900 leading-none uppercase">
                                 <span>Y</span>
                                 <span class="youtube-o-logo" aria-hidden="true">
                                     <i data-lucide="play"></i>
@@ -479,32 +1436,32 @@
                                 <span>UTUBE</span>
                             </h1>
 
-                            <h2 class="font-montserrat text-[clamp(1.3rem,3.4vw,2.05rem)] font-extrabold tracking-tight text-slate-900 uppercase leading-tight">
+                            <h2 class="font-montserrat text-[clamp(1rem,3vw,2.05rem)] font-extrabold tracking-tight text-slate-900 uppercase leading-tight">
                                 Ý tưởng đến thu nhập
                             </h2>
-                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
+                            <p class="text-[11px] sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
                                 Biến ý tưởng thành nội dung giá trị và xây dựng kênh Youtube để tạo thu nhập bền vững.
                             </p>
                         </div>
 
                         <!-- Time / Location -->
-                        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
-                            <div class="flex items-center gap-3 sm:gap-3.5 px-4 py-4 sm:px-5 sm:py-5">
+                        <div class="p1-hover-card bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-2 divide-x divide-gray-100">
+                            <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
                                 <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="calendar-days"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
-                                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thời gian</p>
-                                    <p class="text-sm sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
+                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thời gian</p>
+                                    <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3 sm:gap-3.5 px-4 py-4 sm:px-5 sm:py-5">
+                            <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
                                 <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="map-pin"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
-                                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Địa điểm</p>
-                                    <p class="text-sm sm:text-[0.95rem] font-bold leading-snug">
+                                    <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Địa điểm</p>
+                                    <p class="text-xs sm:text-[0.95rem] font-bold leading-snug">
                                         <span class="text-brand-rust">Phòng hội thảo Biblio,</span>
                                         <span class="block text-slate-800 font-semibold">Ngụy Như Kon Tum, Hà Nội</span>
                                     </p>
@@ -514,19 +1471,19 @@
                     </div>
 
                     <!-- Row 1 Right: Speaker (bottom edge aligned with schedule card) -->
-                    <div class="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
+                    <div class="p1-hover-card relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
                         <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
-                        <div class="relative p-5 sm:p-6 space-y-2">
+                        <div class="relative p-3.5 sm:p-6 space-y-1 sm:space-y-2">
                             <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuyên gia</p>
-                            <h3 class="font-script text-4xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
+                            <h3 class="font-script text-3xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
                             <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
                                 Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
                             </p>
                         </div>
                     </div>
 
-                    <!-- Row 2 Left: Program video (full column width = schedule card width) -->
-                    <div class="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-2 order-2 lg:order-none">
+                    <!-- Row 2 Left: Program video (aspect-video drives lg row-2 height) -->
+                    <div class="p1-video relative w-full h-[22svh] sm:h-auto sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-2 lg:self-start order-2 lg:order-none">
                         <video
                             id="pageOneVideo"
                             class="absolute inset-0 w-full h-full object-cover"
@@ -535,63 +1492,48 @@
                             loop
                             playsinline
                             preload="metadata"
-                            poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200"
                             aria-label="Video giới thiệu chương trình YouTube">
-                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+                            <source src="IMG_3540.mp4" type="video/mp4">
+                            <source src="IMG_3540.MOV" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ phát video này.
                         </video>
-                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
-                        <div class="absolute left-3 right-3 bottom-3 z-10 text-white">
-                            <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wide drop-shadow">
-                                Giới thiệu chương trình YouTube – Ý tưởng đến thu nhập
-                            </p>
-                        </div>
                     </div>
 
-                    <!-- Row 2 Right: Achievements (same height as video) -->
-                    <div class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col lg:h-full lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
-                        <h2 class="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-brand-rust mb-3">
+                    <!-- Row 2 Right: Achievements (match video height; min-h-0 + overflow so content cannot grow the row) -->
+                    <div class="p1-hover-card bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:overflow-hidden lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
+                        <h2 class="text-xs sm:text-base font-bold uppercase tracking-wider text-brand-rust mb-2 sm:mb-6 lg:mb-3 shrink-0">
                             Một số thành tích nổi bật
                         </h2>
-                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col lg:justify-evenly">
-                            <li class="flex items-center gap-3 py-2.5 first:pt-0">
-                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
-                                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                                </span>
-                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Youtuber triệu đô</span>
+                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col min-h-0 lg:justify-evenly">
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                                <i data-lucide="dollar-sign" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">YouTuber Triệu đô</span>
                             </li>
-                            <li class="flex items-center gap-3 py-2.5">
-                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
-                                    <i data-lucide="calendar" class="w-4 h-4"></i>
-                                </span>
-                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">13 năm kinh nghiệm</span>
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                                <i data-lucide="calendar" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">13 năm Kinh nghiệm</span>
                             </li>
-                            <li class="flex items-center gap-3 py-2.5">
-                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
-                                    <i data-lucide="play" class="w-4 h-4"></i>
-                                </span>
-                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">7 kênh nút bạc + 2 kênh nút vàng</span>
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                                <i data-lucide="play" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">7 Kênh Nút Bạc + 2 Kênh Nút Vàng</span>
                             </li>
-                            <li class="flex items-center gap-3 py-2.5 last:pb-0">
-                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
-                                    <i data-lucide="users" class="w-4 h-4"></i>
-                                </span>
-                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Hỗ trợ hàng trăm kênh bật kiếm tiền</span>
+                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                                <i data-lucide="users" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
+                                <span class="text-xs sm:text-base font-semibold text-slate-800">Hỗ trợ hàng trăm Kênh Bật Kiếm Tiền</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <!-- CTA spanning both columns -->
-                <div class="mt-3 sm:mt-4 space-y-1.5 max-w-sm mx-auto w-full">
+                <div class="mt-2 sm:mt-4 space-y-1.5 max-w-sm mx-auto w-full">
                     <button
                         onclick="openRegisterModal('Page 1 CTA')"
-                        class="cta-register w-full inline-flex items-center justify-center gap-2.5 text-white px-4 py-3 sm:py-3.5 font-extrabold uppercase transition-all text-[1.3rem] sm:text-[1.45rem] whitespace-nowrap">
+                        class="cta-register w-full inline-flex items-center justify-center gap-2.5 text-white px-4 py-2 sm:py-3.5 font-extrabold uppercase transition-all text-base sm:text-[1.45rem] whitespace-nowrap">
                         Đăng ký ngay
-                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/25 flex items-center justify-center shrink-0">
-                            <i data-lucide="arrow-right" class="w-4 h-4 sm:w-[18px] sm:h-[18px]"></i>
-                        </span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 sm:w-7 sm:h-7 shrink-0"></i>
                     </button>
-                    <p class="text-center text-[11px] sm:text-xs text-slate-500">
+                    <p class="text-center text-[10px] sm:text-xs text-slate-500">
                         Số lượng có hạn - Đăng ký sớm để giữ chỗ!
                     </p>
                 </div>
@@ -599,197 +1541,361 @@
         </section>
 
         <!-- PAGE 2: DỰ ÁN MUỐI ĐI HỌC -->
-        <section id="gioi-thieu" class="snap-page snap-page-scrollable bg-white border-b border-gray-100 py-16">
-            <div class="max-w-6xl mx-auto px-4">
-                <div class="max-w-3xl mx-auto text-center space-y-4 mb-12">
-                    <span class="text-xs font-bold text-brand-pink uppercase tracking-widest block">Sứ mệnh bền vững</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Muối Đi Học Là Gì?</h2>
-                    <p class="text-gray-600 leading-relaxed">
-                        Không ồn ào khoa trương, chúng tôi là một nhóm những con người bình thường, mong muốn gom góp từng hạt cát nhỏ, từng hạt "Muối" tri thức và tay nghề để giúp đỡ những mảnh đời kém may mắn có được chiếc cần câu mưu sinh tử tế.
-                    </p>
+        <section id="gioi-thieu" class="snap-page snap-page-scrollable bg-[#fffaf5] border-b border-gray-100 py-6 sm:py-8 lg:py-10">
+            <div class="max-w-6xl mx-auto px-4 space-y-6 sm:space-y-8 lg:space-y-10">
+
+                <!-- Top: Intro + Vision/Mission -->
+                <div class="page2-top grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+                    <!-- Left: Project intro -->
+                    <div class="page2-intro lg:col-span-7 space-y-4 sm:space-y-5">
+                        <div class="page2-intro-copy space-y-2 sm:space-y-3">
+                            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-brand-rust block">Giới thiệu dự án</span>
+                            <h2 class="font-montserrat text-3xl sm:text-4xl lg:text-[2.75rem] font-black text-slate-900 leading-none">Muối đi học</h2>
+                            <p class="text-base sm:text-lg font-bold text-slate-800">Dự án dạy nghề phi lợi nhuận cho cộng đồng</p>
+                            <p class="text-sm sm:text-[0.95rem] text-slate-600 leading-relaxed">
+                                Muối Đi Học là dự án dạy nghề phi lợi nhuận thuộc CLB Hạt Muối Yêu Thương, kết nối chuyên gia và người có kinh nghiệm để chia sẻ kiến thức thực tiễn, giúp cộng đồng có thêm kỹ năng, cơ hội và động lực phát triển bền vững.
+                            </p>
+                        </div>
+
+                        <blockquote class="page2-quote relative pl-5 sm:pl-6 border-l-2 border-brand-rust/40">
+                            <i data-lucide="quote" class="w-5 h-5 text-brand-rust mb-1.5" aria-hidden="true"></i>
+                            <p class="text-sm sm:text-base font-semibold text-brand-rust leading-relaxed italic">
+                                “Chúng tôi tin rằng, ai cũng xứng đáng có cơ hội học tập để thay đổi cuộc sống và tạo ra giá trị cho xã hội.”
+                            </p>
+                        </blockquote>
+
+                        <div class="page2-values grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pt-1">
+                            <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                                <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
+                                    <i data-lucide="hand-heart" class="w-5 h-5"></i>
+                                </span>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Phi lợi nhuận 100%</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                                <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </span>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Vì cộng đồng, vì tương lai</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                                <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
+                                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                                </span>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Kiến thức thực tiễn, dễ áp dụng</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                                <span class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center">
+                                    <i data-lucide="handshake" class="w-5 h-5"></i>
+                                </span>
+                                <p class="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug">Đồng hành lâu dài</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Vision & Mission card -->
+                    <div class="page2-vision lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-5 sm:p-6 space-y-5">
+                        <div class="flex gap-3.5">
+                            <span class="w-11 h-11 rounded-full bg-[#fff4eb] text-brand-rust flex items-center justify-center shrink-0">
+                                <i data-lucide="eye" class="w-5 h-5"></i>
+                            </span>
+                            <div class="min-w-0 space-y-1.5">
+                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Tầm nhìn</h3>
+                                <p class="text-sm text-slate-600 leading-relaxed">
+                                    Trở thành cầu nối tin cậy giúp cộng đồng tiếp cận kiến thức, kỹ năng và cơ hội phát triển nghề nghiệp một cách bền vững.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-100"></div>
+
+                        <div class="flex gap-3.5">
+                            <span class="w-11 h-11 rounded-full bg-[#fff4eb] text-brand-rust flex items-center justify-center shrink-0">
+                                <i data-lucide="target" class="w-5 h-5"></i>
+                            </span>
+                            <div class="min-w-0 space-y-2">
+                                <h3 class="text-sm font-extrabold uppercase tracking-wider text-slate-900">Sứ mệnh</h3>
+                                <ul class="space-y-1.5 text-sm text-slate-600 leading-relaxed list-disc pl-4">
+                                    <li>Kết nối chuyên gia và người có kinh nghiệm thực tế</li>
+                                    <li>Trao “cần câu” — kỹ năng áp dụng được ngay</li>
+                                    <li>Tổ chức chương trình học miễn phí, dễ tiếp cận</li>
+                                    <li>Xây dựng cộng đồng học tập đồng hành lâu dài</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- iPad Optimized: Grids system with balanced column spanning for 3rd card on tablets -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                    <!-- Card 1: Vision -->
-                    <div class="bg-neutral-earth p-8 rounded-2xl space-y-4 border border-gray-100 hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-xl bg-brand-pink/10 text-brand-pink flex items-center justify-center">
-                            <i data-lucide="eye" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="font-bold text-lg text-slate-900">Tầm nhìn</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            Trở thành bệ phóng hỗ trợ đào tạo nghề hoàn toàn miễn phí cho thanh thiếu niên có hoàn cảnh khó khăn trên khắp cả nước, giúp các em tự tin làm chủ cuộc sống.
-                        </p>
+                <!-- Bottom: Past programs -->
+                <div class="page2-programs space-y-4 sm:space-y-5">
+                    <div class="flex items-center justify-center gap-3 sm:gap-4">
+                        <span class="program-heading-line" aria-hidden="true"></span>
+                        <h3 class="font-montserrat text-xs sm:text-sm font-extrabold uppercase tracking-[0.16em] text-slate-900 whitespace-nowrap">
+                            Các chương trình đã tổ chức
+                        </h3>
+                        <span class="program-heading-line" aria-hidden="true"></span>
                     </div>
 
-                    <!-- Card 2: Mission -->
-                    <div class="bg-neutral-earth p-8 rounded-2xl space-y-4 border border-gray-100 hover:shadow-md transition-shadow">
-                        <div class="w-12 h-12 rounded-xl bg-brand-teal/10 text-brand-teal flex items-center justify-center">
-                            <i data-lucide="heart" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="font-bold text-lg text-slate-900">Sứ mệnh</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            Cung cấp các khoá học nghề thực tế (may mặc, thủ công, làm bánh, kỹ thuật cơ bản) chất lượng cao song song với việc bồi dưỡng kỹ năng mềm và kỹ năng sống.
-                        </p>
-                    </div>
+                    <div class="page2-program-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&q=80&w=800"
+                                    alt="Chương trình YouTube – Ý tưởng đến thu nhập"
+                                    class="w-full h-full object-cover"
+                                    loading="lazy">
+                            </div>
+                            <div class="p-3.5 sm:p-4 space-y-1.5">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-8 h-8 rounded-lg bg-[#FF0000]/10 text-[#FF0000] flex items-center justify-center shrink-0">
+                                        <i data-lucide="youtube" class="w-4 h-4"></i>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">YouTube – Ý tưởng đến thu nhập</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Định hướng xây kênh và bật kiếm tiền bền vững.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
 
-                    <!-- Card 3: Organized Programs (iPad full width spanning) -->
-                    <div class="bg-neutral-earth p-8 rounded-2xl space-y-4 border border-gray-100 hover:shadow-md transition-shadow sm:col-span-2 lg:col-span-1">
-                        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center">
-                            <i data-lucide="award" class="w-6 h-6"></i>
-                        </div>
-                        <h3 class="font-bold text-lg text-slate-900">Các chương trình đã tổ chức</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">
-                            Hơn 12 khoá học ngắn và dài hạn đã hoàn thành, giúp hơn 150 học viên tốt nghiệp có công ăn việc làm ổn định tại các nhà xưởng, cơ sở sản xuất liên kết.
-                        </p>
+                        <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800"
+                                    alt="Chương trình Canva – Thiết kế cơ bản"
+                                    class="w-full h-full object-cover"
+                                    loading="lazy">
+                            </div>
+                            <div class="p-3.5 sm:p-4 space-y-1.5">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-8 h-8 rounded-lg bg-brand-teal/10 text-brand-teal flex items-center justify-center shrink-0">
+                                        <i data-lucide="palette" class="w-4 h-4"></i>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Canva – Thiết kế cơ bản</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Kỹ năng thiết kế đồ họa cơ bản cho học tập và công việc.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800"
+                                    alt="Chương trình Kỹ năng giao tiếp và thuyết trình"
+                                    class="w-full h-full object-cover"
+                                    loading="lazy">
+                            </div>
+                            <div class="p-3.5 sm:p-4 space-y-1.5">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
+                                        <i data-lucide="messages-square" class="w-4 h-4"></i>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kỹ năng giao tiếp &amp; thuyết trình</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Tự tin giao tiếp và thuyết trình hiệu quả trước đám đông.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                            <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
+                                <img
+                                    src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800"
+                                    alt="Chương trình Kinh doanh online – Bắt đầu từ đâu?"
+                                    class="w-full h-full object-cover"
+                                    loading="lazy">
+                            </div>
+                            <div class="p-3.5 sm:p-4 space-y-1.5">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                                        <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <h4 class="text-sm font-bold text-slate-900 leading-snug">Kinh doanh online – Bắt đầu từ đâu?</h4>
+                                        <p class="text-xs text-slate-500 mt-1 leading-relaxed">Định hướng và xây nền tảng khởi đầu kinh doanh online.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- PAGE 3: VỀ CHÚNG TÔI -->
-        <section id="ve-chung-toi" class="snap-page snap-page-scrollable py-16">
-            <div class="max-w-6xl mx-auto px-4 space-y-16">
-            <!-- Part 1: HMYT Club -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-5 order-2 lg:order-1 md:max-w-2xl md:mx-auto w-full">
-                    <img src="https://images.unsplash.com/photo-1521791136364-728647526955?auto=format&fit=crop&q=80&w=800" alt="CLB HMYT" class="rounded-2xl shadow-lg border border-gray-100 w-full object-cover aspect-[4/3]">
-                </div>
-                <div class="lg:col-span-7 space-y-5 order-1 lg:order-2 md:max-w-2xl md:mx-auto lg:max-w-none text-left">
-                    <span class="text-xs font-bold text-brand-blue uppercase tracking-widest block">Đội ngũ sáng lập</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Chúng tôi là ai? CLB HMYT</h2>
-                    <p class="text-gray-600 leading-relaxed">
-                        CLB HMYT (Hạt Muối Yêu Thương) được thành lập từ sự tập hợp của các cựu sinh viên, kỹ sư, thợ lành nghề và các bạn trẻ nhiệt huyết. Với lý tưởng cống hiến thầm lặng, chúng tôi mong muốn tạo nên những thay đổi nhỏ nhưng thực chất trong đời sống của những mảnh đời cơ nhỡ.
+        <section id="ve-chung-toi" class="snap-page snap-page-scrollable" aria-labelledby="hmyt-title">
+            <div class="p3-container">
+                <header class="p3-hero">
+                    <div class="p3-hero-brand">
+                        <svg class="p3-hero-logo" viewBox="0 0 640 640" role="img" aria-label="Biểu trưng Hạt Muối Yêu Thương">
+                            <use href="#hmyt-logo-mark"></use>
+                        </svg>
+                        <div class="p3-hero-brand-text">
+                            <h2 id="hmyt-title" class="p3-hero-title">
+                                <span>HẠT MUỐI</span>
+                                <span>YÊU THƯƠNG</span>
+                            </h2>
+                            <p class="p3-hero-tagline">Thương nhau hạt muối sẻ đôi</p>
+                        </div>
+                    </div>
+                    <p class="p3-hero-desc">
+                        Hạt Muối Yêu Thương là tổ chức phi lợi nhuận với sứ mệnh kết nối cộng đồng, lan tỏa yêu thương và hỗ trợ những hoàn cảnh khó khăn trên khắp mọi miền.
                     </p>
-                    <div class="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-150 inline-flex w-full sm:w-auto">
-                        <i data-lucide="shield-check" class="w-8 h-8 text-brand-teal shrink-0"></i>
-                        <div>
-                            <span class="font-semibold text-slate-900 block leading-tight">Cam kết 100% Phi Lợi Nhuận</span>
-                            <span class="text-xs text-gray-500">Mọi đóng góp, hỗ trợ đều được công khai và dành trọn cho học viên.</span>
-                        </div>
+                    <div class="p3-hero-contacts">
+                        <a href="https://www.facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer">
+                            <span class="p3-contact-icon p3-contact-icon--facebook" aria-hidden="true">
+                                <i data-lucide="facebook"></i>
+                            </span>
+                            <span class="p3-contact-copy">
+                                <span class="p3-contact-label">Fanpage</span>
+                                <span class="p3-contact-value">Hạt Muối Yêu Thương</span>
+                            </span>
+                        </a>
+                        <a href="mailto:hatmuoiyeuthuong@gmail.com">
+                            <span class="p3-contact-icon p3-contact-icon--email" aria-hidden="true">
+                                <i data-lucide="mail"></i>
+                            </span>
+                            <span class="p3-contact-copy">
+                                <span class="p3-contact-label">Email</span>
+                                <span class="p3-contact-value">hatmuoiyeuthuong@gmail.com</span>
+                            </span>
+                        </a>
                     </div>
-                </div>
-            </div>
+                </header>
 
-            <!-- Part 2: Activities & Awards Grid -->
-            <div class="space-y-8">
-                <div class="text-center space-y-2">
-                    <h3 class="text-xl font-bold text-slate-900">Dấu ấn hành trình của chúng tôi</h3>
-                    <p class="text-sm text-gray-500">Hình ảnh các hoạt động thực tế và sự ghi nhận từ cộng đồng dành cho dự án</p>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Activity 1 -->
-                    <div class="bg-white rounded-xl overflow-hidden border border-gray-150 shadow-sm hover:shadow transition-all group">
-                        <div class="aspect-video bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400" alt="Lớp học nghề may" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-sm text-slate-900">Lớp đào tạo thực hành</h4>
-                            <p class="text-xs text-gray-500 mt-1">Các học viên đang chăm chú thực hành trên những chiếc máy khâu đầu tiên được trao tặng.</p>
-                        </div>
-                    </div>
-
-                    <!-- Activity 2 -->
-                    <div class="bg-white rounded-xl overflow-hidden border border-gray-150 shadow-sm hover:shadow transition-all group">
-                        <div class="aspect-video bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=400" alt="Trao chứng chỉ tốt nghiệp" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-sm text-slate-900">Trao tay tương lai</h4>
-                            <p class="text-xs text-gray-500 mt-1">Lễ trao chứng chỉ và tư vấn giới thiệu việc làm sau khóa học nghề thành công.</p>
-                        </div>
-                    </div>
-
-                    <!-- Award 1 (Interactive local-safe Carousel) -->
-                    <div class="bg-white rounded-xl overflow-hidden border border-gray-150 shadow-sm hover:shadow transition-all group relative">
-                        <div class="aspect-video bg-gray-100 overflow-hidden relative" id="awards-carousel">
-                            <!-- Slide 1 -->
-                            <img src="6253649885844410607.jpg" alt="Giấy khen Tỉnh đoàn Yên Bái" class="award-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100">
-                            <!-- Slide 2 -->
-                            <img src="6253649885844410608.jpg" alt="Giấy khen UBND Huyện Mèo Vạc" class="award-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0">
-                            <!-- Slide 3 -->
-                            <img src="6253649885844410609.jpg" alt="Giấy khen UBND Xã Suối Tọ" class="award-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0">
-                            
-                            <!-- Indicator Dots -->
-                            <div class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1.5 z-10">
-                                <span class="carousel-dot w-2 h-2 rounded-full bg-white opacity-100 cursor-pointer transition-all scale-110"></span>
-                                <span class="carousel-dot w-2 h-2 rounded-full bg-white/50 cursor-pointer transition-all"></span>
-                                <span class="carousel-dot w-2 h-2 rounded-full bg-white/50 cursor-pointer transition-all"></span>
+                <div class="p3-card p3-main-panel">
+                    <div class="p3-main-grid">
+                        <section aria-labelledby="activities-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-rose-50 text-[#ed6a53]"><i data-lucide="heart" aria-hidden="true"></i></span>
+                                <h3 id="activities-title">HÌNH ẢNH HOẠT ĐỘNG</h3>
                             </div>
-                            
-                            <!-- Arrow Navigation buttons -->
-                            <button onclick="prevAwardSlide(event)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-6 h-6 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-10">
-                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            </button>
-                            <button onclick="nextAwardSlide(event)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white w-6 h-6 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 z-10">
-                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-sm text-slate-900">Ghi nhận từ Địa phương</h4>
-                            <p class="text-xs text-gray-500 mt-1">Giấy khen danh dự do UBND xã/phường trao tặng cho dự án hoạt động tích cực vì cộng đồng.</p>
-                        </div>
-                    </div>
+                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="5200" aria-label="Hình ảnh hoạt động Hạt Muối Yêu Thương">
+                                <div class="p3-carousel-viewport">
+                                    <div class="p3-carousel-track">
+                                        <figure class="p3-carousel-slide" role="group" aria-label="1 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/481211911_122258607530029670_5344184557419073162_n.jpg" alt="Đội tình nguyện Hạt Muối Yêu Thương cùng biểu ngữ và bà con địa phương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="2 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/481471679_122260921874029670_3776664956483542030_n.jpg" alt="Tình nguyện viên mang hàng hỗ trợ tại vùng cao" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="3 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/486326233_122266709654029670_624485205111674117_n.jpg" alt="Trao quà hỗ trợ cho bà con ngoài trời" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="4 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/472209047_122244600800029670_4031512693485418194_n.jpg" alt="Trao quà Trung thu cho em nhỏ tại bản Tả Lủng" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="5 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/485281486_122264315558029670_4713486801383152084_n.jpg" alt="Đội tình nguyện áo vàng Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="6 trên 6">
+                                            <div class="p3-activity-image"><img src="activities/486608135_122266710248029670_6720309262998812553_n.jpg" alt="Tình nguyện viên phân loại đồ hỗ trợ cộng đồng" loading="lazy"></div>
+                                        </figure>
+                                    </div>
+                                </div>
+                                <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem ảnh hoạt động trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+                                <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem ảnh hoạt động tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+                                <div class="p3-carousel-dots" aria-label="Chọn ảnh hoạt động">
+                                    <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem ảnh hoạt động 1"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem ảnh hoạt động 2"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem ảnh hoạt động 3"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="3" aria-label="Xem ảnh hoạt động 4"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="4" aria-label="Xem ảnh hoạt động 5"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="5" aria-label="Xem ảnh hoạt động 6"></button>
+                                </div>
+                            </div>
+                        </section>
 
-                    <!-- Award 2 -->
-                    <div class="bg-white rounded-xl overflow-hidden border border-gray-150 shadow-sm hover:shadow transition-all group">
-                        <div class="aspect-video bg-gray-100 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=400" alt="Hoạt động gây quỹ" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-sm text-slate-900">Đêm nhạc gây quỹ ấm áp</h4>
-                            <p class="text-xs text-gray-500 mt-1">Hội chợ gây quỹ "Muối Yêu Thương" do các thành viên và tình nguyện viên tự tổ chức.</p>
-                        </div>
+                        <section class="p3-video-column" aria-labelledby="intro-video-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-red-50 text-red-600"><i data-lucide="video" aria-hidden="true"></i></span>
+                                <h3 id="intro-video-title">VIDEO GIỚI THIỆU</h3>
+                            </div>
+                            <button type="button" onclick="playIntroVideo()" class="p3-video-poster group" aria-label="Phát video giới thiệu Hạt Muối Yêu Thương">
+                                <img src="activities/482011579_122261208350029670_8723631038913041069_n.jpg" alt="Tình nguyện viên trao quà hỗ trợ ngoài trời" loading="lazy">
+                                <span class="p3-video-poster-label">
+                                    <span class="p3-video-play"><i data-lucide="play" aria-hidden="true"></i></span>
+                                    <strong>HẠT MUỐI YÊU THƯƠNG</strong>
+                                    <span>Lan tỏa yêu thương · Vì một cộng đồng tốt đẹp hơn</span>
+                                </span>
+                            </button>
+                        </section>
+
+                        <article class="p3-about-card" aria-labelledby="about-hmyt-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-orange-50 text-[#ec6d45]"><i data-lucide="users-round" aria-hidden="true"></i></span>
+                                <h3 id="about-hmyt-title">VỀ HẠT MUỐI YÊU THƯƠNG</h3>
+                            </div>
+                            <p>
+                                Hạt Muối Yêu Thương được thành lập với mong muốn lan tỏa những giá trị tốt đẹp, kết nối trái tim và chung tay xây dựng một cộng đồng nhân ái, nơi mọi người cùng chia sẻ, giúp đỡ và tạo nên những thay đổi tích cực cho xã hội.
+                            </p>
+                            <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="p3-about-cta">
+                                TÌM HIỂU THÊM <i data-lucide="arrow-right" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                            </a>
+                        </article>
+
+                        <section class="min-w-0" aria-labelledby="recognition-title">
+                            <div class="p3-section-heading">
+                                <span class="bg-amber-50 text-amber-600"><i data-lucide="award" aria-hidden="true"></i></span>
+                                <h3 id="recognition-title">SỰ GHI NHẬN</h3>
+                            </div>
+                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="6200" aria-label="Giấy khen và sự ghi nhận">
+                                <div class="p3-carousel-viewport">
+                                    <div class="p3-carousel-track">
+                                        <figure class="p3-carousel-slide" role="group" aria-label="1 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410607.jpg" alt="Giấy khen ghi nhận hoạt động của Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="2 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410608.jpg" alt="Giấy chứng nhận dành cho Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="3 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410609.jpg" alt="Giấy khen vì đóng góp tích cực cho cộng đồng" loading="lazy"></div>
+                                        </figure>
+                                        <figure class="p3-carousel-slide" role="group" aria-label="4 trên 4">
+                                            <div class="p3-award-image"><img src="6253649885844410607.jpg" alt="Giấy khen ghi nhận đóng góp của Hạt Muối Yêu Thương" loading="lazy"></div>
+                                        </figure>
+                                    </div>
+                                </div>
+                                <button type="button" class="p3-carousel-arrow" data-direction="prev" aria-label="Xem giấy khen trước"><i data-lucide="chevron-left" aria-hidden="true"></i></button>
+                                <button type="button" class="p3-carousel-arrow" data-direction="next" aria-label="Xem giấy khen tiếp theo"><i data-lucide="chevron-right" aria-hidden="true"></i></button>
+                                <div class="p3-carousel-dots" aria-label="Chọn giấy khen">
+                                    <button type="button" class="p3-carousel-dot" data-slide="0" aria-label="Xem giấy khen 1"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="1" aria-label="Xem giấy khen 2"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="2" aria-label="Xem giấy khen 3"></button>
+                                    <button type="button" class="p3-carousel-dot" data-slide="3" aria-label="Xem giấy khen 4"></button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
-            </div>
-
-            <!-- Compact CTA + footer inside last snap page -->
-            <div class="bg-slate-900 text-white rounded-2xl py-10 px-6 text-center space-y-4">
-                <h3 class="text-xl md:text-2xl font-bold">Bạn mong muốn tìm hiểu hoặc đóng góp đồng hành?</h3>
-                <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-                    Dù là một đôi tay muốn dạy nghề, một chiếc máy may cũ hay chỉ đơn giản là chia sẻ thông tin này đến các học viên cần giúp đỡ - sự hiện diện của bạn là món quà to lớn của dự án.
-                </p>
-                <button onclick="openRegisterModal('Footer CTA')" class="bg-brand-pink hover:bg-brand-pinkHover text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-md inline-flex items-center gap-2">
-                    <i data-lucide="edit-3" class="w-5 h-5 text-white"></i>
-                    Đăng ký tham gia
-                </button>
-                <div class="pt-4 border-t border-white/10 text-slate-400 text-xs space-y-2">
-                    <p class="font-bold text-sm text-slate-200">Muối Đi Học - CLB Hạt Muối Yêu Thương (HMYT)</p>
-                    <p>Website: www.muoidihoc.com · Tổ chức bởi Hạt Muối Yêu Thương</p>
-                    <div class="flex items-center justify-center gap-3 pt-1">
-                        <a href="https://www.facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer" aria-label="Facebook Hạt Muối Yêu Thương" class="p-2 rounded-full bg-slate-800 hover:bg-[#1877F2] text-slate-300 hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        </a>
-                        <a href="https://www.youtube.com/@HatMuoiYeuThuong" target="_blank" rel="noopener noreferrer" aria-label="YouTube Hạt Muối Yêu Thương" class="p-2 rounded-full bg-slate-800 hover:bg-[#FF0000] text-slate-300 hover:text-white transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                        </a>
-                    </div>
-                    <p class="text-slate-500">&copy; 2026 Muối Đi Học. Dự án phi lợi nhuận vì cộng đồng.</p>
-                </div>
-            </div>
             </div>
         </section>
 
     </main>
 
     <!-- REGISTRATION POPUP MODAL -->
-    <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" onclick="closeRegisterModal()">
-        <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalCard" onclick="event.stopPropagation()">
+    <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300">
+        <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalCard">
             <!-- Header Modal -->
-            <div class="bg-brand-pink p-6 text-white relative shrink-0">
+            <div class="bg-brand-pink p-6 pr-14 text-white relative shrink-0">
                 <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng form đăng ký">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
                 <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">Đăng ký tham gia</span>
-                <h3 id="registerModalTitle" class="text-xl font-bold">YouTube - Ý tưởng đến thu nhập</h3>
-                <p class="text-xs text-white/80 mt-1">14h Chủ nhật, ngày 19/7/2026 · Phòng hội thảo Biblio, Ngụy Như Kon Tum, Hà Nội</p>
-                <p class="text-xs text-white/70 mt-1">Vui lòng điền thông tin chính xác để ban tổ chức liên lạc xác thực qua điện thoại.</p>
+                <h3 id="registerModalTitle" class="text-xl font-bold leading-snug">Muối Đi Học Youtube: Từ Ý Tưởng Đến Thu Nhập</h3>
+                <p class="text-xs text-white/80 mt-2 leading-relaxed">
+                    Tìm hiểu thêm về chúng tôi và dự án Muối Đi Học —
+                    <a href="https://facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Fanpage</a>
+                    ·
+                    <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Website</a>
+                </p>
             </div>
 
             <!-- Form Body with Scroll -->
-            <form id="enrollmentForm" onsubmit="handleFormSubmit(event)" novalidate class="p-6 space-y-4 overflow-y-auto flex-grow">
+            <form id="enrollmentForm" onsubmit="return handleFormSubmit(event)" novalidate class="p-6 space-y-5 overflow-y-auto flex-grow">
                 
                 <!-- Hidden Tracking Inputs -->
                 <input type="hidden" id="track_visitorId" name="visitorId">
@@ -798,117 +1904,143 @@
                 <input type="hidden" id="track_clicks" name="clicks">
                 <input type="hidden" id="track_entryPoint" name="entryPoint">
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="rounded-xl border border-brand-orange/30 bg-orange-50 p-3 flex gap-3">
+                        <i data-lucide="calendar-clock" class="w-5 h-5 text-brand-orange shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange">Thời gian</p>
+                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Sự kiện diễn ra lúc 14h ngày 19/7/2026</p>
+                        </div>
+                    </div>
+                    <div class="rounded-xl border border-brand-pink/20 bg-pink-50 p-3 flex gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-brand-pink shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-pink">Địa điểm</p>
+                            <p class="text-sm font-semibold text-slate-800 mt-0.5">Phòng hội thảo Biblio, 79 Ngụy Như Kon Tum, Hà Nội</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="fullName">Họ và Tên <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                             <i data-lucide="user" class="w-4 h-4"></i>
                         </span>
-                        <input type="text" id="fullName" required placeholder="Nguyễn Văn A" class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Nguyễn Văn A" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
                     </div>
                     <p id="fullNameError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="age">Độ tuổi <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                                <i data-lucide="cake" class="w-4 h-4"></i>
+                            </span>
+                            <input type="number" id="age" name="age" required min="10" max="100" inputmode="numeric" placeholder="Ví dụ: 24" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                        </div>
+                        <p id="ageError" class="text-red-500 text-xs mt-1 hidden"></p>
+                    </div>
+                    <div>
                         <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="phoneNumber">Số điện thoại <span class="text-red-500">*</span></label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                                 <i data-lucide="phone" class="w-4 h-4"></i>
                             </span>
-                            <input type="tel" id="phoneNumber" required placeholder="0901234567" inputmode="numeric" maxlength="10" class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                            <input type="tel" id="phoneNumber" name="phoneNumber" required autocomplete="tel" placeholder="0901234567" inputmode="numeric" maxlength="10" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
                         </div>
                         <p id="phoneError" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="emailAddress">Địa chỉ Email</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                                <i data-lucide="mail" class="w-4 h-4"></i>
-                            </span>
-                            <input type="text" id="emailAddress" placeholder="email@gmail.com" class="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
-                        </div>
-                        <p id="emailError" class="text-red-500 text-xs mt-1 hidden"></p>
-                    </div>
                 </div>
 
+                <fieldset>
+                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kinh nghiệm của bạn về làm Youtube <span class="text-red-500">*</span></legend>
+                    <div id="youtubeExperienceGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Không có" required class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Không có</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Mới tìm hiểu" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Mới tìm hiểu</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Dưới 6 tháng" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Dưới 6 tháng</span>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Khoảng 1 năm" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Khoảng 1 năm</span>
+                        </label>
+                        <label class="cursor-pointer sm:col-span-2">
+                            <input type="radio" name="youtubeExperience" value="Trên 1 năm" class="peer sr-only">
+                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Trên 1 năm</span>
+                        </label>
+                    </div>
+                    <p id="youtubeExperienceError" class="text-red-500 text-xs mt-1 hidden"></p>
+                </fieldset>
+
+                <fieldset>
+                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cảm nhận của bạn về tiềm năng tạo ra thu nhập từ việc làm Youtube (theo thang điểm 10) <span class="text-red-500">*</span></legend>
+                    <div id="incomePotentialGroup" class="grid grid-cols-6 sm:grid-cols-11 gap-1.5">
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="0" required class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">0</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">1</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="2" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">2</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="3" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">3</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="4" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">4</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="5" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">5</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="6" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">6</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="7" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">7</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="8" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">8</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="9" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">9</span></label>
+                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">10</span></label>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-gray-500 mt-1.5">
+                        <span>Không có</span>
+                        <span>Đủ sống</span>
+                        <span>Thu nhập cao</span>
+                    </div>
+                    <p id="incomePotentialError" class="text-red-500 text-xs mt-1 hidden"></p>
+                </fieldset>
+
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="messageNote">Ghi chú hoàn cảnh / Câu hỏi</label>
-                    <textarea id="messageNote" rows="3" placeholder="Chia sẻ thêm thông tin về hoàn cảnh của bạn hoặc thắc mắc..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all"></textarea>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="expertQuestion">Câu hỏi muốn được chuyên gia trả lời (nếu có)</label>
+                    <textarea id="expertQuestion" name="expertQuestion" rows="3" placeholder="Nhập câu hỏi của bạn..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all"></textarea>
+                </div>
+
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <div class="flex items-center gap-2 text-amber-800 mb-3">
+                        <i data-lucide="triangle-alert" class="w-5 h-5 shrink-0"></i>
+                        <h4 class="font-bold">Lưu ý</h4>
+                    </div>
+                    <div class="space-y-2.5 text-xs leading-relaxed text-amber-950/80">
+                        <p>Chương trình nằm trong dự án Dạy nghề cho cộng đồng "Muối đi học" do Hạt Muối Yêu Thương tổ chức. Chương trình hoàn toàn phi lợi nhuận (miễn phí 100% học phí), không kèm theo bất kỳ hoạt động thương mại hay bán khóa học nào.</p>
+                        <p>Vì chương trình mượn không gian tại hội trường/quán cafe, các bạn tham gia vui lòng tự thanh toán chi phí nước uống và gửi xe. Để hỗ trợ quán chuẩn bị chu đáo nhất, BTC sẽ thu hộ khoản phí này trước (khoảng 50.000đ - 80.000đ tùy địa điểm, đã bao gồm nước và vé xe).</p>
+                        <p>Nếu đã đăng ký nhưng bận đột xuất, bạn vui lòng báo trước cho BTC 24 giờ trước khi diễn ra chương trình để được hoàn lại chi phí nhé!</p>
+                        <p>Hạt Muối Yêu Thương là cầu nối đưa các chuyên gia trong nhiều lĩnh vực đến chia sẻ và đào tạo nghề cho cộng đồng. Chương trình ưu tiên giá trị ứng dụng thực tế và kinh nghiệm của chuyên gia hơn là những lý thuyết sách vở. Mong các bạn đón nhận tinh thần này với một tâm thế cởi mở.</p>
+                        <p class="font-semibold">BTC sẽ liên hệ lại với bạn để xác nhận sau khi đăng ký.</p>
+                    </div>
+                    <label id="acknowledgementGroup" class="mt-4 flex items-start gap-2.5 cursor-pointer rounded-lg border border-amber-300 bg-white/70 p-3">
+                        <input type="checkbox" id="acknowledgement" name="acknowledgement" required class="mt-0.5 h-4 w-4 rounded border-amber-400 text-brand-pink focus:ring-brand-pink">
+                        <span class="text-sm font-semibold text-slate-800">Tôi đã hiểu <span class="text-red-500">*</span></span>
+                    </label>
+                    <p id="acknowledgementError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
 
                 <div class="pt-2">
                     <button type="submit" id="submitBtn" class="w-full bg-brand-pink hover:bg-brand-pinkHover text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
                         <i data-lucide="send" class="w-4 h-4"></i>
-                        Đăng ký tham gia
+                        Đăng Ký
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- PROGRAM DETAIL MODAL -->
-    <div id="programDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="programDetailTitle" onclick="closeProgramDetailModal()">
-        <div id="programDetailCard" class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
-            <div class="bg-slate-900 p-6 text-white relative shrink-0">
-                <button onclick="closeProgramDetailModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng thông tin chi tiết">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-                <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">Thông tin chi tiết</span>
-                <h3 id="programDetailTitle" class="text-xl font-bold leading-snug">YouTube - Ý tưởng đến thu nhập</h3>
-                <p class="text-xs text-slate-300 mt-1">Tổ chức bởi Hạt Muối Yêu Thương</p>
-            </div>
-            <div class="p-6 space-y-4 overflow-y-auto text-sm text-gray-600">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="rounded-xl bg-slate-50 border border-gray-100 p-3">
-                        <p class="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Thời gian</p>
-                        <p class="font-semibold text-slate-800">14h Chủ nhật, ngày 19/7/2026</p>
-                    </div>
-                    <div class="rounded-xl bg-slate-50 border border-gray-100 p-3">
-                        <p class="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Địa điểm</p>
-                        <p class="font-semibold text-slate-800">Phòng hội thảo Biblio, Ngụy Như Kon Tum, Hà Nội</p>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-slate-50 border border-gray-100 p-3 flex gap-3">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=160" alt="Mr Văn" class="w-12 h-12 rounded-lg object-cover shrink-0">
-                    <div>
-                        <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange mb-0.5">Chuyên gia</p>
-                        <p class="font-semibold text-slate-800">Mr Văn</p>
-                        <p class="text-xs text-gray-500 mt-0.5">Chuyên gia đào tạo &amp; xây dựng kênh YouTube</p>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-slate-50 border border-gray-100 p-3">
-                    <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange mb-2">Một số thành tích nổi bật</p>
-                    <ul class="space-y-2 text-sm font-bold uppercase tracking-wide text-slate-800">
-                        <li class="flex items-center gap-2"><i data-lucide="dollar-sign" class="w-4 h-4 text-brand-orange"></i> Youtuber triệu đô</li>
-                        <li class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-brand-orange"></i> 13 năm kinh nghiệm</li>
-                        <li class="flex items-center gap-2"><i data-lucide="play" class="w-4 h-4 text-brand-orange"></i> 7 kênh nút bạc + 2 kênh nút vàng</li>
-                        <li class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-brand-orange"></i> Hỗ trợ hàng trăm kênh bật kiếm tiền</li>
-                    </ul>
-                </div>
-                <div>
-                    <p class="text-[11px] uppercase tracking-wider font-semibold text-gray-400 mb-1">Giới thiệu chương trình</p>
-                    <p class="leading-relaxed">
-                        Biến ý tưởng thành nội dung giá trị và xây dựng kênh Youtube để tạo thu nhập bền vững. Chia sẻ bởi Mr Văn — chuyên gia đào tạo &amp; xây dựng kênh YouTube.
-                    </p>
-                </div>
-                <div class="rounded-xl border border-brand-orange/30 bg-brand-orange/5 p-3">
-                    <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-orange mb-1">Lưu ý</p>
-                    <ul class="list-disc pl-4 space-y-1 text-xs leading-relaxed">
-                        <li>Số lượng chỗ có hạn — đăng ký sớm để giữ chỗ.</li>
-                        <li>Ban tổ chức sẽ liên hệ xác nhận qua điện thoại sau khi nhận form đăng ký.</li>
-                        <li>Vui lòng điền thông tin chính xác để thuận tiện sắp xếp chương trình.</li>
-                    </ul>
-                </div>
-                <button onclick="closeProgramDetailModal(); openRegisterModal('Detail Modal CTA');" class="w-full bg-brand-orange hover:brightness-110 text-white py-3 rounded-xl font-bold transition-all">
-                    Đăng ký ngay
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- NOTIFICATION CUSTOM TOAST -->
-    <div id="toast" class="fixed bottom-6 left-6 z-50 bg-slate-900 text-white px-5 py-4 rounded-xl shadow-2xl border border-slate-700 hidden flex items-center gap-3 max-w-sm transition-all duration-300">
+    <div id="toast" class="fixed bottom-6 left-6 z-[70] bg-slate-900 text-white px-5 py-4 rounded-xl shadow-2xl border border-slate-700 hidden flex items-center gap-3 max-w-sm transition-all duration-300">
         <div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
             <i data-lucide="check-circle" class="w-5 h-5"></i>
         </div>
@@ -919,10 +2051,10 @@
     </div>
 
     <!-- INTRO VIDEO MODAL -->
-    <div id="videoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 hidden" onclick="closeIntroVideo()">
+    <div id="videoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 hidden" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle" onclick="closeIntroVideo()">
         <div class="relative w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/10" onclick="event.stopPropagation()">
             <!-- Close Video -->
-            <button onclick="closeIntroVideo()" class="absolute top-4 right-4 z-10 text-white hover:text-red-400 bg-black/60 hover:bg-black p-2 rounded-full transition-all">
+            <button type="button" onclick="closeIntroVideo()" class="absolute top-4 right-4 z-10 text-white hover:text-red-400 bg-black/60 hover:bg-black p-2 rounded-full transition-all" aria-label="Đóng video giới thiệu">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <!-- Demo Youtube Video / Video Mockup -->
@@ -930,9 +2062,9 @@
                 <div class="w-16 h-16 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center animate-pulse">
                     <i data-lucide="video" class="w-8 h-8"></i>
                 </div>
-                <h3 class="font-bold text-lg text-white">Bắt đầu trình phát Video giới thiệu dự án</h3>
+                <h3 id="videoModalTitle" class="font-bold text-lg text-white">Bắt đầu trình phát Video giới thiệu dự án</h3>
                 <p class="text-xs text-slate-400 max-w-sm">Trong bản thực tế, bạn chỉ việc dán link Iframe YouTube hoặc video máy chủ của HMYT vào đây để phát trực tiếp.</p>
-                <button onclick="closeIntroVideo()" class="px-5 py-2 bg-brand-pink text-white rounded-lg text-xs font-semibold">Đóng trình xem</button>
+                <button type="button" onclick="closeIntroVideo()" class="px-5 py-2 bg-brand-pink text-white rounded-lg text-xs font-semibold">Đóng trình xem</button>
             </div>
         </div>
     </div>
@@ -1102,17 +2234,6 @@
         // -------------------------------------------------------------
         // 2. LOGIC MỞ POPUP & FORM SUBMISSION
         // -------------------------------------------------------------
-        function setModalOpenState(isOpen) {
-            document.body.classList.toggle('modal-open', isOpen);
-        }
-
-        function isAnyModalVisible() {
-            return ['registerModal', 'programDetailModal', 'videoModal'].some((id) => {
-                const el = document.getElementById(id);
-                return el && !el.classList.contains('hidden');
-            });
-        }
-
         function openRegisterModal(entryPointName) {
             trackingState.entryPoint = entryPointName;
             
@@ -1125,13 +2246,11 @@
             document.getElementById('track_clicks').value = trackingState.clicks;
             document.getElementById('track_entryPoint').value = trackingState.entryPoint;
 
-            setModalOpenState(true);
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95');
                 card.classList.add('scale-100');
-                lucide.createIcons();
             }, 50);
         }
 
@@ -1145,42 +2264,14 @@
             
             setTimeout(() => {
                 modal.classList.add('hidden');
-                if (!isAnyModalVisible()) setModalOpenState(false);
-            }, 300);
-        }
-
-        function openProgramDetailModal() {
-            const modal = document.getElementById('programDetailModal');
-            const card = document.getElementById('programDetailCard');
-            setModalOpenState(true);
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                card.classList.remove('scale-95');
-                card.classList.add('scale-100');
-                lucide.createIcons();
-            }, 50);
-        }
-
-        function closeProgramDetailModal() {
-            const modal = document.getElementById('programDetailModal');
-            const card = document.getElementById('programDetailCard');
-            modal.classList.add('opacity-0');
-            card.classList.remove('scale-100');
-            card.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                if (!isAnyModalVisible()) setModalOpenState(false);
             }, 300);
         }
 
         function playIntroVideo() {
-            setModalOpenState(true);
             document.getElementById('videoModal').classList.remove('hidden');
         }
         function closeIntroVideo() {
             document.getElementById('videoModal').classList.add('hidden');
-            if (!isAnyModalVisible()) setModalOpenState(false);
         }
 
         function syncHeaderHeight() {
@@ -1189,18 +2280,323 @@
             document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
         }
 
+        function initFullPageScroll() {
+            const scroller = document.getElementById('pageScroll');
+            const pages = Array.from(scroller ? scroller.querySelectorAll(':scope > .snap-page') : []);
+            if (!scroller || pages.length === 0) return;
+
+            scroller.classList.add('js-fullpage');
+
+            const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const INTERNAL_SCROLL_EPSILON = 14;
+            const WHEEL_COOLDOWN_MS = 400;
+            const navLinks = Array.from(document.querySelectorAll('a[href^="#"]')).filter((link) => {
+                const id = link.getAttribute('href').slice(1);
+                return pages.some((page) => page.id === id);
+            });
+            let activeIndex = 0;
+            let animationFrame = null;
+            let transitionLocked = false;
+            let wheelCooldownUntil = 0;
+            let wheelDelta = 0;
+            let wheelDirection = 0;
+            let lastWheelAt = 0;
+            let scrollTicking = false;
+            let resizeTimer = null;
+            let touchState = null;
+
+            const clampIndex = (index) => Math.max(0, Math.min(pages.length - 1, index));
+
+            const pageTop = (page) =>
+                page.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+
+            const nearestPageIndex = () => {
+                const scrollTop = scroller.scrollTop;
+                return pages.reduce((nearest, page, index) => {
+                    const currentDistance = Math.abs(pageTop(pages[nearest]) - scrollTop);
+                    const nextDistance = Math.abs(pageTop(page) - scrollTop);
+                    return nextDistance < currentDistance ? index : nearest;
+                }, 0);
+            };
+
+            const updateActivePage = (index, updateHash = true) => {
+                activeIndex = clampIndex(index);
+                const activePage = pages[activeIndex];
+
+                navLinks.forEach((link) => {
+                    const isActive = link.getAttribute('href') === `#${activePage.id}`;
+                    if (isActive) link.setAttribute('aria-current', 'page');
+                    else link.removeAttribute('aria-current');
+                });
+
+                if (updateHash && activePage.id && window.location.hash !== `#${activePage.id}`) {
+                    const nextUrl = `${window.location.pathname}${window.location.search}#${activePage.id}`;
+                    window.history.replaceState(null, '', nextUrl);
+                }
+            };
+
+            const preparePageScroll = (index, fromIndex) => {
+                const page = pages[index];
+                if (!page) return;
+                const maxScroll = page.scrollHeight - page.clientHeight;
+                if (maxScroll <= INTERNAL_SCROLL_EPSILON) {
+                    page.scrollTop = 0;
+                    return;
+                }
+                // Entering from above → top; from below → bottom so reverse swipe can leave immediately.
+                page.scrollTop = fromIndex > index ? maxScroll : 0;
+            };
+
+            let cooldownTimer = null;
+            const finishTransition = (index) => {
+                if (animationFrame !== null) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+                scroller.scrollTop = pageTop(pages[index]);
+                transitionLocked = true;
+                wheelDelta = 0;
+                const unlockAt = performance.now() + WHEEL_COOLDOWN_MS;
+                wheelCooldownUntil = unlockAt;
+                updateActivePage(index);
+                if (cooldownTimer !== null) window.clearTimeout(cooldownTimer);
+                cooldownTimer = window.setTimeout(() => {
+                    cooldownTimer = null;
+                    if (wheelCooldownUntil !== unlockAt) return;
+                    transitionLocked = false;
+                    wheelDelta = 0;
+                    wheelCooldownUntil = 0;
+                }, WHEEL_COOLDOWN_MS);
+            };
+
+            const goToPage = (index, { instant = false } = {}) => {
+                const fromIndex = activeIndex;
+                const nextIndex = clampIndex(index);
+                const destination = pageTop(pages[nextIndex]);
+
+                if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+                transitionLocked = true;
+                wheelCooldownUntil = Number.POSITIVE_INFINITY;
+                preparePageScroll(nextIndex, fromIndex);
+
+                if (instant || reduceMotionQuery.matches) {
+                    finishTransition(nextIndex);
+                    return;
+                }
+
+                const start = scroller.scrollTop;
+                const distance = destination - start;
+                if (Math.abs(distance) < 1) {
+                    finishTransition(nextIndex);
+                    return;
+                }
+
+                const duration = 760;
+                const startedAt = performance.now();
+                const animate = (now) => {
+                    const progress = Math.min(1, (now - startedAt) / duration);
+                    const eased = progress < 0.5
+                        ? 4 * progress * progress * progress
+                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                    scroller.scrollTop = start + distance * eased;
+
+                    if (progress < 1) {
+                        animationFrame = requestAnimationFrame(animate);
+                    } else {
+                        finishTransition(nextIndex);
+                    }
+                };
+                animationFrame = requestAnimationFrame(animate);
+            };
+
+            const canPageScrollInternally = (page, direction) => {
+                if (!page) return false;
+                const maxScroll = page.scrollHeight - page.clientHeight;
+                if (maxScroll <= INTERNAL_SCROLL_EPSILON) return false;
+                return direction > 0
+                    ? page.scrollTop < maxScroll - INTERNAL_SCROLL_EPSILON
+                    : page.scrollTop > INTERNAL_SCROLL_EPSILON;
+            };
+
+            const pageForEvent = (target) => {
+                const page = target instanceof Element ? target.closest('.snap-page') : null;
+                return page && page.parentElement === scroller ? page : pages[nearestPageIndex()];
+            };
+
+            const isInputLocked = () =>
+                transitionLocked || performance.now() < wheelCooldownUntil;
+
+            scroller.addEventListener('wheel', (event) => {
+                if (document.body.classList.contains('modal-open')) return;
+                if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+
+                const direction = Math.sign(event.deltaY);
+                const page = pageForEvent(event.target);
+                const pageIndex = pages.indexOf(page);
+                if (direction === 0 || pageIndex < 0) return;
+
+                if (!isInputLocked() && canPageScrollInternally(page, direction)) {
+                    wheelDelta = 0;
+                    return;
+                }
+
+                event.preventDefault();
+                if (isInputLocked()) return;
+
+                const nextIndex = clampIndex(pageIndex + direction);
+                if (nextIndex === pageIndex) {
+                    // At first/last page: swallow residual inertia without thrashing wheelDelta.
+                    wheelDelta = 0;
+                    wheelDirection = direction;
+                    lastWheelAt = performance.now();
+                    return;
+                }
+
+                const now = performance.now();
+                if (direction !== wheelDirection || now - lastWheelAt > 180) wheelDelta = 0;
+                wheelDirection = direction;
+                lastWheelAt = now;
+                const multiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16
+                    : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? scroller.clientHeight
+                    : 1;
+                wheelDelta += event.deltaY * multiplier;
+
+                if (Math.abs(wheelDelta) >= 40) {
+                    goToPage(nextIndex);
+                }
+            }, { passive: false });
+
+            scroller.addEventListener('touchstart', (event) => {
+                if (event.touches.length !== 1 || document.body.classList.contains('modal-open')) {
+                    touchState = null;
+                    return;
+                }
+                const touch = event.touches[0];
+                touchState = {
+                    page: pageForEvent(event.target),
+                    lastX: touch.clientX,
+                    lastY: touch.clientY,
+                    edgeDelta: 0,
+                    triggered: false
+                };
+            }, { passive: true });
+
+            scroller.addEventListener('touchmove', (event) => {
+                if (!touchState || touchState.triggered || event.touches.length !== 1) return;
+                const touch = event.touches[0];
+                const deltaX = touchState.lastX - touch.clientX;
+                const deltaY = touchState.lastY - touch.clientY;
+                touchState.lastX = touch.clientX;
+                touchState.lastY = touch.clientY;
+
+                if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+                    touchState.edgeDelta = 0;
+                    return;
+                }
+
+                const direction = Math.sign(deltaY);
+                if (direction === 0 || canPageScrollInternally(touchState.page, direction)) {
+                    touchState.edgeDelta = 0;
+                    return;
+                }
+
+                event.preventDefault();
+                touchState.edgeDelta += deltaY;
+                if (Math.abs(touchState.edgeDelta) < 48 || isInputLocked()) return;
+
+                const pageIndex = pages.indexOf(touchState.page);
+                const nextIndex = clampIndex(pageIndex + Math.sign(touchState.edgeDelta));
+                touchState.triggered = true;
+                if (nextIndex !== pageIndex) goToPage(nextIndex);
+            }, { passive: false });
+
+            const clearTouchState = () => {
+                touchState = null;
+            };
+            scroller.addEventListener('touchend', clearTouchState, { passive: true });
+            scroller.addEventListener('touchcancel', clearTouchState, { passive: true });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.defaultPrevented || document.body.classList.contains('modal-open')) return;
+                if (event.ctrlKey || event.metaKey || event.altKey) return;
+                if (event.target instanceof Element && event.target.closest(
+                    'input, textarea, select, button, a, [contenteditable="true"], [role="dialog"]'
+                )) return;
+
+                let direction = 0;
+                if (['ArrowDown', 'PageDown'].includes(event.key) || (event.key === ' ' && !event.shiftKey)) direction = 1;
+                if (['ArrowUp', 'PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey)) direction = -1;
+
+                if (event.key === 'Home' || event.key === 'End') {
+                    event.preventDefault();
+                    if (!isInputLocked()) goToPage(event.key === 'Home' ? 0 : pages.length - 1);
+                    return;
+                }
+                if (direction === 0) return;
+
+                const pageIndex = nearestPageIndex();
+                const page = pages[pageIndex];
+                if (canPageScrollInternally(page, direction)) {
+                    event.preventDefault();
+                    const shortStep = event.key === 'ArrowDown' || event.key === 'ArrowUp';
+                    const distance = shortStep ? 64 : page.clientHeight * 0.82;
+                    page.scrollBy({
+                        top: distance * direction,
+                        behavior: reduceMotionQuery.matches ? 'auto' : 'smooth'
+                    });
+                    return;
+                }
+                event.preventDefault();
+                if (!isInputLocked()) goToPage(pageIndex + direction);
+            });
+
+            navLinks.forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    const id = link.getAttribute('href').slice(1);
+                    const index = pages.findIndex((page) => page.id === id);
+                    if (index < 0) return;
+                    event.preventDefault();
+                    if (!isInputLocked() || index !== activeIndex) goToPage(index);
+                });
+            });
+
+            scroller.addEventListener('scroll', () => {
+                if (scrollTicking || isInputLocked()) return;
+                scrollTicking = true;
+                requestAnimationFrame(() => {
+                    updateActivePage(nearestPageIndex(), false);
+                    scrollTicking = false;
+                });
+            }, { passive: true });
+
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => goToPage(nearestPageIndex(), { instant: true }), 120);
+            });
+
+            const hashIndex = pages.findIndex((page) => `#${page.id}` === window.location.hash);
+            goToPage(hashIndex >= 0 ? hashIndex : 0, { instant: true });
+        }
+
         function initPageOneVideoLifecycle() {
             const video = document.getElementById('pageOneVideo');
             const section = document.getElementById('chuong-trinh');
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
+            let sectionVisible = false;
+
+            const tryPlay = () => {
+                const playPromise = video.play();
+                if (playPromise && typeof playPromise.catch === 'function') {
+                    playPromise.catch(() => {});
+                }
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio > 0.45) {
-                        const playPromise = video.play();
-                        if (playPromise && typeof playPromise.catch === 'function') {
-                            playPromise.catch(() => {});
-                        }
+                    sectionVisible = entry.isIntersecting && entry.intersectionRatio > 0.45;
+                    if (sectionVisible) {
+                        tryPlay();
                     } else {
                         video.pause();
                     }
@@ -1208,10 +2604,18 @@
             }, { threshold: [0.45, 0.7] });
 
             observer.observe(section);
-        }
 
-        window.openProgramDetailModal = openProgramDetailModal;
-        window.closeProgramDetailModal = closeProgramDetailModal;
+            const unlockSound = () => {
+                video.muted = false;
+                video.volume = 1;
+                if (sectionVisible) tryPlay();
+                document.removeEventListener('pointerdown', unlockSound);
+                document.removeEventListener('keydown', unlockSound);
+            };
+
+            document.addEventListener('pointerdown', unlockSound, { once: true });
+            document.addEventListener('keydown', unlockSound, { once: true });
+        }
 
         function showToast(title, message) {
             const toast = document.getElementById('toast');
@@ -1233,76 +2637,146 @@
             return /^(0)(3|5|7|8|9)\d{8}$/.test(cleaned);
         }
 
-        function isValidEmail(email) {
-            if (!email.trim()) return true;
-            return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
-        }
-
         function setFieldError(fieldId, errorId, message) {
             const field = document.getElementById(fieldId);
             const errorEl = document.getElementById(errorId);
+            if (!field || !errorEl) return null;
             field.classList.add('border-red-500', 'focus:ring-red-500');
             field.classList.remove('border-gray-200', 'focus:ring-brand-pink');
             errorEl.textContent = message;
             errorEl.classList.remove('hidden');
+            return field;
         }
 
         function clearFieldError(fieldId, errorId) {
             const field = document.getElementById(fieldId);
             const errorEl = document.getElementById(errorId);
+            if (!field || !errorEl) return;
             field.classList.remove('border-red-500', 'focus:ring-red-500');
             field.classList.add('border-gray-200', 'focus:ring-brand-pink');
             errorEl.textContent = '';
             errorEl.classList.add('hidden');
         }
 
+        function setGroupError(groupId, errorId, message) {
+            const group = document.getElementById(groupId);
+            const errorEl = document.getElementById(errorId);
+            if (!group || !errorEl) return null;
+            group.classList.add('ring-1', 'ring-red-500', 'rounded-xl');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+            return group;
+        }
+
+        function clearGroupError(groupId, errorId) {
+            const group = document.getElementById(groupId);
+            const errorEl = document.getElementById(errorId);
+            if (!group || !errorEl) return;
+            group.classList.remove('ring-1', 'ring-red-500', 'rounded-xl');
+            errorEl.textContent = '';
+            errorEl.classList.add('hidden');
+        }
+
+        function focusFirstEnrollmentError(targetEl) {
+            if (!targetEl) return;
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const focusable = targetEl.matches('input, textarea, select, button')
+                ? targetEl
+                : targetEl.querySelector('input, textarea, select, button');
+            if (focusable && typeof focusable.focus === 'function') {
+                try {
+                    focusable.focus({ preventScroll: true });
+                } catch (_) {
+                    focusable.focus();
+                }
+            }
+        }
+
         function validateEnrollmentForm() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const phone = document.getElementById('phoneNumber').value.trim();
-            const email = document.getElementById('emailAddress').value.trim();
+            const fullNameEl = document.getElementById('fullName');
+            const ageEl = document.getElementById('age');
+            const phoneEl = document.getElementById('phoneNumber');
+            const acknowledgementEl = document.getElementById('acknowledgement');
+            if (!fullNameEl || !ageEl || !phoneEl || !acknowledgementEl) {
+                return { isValid: false, firstErrorEl: null };
+            }
+
+            const fullName = fullNameEl.value.trim();
+            const age = ageEl.value.trim();
+            const phone = phoneEl.value.trim();
+            const youtubeExperience = document.querySelector('input[name="youtubeExperience"]:checked');
+            const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
+            const acknowledgement = acknowledgementEl.checked;
             let isValid = true;
+            let firstErrorEl = null;
+
+            const markError = (el) => {
+                if (!firstErrorEl && el) firstErrorEl = el;
+            };
 
             clearFieldError('fullName', 'fullNameError');
+            clearFieldError('age', 'ageError');
             clearFieldError('phoneNumber', 'phoneError');
-            clearFieldError('emailAddress', 'emailError');
+            clearGroupError('youtubeExperienceGroup', 'youtubeExperienceError');
+            clearGroupError('incomePotentialGroup', 'incomePotentialError');
+            clearGroupError('acknowledgementGroup', 'acknowledgementError');
 
             if (!fullName) {
-                setFieldError('fullName', 'fullNameError', 'Vui lòng nhập họ và tên.');
+                markError(setFieldError('fullName', 'fullNameError', 'Vui lòng nhập họ và tên.'));
+                isValid = false;
+            }
+
+            if (!age) {
+                markError(setFieldError('age', 'ageError', 'Vui lòng nhập độ tuổi.'));
+                isValid = false;
+            } else if (Number(age) < 10 || Number(age) > 100) {
+                markError(setFieldError('age', 'ageError', 'Vui lòng nhập độ tuổi từ 10 đến 100.'));
                 isValid = false;
             }
 
             if (!phone) {
-                setFieldError('phoneNumber', 'phoneError', 'Vui lòng nhập số điện thoại.');
+                markError(setFieldError('phoneNumber', 'phoneError', 'Vui lòng nhập số điện thoại.'));
                 isValid = false;
             } else if (!isValidVietnamesePhone(phone)) {
-                setFieldError(
+                markError(setFieldError(
                     'phoneNumber',
                     'phoneError',
                     'Số điện thoại không hợp lệ. Vui lòng nhập 10 số, bắt đầu bằng 03, 05, 07, 08 hoặc 09.'
-                );
+                ));
                 isValid = false;
             }
 
-            if (email && !isValidEmail(email)) {
-                setFieldError(
-                    'emailAddress',
-                    'emailError',
-                    'Email không hợp lệ. Vui lòng nhập đúng định dạng, ví dụ: email@gmail.com.'
-                );
+            if (!youtubeExperience) {
+                markError(setGroupError('youtubeExperienceGroup', 'youtubeExperienceError', 'Vui lòng chọn kinh nghiệm làm Youtube.'));
                 isValid = false;
             }
 
-            return isValid;
+            if (!incomePotential) {
+                markError(setGroupError('incomePotentialGroup', 'incomePotentialError', 'Vui lòng chọn một mức điểm từ 0 đến 10.'));
+                isValid = false;
+            }
+
+            if (!acknowledgement) {
+                markError(setGroupError('acknowledgementGroup', 'acknowledgementError', 'Bạn cần xác nhận đã hiểu các lưu ý trước khi đăng ký.'));
+                isValid = false;
+            }
+
+            return { isValid, firstErrorEl };
         }
 
         function handleFormSubmit(e) {
-            e.preventDefault();
+            if (e && typeof e.preventDefault === 'function') {
+                e.preventDefault();
+            }
 
-            if (!validateEnrollmentForm()) {
-                return;
+            const validation = validateEnrollmentForm();
+            if (!validation.isValid) {
+                focusFirstEnrollmentError(validation.firstErrorEl);
+                return false;
             }
 
             const submitBtn = document.getElementById('submitBtn');
+            if (!submitBtn || submitBtn.disabled) return false;
             const originalContent = submitBtn.innerHTML;
             
             submitBtn.disabled = true;
@@ -1311,19 +2785,29 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Đang gửi dữ liệu tuyển sinh...
+                Đang gửi đăng ký...
             `;
 
+            const expertQuestionEl = document.getElementById('expertQuestion');
+            const expertQuestion = expertQuestionEl ? expertQuestionEl.value.trim() : '';
+            const youtubeExperience = document.querySelector('input[name="youtubeExperience"]:checked');
+            const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
             const formData = {
                 visitorId: trackingState.visitorId,
                 campaignCd: trackingState.cd,
                 timeSpent: trackingState.timeSpent + ' giây',
                 clicks: trackingState.clicks + ' lần',
                 entryPoint: trackingState.entryPoint,
-                fullName: document.getElementById('fullName').value,
+                fullName: document.getElementById('fullName').value.trim(),
+                age: document.getElementById('age').value.trim(),
                 phone: document.getElementById('phoneNumber').value.trim(),
-                email: document.getElementById('emailAddress').value.trim() || 'Không cung cấp',
-                message: document.getElementById('messageNote').value || 'Không ghi chú',
+                youtubeExperience: youtubeExperience ? youtubeExperience.value : '',
+                incomePotential: incomePotential ? incomePotential.value : '',
+                expertQuestion: expertQuestion || 'Không có câu hỏi',
+                acknowledgement: document.getElementById('acknowledgement').checked,
+                // Giữ các khóa cũ để Google Apps Script hiện tại vẫn có thể xử lý tương thích.
+                email: 'Không thu thập',
+                message: expertQuestion || 'Không có câu hỏi',
                 submittedAt: new Date().toLocaleString('vi-VN')
             };
 
@@ -1376,106 +2860,167 @@
                     "Không thể lưu thông tin vào Google Sheet. Hãy kiểm tra kết nối mạng hoặc quyền truy cập của Web App."
                 );
             });
+
+            return false;
         }
 
-        // -------------------------------------------------------------
-        // 3. LOGIC TRÌNH CHIẾU CAROUSEL GIẤY KHEN ĐỊA PHƯƠNG (BULLETPROOF GLOBAL BINDINGS FOR LOCAL RUNS)
-        // -------------------------------------------------------------
-        // Gắn trực tiếp các biến và hàm điều khiển vào đối tượng toàn cục `window` để tránh lỗi phạm vi khi chạy file://
-        window.currentAwardSlideIdx = 0;
-        window.awardSlideTimer = null;
+        // Expose for inline onsubmit/onclick (file:// + consistency with carousel bindings)
+        window.openRegisterModal = openRegisterModal;
+        window.closeRegisterModal = closeRegisterModal;
+        window.handleFormSubmit = handleFormSubmit;
 
-        window.initAwardCarousel = function() {
-            const slides = document.querySelectorAll('.award-slide');
-            const dots = document.querySelectorAll('.carousel-dot');
-            if (slides.length === 0) return;
+        // -------------------------------------------------------------
+        // 3. PAGE 3 ACTIVITY + RECOGNITION CAROUSELS
+        // -------------------------------------------------------------
+        window.initPageThreeCarousels = function() {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-            // Cài đặt sự kiện click cho các chấm tròn indicator
-            dots.forEach((dot, idx) => {
-                dot.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.showAwardSlide(idx);
+            document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+                const track = carousel.querySelector('.p3-carousel-track');
+                const dots = Array.from(carousel.querySelectorAll('.p3-carousel-dot'));
+                const previousButton = carousel.querySelector('[data-direction="prev"]');
+                const nextButton = carousel.querySelector('[data-direction="next"]');
+                if (!track || !previousButton || !nextButton) return;
+
+                const originalSlides = Array.from(track.children);
+                const slideCount = originalSlides.length;
+                const autoplayDelay = Number(carousel.dataset.autoplay) || 0;
+                let visibleSlides = 1;
+                let internalIndex = 0;
+                let logicalIndex = 0;
+                let autoplayTimer = null;
+                let resizeTimer = null;
+                let pointerStartX = null;
+
+                const getVisibleSlides = () => {
+                    if (window.innerWidth >= 1024) return Number(carousel.dataset.desktopVisible) || 1;
+                    if (window.innerWidth >= 640) return Number(carousel.dataset.tabletVisible) || 1;
+                    return Number(carousel.dataset.mobileVisible) || 1;
+                };
+
+                const updateDots = () => {
+                    dots.forEach((dot, index) => {
+                        const active = index === logicalIndex;
+                        dot.setAttribute('aria-current', active ? 'true' : 'false');
+                    });
+                };
+
+                const positionTrack = (animate = true) => {
+                    track.style.transition = animate ? '' : 'none';
+                    track.style.transform = `translate3d(-${internalIndex * (100 / visibleSlides)}%, 0, 0)`;
+                    if (!animate) {
+                        track.getBoundingClientRect();
+                        track.style.transition = '';
+                    }
+                    updateDots();
+                };
+
+                const stopAutoplay = () => {
+                    if (autoplayTimer) {
+                        window.clearInterval(autoplayTimer);
+                        autoplayTimer = null;
+                    }
+                };
+
+                const move = (direction, userInitiated = false) => {
+                    if (userInitiated) stopAutoplay();
+                    internalIndex += direction;
+                    logicalIndex = (logicalIndex + direction + slideCount) % slideCount;
+                    positionTrack(!reduceMotion.matches);
+                };
+
+                const startAutoplay = () => {
+                    stopAutoplay();
+                    if (!autoplayDelay || reduceMotion.matches || document.hidden) return;
+                    autoplayTimer = window.setInterval(() => move(1), autoplayDelay);
+                };
+
+                const buildTrack = () => {
+                    stopAutoplay();
+                    track.querySelectorAll('[data-carousel-clone]').forEach((clone) => clone.remove());
+                    visibleSlides = Math.min(getVisibleSlides(), slideCount);
+                    carousel.style.setProperty('--carousel-visible', visibleSlides);
+
+                    const prependFragment = document.createDocumentFragment();
+                    originalSlides.slice(-visibleSlides).forEach((slide) => {
+                        const clone = slide.cloneNode(true);
+                        clone.dataset.carouselClone = 'true';
+                        clone.setAttribute('aria-hidden', 'true');
+                        prependFragment.appendChild(clone);
+                    });
+                    track.insertBefore(prependFragment, track.firstChild);
+
+                    originalSlides.slice(0, visibleSlides).forEach((slide) => {
+                        const clone = slide.cloneNode(true);
+                        clone.dataset.carouselClone = 'true';
+                        clone.setAttribute('aria-hidden', 'true');
+                        track.appendChild(clone);
+                    });
+
+                    internalIndex = visibleSlides + logicalIndex;
+                    positionTrack(false);
+                    startAutoplay();
+                };
+
+                const goToSlide = (index) => {
+                    stopAutoplay();
+                    logicalIndex = index;
+                    internalIndex = visibleSlides + logicalIndex;
+                    positionTrack(!reduceMotion.matches);
+                };
+
+                previousButton.addEventListener('click', () => move(-1, true));
+                nextButton.addEventListener('click', () => move(1, true));
+                dots.forEach((dot, index) => dot.addEventListener('click', () => goToSlide(index)));
+
+                track.addEventListener('transitionend', () => {
+                    if (internalIndex >= visibleSlides + slideCount) {
+                        internalIndex = visibleSlides;
+                        positionTrack(false);
+                    } else if (internalIndex < visibleSlides) {
+                        internalIndex = visibleSlides + slideCount - 1;
+                        positionTrack(false);
+                    }
                 });
+
+                carousel.addEventListener('mouseenter', stopAutoplay);
+                carousel.addEventListener('mouseleave', startAutoplay);
+                carousel.addEventListener('focusin', stopAutoplay);
+                carousel.addEventListener('focusout', (event) => {
+                    if (!carousel.contains(event.relatedTarget)) startAutoplay();
+                });
+                carousel.addEventListener('pointerdown', (event) => {
+                    pointerStartX = event.clientX;
+                });
+                carousel.addEventListener('pointerup', (event) => {
+                    if (pointerStartX === null) return;
+                    const distance = event.clientX - pointerStartX;
+                    pointerStartX = null;
+                    if (Math.abs(distance) > 45) move(distance > 0 ? -1 : 1, true);
+                });
+                carousel.addEventListener('pointercancel', () => {
+                    pointerStartX = null;
+                });
+
+                window.addEventListener('resize', () => {
+                    window.clearTimeout(resizeTimer);
+                    resizeTimer = window.setTimeout(buildTrack, 160);
+                });
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) stopAutoplay();
+                    else startAutoplay();
+                });
+                reduceMotion.addEventListener('change', startAutoplay);
+
+                buildTrack();
             });
-
-            // Bắt đầu chạy tự động
-            window.startAwardSlideTimer();
-        }
-
-        window.showAwardSlide = function(index) {
-            const slides = document.querySelectorAll('.award-slide');
-            const dots = document.querySelectorAll('.carousel-dot');
-            if (slides.length === 0) return;
-
-            window.stopAwardSlideTimer(); // Dừng auto-play khi người dùng tương tác
-
-            // Tính toán vị trí slide (quay vòng nếu vượt quá)
-            if (index >= slides.length) window.currentAwardSlideIdx = 0;
-            else if (index < 0) window.currentAwardSlideIdx = slides.length - 1;
-            else window.currentAwardSlideIdx = index;
-
-            // Đổi slide bằng cách thay đổi class opacity (mờ dần)
-            slides.forEach((slide, idx) => {
-                if (idx === window.currentAwardSlideIdx) {
-                    slide.classList.remove('opacity-0');
-                    slide.classList.add('opacity-100');
-                } else {
-                    slide.classList.remove('opacity-100');
-                    slide.classList.add('opacity-0');
-                }
-            });
-
-            // Cập nhật các chấm tròn indicator
-            dots.forEach((dot, idx) => {
-                if (idx === window.currentAwardSlideIdx) {
-                    dot.classList.remove('bg-white/50');
-                    dot.classList.add('bg-white', 'scale-110');
-                } else {
-                    dot.classList.remove('bg-white', 'scale-110');
-                    dot.classList.add('bg-white/50');
-                }
-            });
-
-            window.startAwardSlideTimer(); // Khởi động lại auto-play
-        }
-
-        window.nextAwardSlide = function(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            window.showAwardSlide(window.currentAwardSlideIdx + 1);
-        }
-
-        window.prevAwardSlide = function(e) {
-            if (e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            window.showAwardSlide(window.currentAwardSlideIdx - 1);
-        }
-
-        window.startAwardSlideTimer = function() {
-            window.awardSlideTimer = setInterval(() => {
-                window.nextAwardSlide();
-            }, 4000); // Tự động chuyển slide sau mỗi 4 giây
-        }
-
-        window.stopAwardSlideTimer = function() {
-            if (window.awardSlideTimer) {
-                clearInterval(window.awardSlideTimer);
-            }
-        }
-
-        // Đảm bảo các hàm này có thể được gọi trực tiếp từ thuộc tính onclick trong HTML
-        window.prevAwardSlide = window.prevAwardSlide;
-        window.nextAwardSlide = window.nextAwardSlide;
+        };
 
         window.addEventListener('DOMContentLoaded', () => {
             initTracking();
-            window.initAwardCarousel(); // Khởi tạo carousel khi tải trang
+            window.initPageThreeCarousels();
             syncHeaderHeight();
+            initFullPageScroll();
             initPageOneVideoLifecycle();
             lucide.createIcons();
 
@@ -1484,26 +3029,48 @@
             document.addEventListener('keydown', (event) => {
                 if (event.key !== 'Escape') return;
                 const registerModal = document.getElementById('registerModal');
-                const detailModal = document.getElementById('programDetailModal');
                 const videoModal = document.getElementById('videoModal');
                 if (registerModal && !registerModal.classList.contains('hidden')) {
                     closeRegisterModal();
-                } else if (detailModal && !detailModal.classList.contains('hidden')) {
-                    closeProgramDetailModal();
                 } else if (videoModal && !videoModal.classList.contains('hidden')) {
                     closeIntroVideo();
                 }
             });
 
-            document.getElementById('fullName').addEventListener('input', () => {
-                clearFieldError('fullName', 'fullNameError');
+            const fullNameInput = document.getElementById('fullName');
+            if (fullNameInput) {
+                fullNameInput.addEventListener('input', () => {
+                    clearFieldError('fullName', 'fullNameError');
+                });
+            }
+            const ageInput = document.getElementById('age');
+            if (ageInput) {
+                ageInput.addEventListener('input', () => {
+                    clearFieldError('age', 'ageError');
+                });
+            }
+            const phoneInput = document.getElementById('phoneNumber');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', () => {
+                    clearFieldError('phoneNumber', 'phoneError');
+                });
+            }
+            document.querySelectorAll('input[name="youtubeExperience"]').forEach((input) => {
+                input.addEventListener('change', () => {
+                    clearGroupError('youtubeExperienceGroup', 'youtubeExperienceError');
+                });
             });
-            document.getElementById('phoneNumber').addEventListener('input', () => {
-                clearFieldError('phoneNumber', 'phoneError');
+            document.querySelectorAll('input[name="incomePotential"]').forEach((input) => {
+                input.addEventListener('change', () => {
+                    clearGroupError('incomePotentialGroup', 'incomePotentialError');
+                });
             });
-            document.getElementById('emailAddress').addEventListener('input', () => {
-                clearFieldError('emailAddress', 'emailError');
-            });
+            const acknowledgementInput = document.getElementById('acknowledgement');
+            if (acknowledgementInput) {
+                acknowledgementInput.addEventListener('change', () => {
+                    clearGroupError('acknowledgementGroup', 'acknowledgementError');
+                });
+            }
         });
     </script>
 
