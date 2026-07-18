@@ -98,45 +98,6 @@
             max-width: 4.5rem;
             background: linear-gradient(90deg, transparent, #E85312 20%, #E85312 80%, transparent);
         }
-        /* Page 1: a restrained current flows through the label and its side rules. */
-        #chuong-trinh .p1-program-wave .program-heading-line {
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                rgba(232, 83, 18, 0.35) 18%,
-                #E85312 42%,
-                rgba(232, 83, 18, 0.35) 68%,
-                transparent 100%
-            );
-            background-size: 200% 100%;
-            animation: p1-wave-current 3.6s ease-in-out infinite;
-        }
-        #chuong-trinh .p1-program-wave-label {
-            position: relative;
-            padding-bottom: 0.35rem;
-        }
-        #chuong-trinh .p1-program-wave-label::after {
-            content: "";
-            position: absolute;
-            left: 0.1em;
-            right: 0.1em;
-            bottom: 0;
-            height: 3px;
-            opacity: 0.72;
-            background:
-                radial-gradient(ellipse at 50% 100%, transparent 55%, #E85312 58% 68%, transparent 71%)
-                0 0 / 12px 5px repeat-x;
-            animation: p1-wave-ripple 2.8s linear infinite;
-            pointer-events: none;
-        }
-        @keyframes p1-wave-current {
-            0%, 100% { background-position: 100% 50%; }
-            50% { background-position: 0% 50%; }
-        }
-        @keyframes p1-wave-ripple {
-            from { transform: translateX(0); }
-            to { transform: translateX(12px); }
-        }
         .youtube-o-logo {
             width: 0.9em;
             height: 0.68em;
@@ -228,13 +189,6 @@
         @media (prefers-reduced-motion: reduce) {
             .page-scroll {
                 scroll-behavior: auto;
-            }
-            #chuong-trinh .p1-program-wave .program-heading-line,
-            #chuong-trinh .p1-program-wave-label::after {
-                animation: none;
-            }
-            #chuong-trinh .p1-program-wave .program-heading-line {
-                background-position: 50% 50%;
             }
             .p1-hover-card,
             .p1-video,
@@ -970,7 +924,7 @@
             letter-spacing: 0.04em;
             color: rgba(255, 255, 255, 0.85);
         }
-        @media (min-width: 901px) {
+        @media (min-width: 1024px) {
             #ve-chung-toi {
                 overflow: hidden;
             }
@@ -994,7 +948,7 @@
                 max-height: none;
             }
         }
-        @media (min-width: 901px) and (max-height: 760px) {
+        @media (min-width: 1024px) and (max-height: 760px) {
             .p3-container {
                 padding-block: 0.45rem 0.55rem;
                 gap: 0.45rem;
@@ -1047,7 +1001,7 @@
                 font-size: 0.75rem;
             }
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1023px) {
             .p3-main-grid {
                 grid-template-columns: 1fr;
                 grid-template-rows: none;
@@ -1463,11 +1417,11 @@
                     <!-- Row 1 Left: Program title + schedule -->
                     <div class="lg:col-span-7 lg:col-start-1 lg:row-start-1 space-y-2 sm:space-y-4 order-1 lg:order-none">
                         <div class="text-center space-y-1 sm:space-y-2.5">
-                            <div class="p1-program-wave flex items-center justify-center gap-2 sm:gap-3">
+                            <div class="flex items-center justify-center gap-2 sm:gap-3">
                                 <span class="program-heading-line" aria-hidden="true"></span>
                                 <div class="inline-flex items-center gap-2 shrink-0">
                                     <span class="w-1.5 h-1.5 rounded-full bg-brand-rust animate-pulse"></span>
-                                    <p class="p1-program-wave-label font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-rust whitespace-nowrap">
+                                    <p class="font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-rust whitespace-nowrap">
                                         Chương trình tiếp theo:
                                     </p>
                                 </div>
