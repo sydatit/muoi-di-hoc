@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="favicon.png" sizes="64x64">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,6 +21,7 @@
                             teal: '#00a896',
                             blue: '#0072bc',
                             orange: '#f7941d',
+                            rust: '#974335',
                             pinkHover: '#d01377',
                             tealHover: '#008e7f',
                         },
@@ -31,6 +32,7 @@
                     },
                     fontFamily: {
                         montserrat: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        script: ['Dancing Script', 'cursive', 'ui-serif', 'serif'],
                     }
                 }
             }
@@ -68,6 +70,7 @@
         }
         .page-scroll {
             height: calc(100svh - var(--header-h));
+            overflow-x: hidden;
             overflow-y: auto;
             overscroll-behavior-y: contain;
             scroll-snap-type: y mandatory;
@@ -88,7 +91,7 @@
             height: 1px;
             flex: 1 1 0;
             max-width: 4.5rem;
-            background: linear-gradient(90deg, transparent, #f7941d 20%, #f7941d 80%, transparent);
+            background: linear-gradient(90deg, transparent, #974335 20%, #974335 80%, transparent);
         }
         .youtube-o-logo {
             width: 0.9em;
@@ -127,7 +130,7 @@
         .schedule-icon .lucide {
             width: 2rem;
             height: 2rem;
-            stroke: #f7941d;
+            stroke: #974335;
             stroke-width: 2.25;
             fill: none;
         }
@@ -151,51 +154,9 @@
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="#" class="flex items-center gap-3 group">
                 <!-- SVG Recreating the logo from logo-muoi-2.png -->
-                <div class="w-10 h-10 group-hover:scale-105 transition-transform">
+                <div class="w-12 h-12 group-hover:scale-105 transition-transform">
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                         width="100%" viewBox="0 0 640 640" enable-background="new 0 0 640 640" xml:space="preserve">
-                    <path fill="#FEFEFF" opacity="1.000000" stroke="none" 
-                        d="
-                    M365.000000,641.000000 
-                        C243.333359,641.000000 122.166710,641.000000 1.000049,641.000000 
-                        C1.000033,427.666718 1.000033,214.333450 1.000016,1.000135 
-                        C214.333237,1.000090 427.666473,1.000090 640.999756,1.000045 
-                        C640.999878,214.333191 640.999878,427.666382 640.999939,640.999756 
-                        C549.166687,641.000000 457.333344,641.000000 365.000000,641.000000 
-                    M364.041351,205.992355 
-                        C362.756683,204.996033 361.351227,204.121353 360.206451,202.984207 
-                        C350.877563,193.717773 342.055389,183.877045 332.167969,175.255966 
-                        C323.077179,167.329483 313.724762,158.835846 302.979797,153.825928 
-                        C259.619446,133.609024 218.158661,137.580231 180.548859,167.981003 
-                        C157.627884,186.508484 145.180832,211.222656 142.067230,240.525269 
-                        C141.354874,247.229324 141.230484,253.995834 140.340485,261.195618 
-                        C123.256554,278.260040 106.082893,295.235748 89.107491,312.407471 
-                        C54.496887,347.418335 46.762482,399.346649 69.528595,442.861542 
-                        C101.118835,503.242706 181.253754,521.313904 234.888321,479.234619 
-                        C250.495300,466.990112 263.673248,451.649536 278.712494,437.752655 
-                        C280.303711,438.855530 282.096008,439.754486 283.454193,441.093719 
-                        C293.771027,451.266571 303.585632,461.988922 314.338715,471.671631 
-                        C347.867584,501.862885 386.581818,509.696777 429.006836,495.082581 
-                        C473.002625,479.927307 501.559662,438.150574 501.557465,391.576843 
-                        C501.557343,388.638184 501.992950,385.699554 502.693268,382.390900 
-                        C519.822815,365.350708 537.193359,348.544586 554.026550,331.216553 
-                        C580.550049,303.913391 591.206543,271.111755 584.536987,233.632278 
-                        C577.092163,191.796173 552.736328,162.572098 512.904114,148.435455 
-                        C472.214783,133.994598 434.186188,141.431595 401.301208,169.830750 
-                        C388.346588,181.018250 376.869965,193.917206 364.041351,205.992355 
-                    M386.302094,134.801361 
-                        C391.876068,129.207657 397.450043,123.613960 402.179779,118.867493 
-                        C388.783295,105.314514 375.983185,92.364838 363.899567,80.140045 
-                        C351.301483,92.760429 338.440521,105.644135 326.250366,117.855888 
-                        C338.602692,130.365906 351.399658,143.326279 364.761383,156.858627 
-                        C371.663788,149.796585 378.740387,142.556320 386.302094,134.801361 
-                    M252.211700,538.288757 
-                        C261.036743,547.303406 269.861786,556.318115 278.343872,564.982483 
-                        C291.984222,551.395752 304.918701,538.512085 317.481049,525.999084 
-                        C304.791931,513.186768 291.965118,500.235474 279.280518,487.427704 
-                        C266.500122,500.239441 253.619080,513.151978 239.798569,527.006348 
-                        C243.611664,530.456970 247.662155,534.122375 252.211700,538.288757 
-                    z"/>
                     <path fill="#07A99E" opacity="1.000000" stroke="none" 
                         d="
                     M502.225861,382.760895 
@@ -493,24 +454,24 @@
         
         <!-- PAGE 1: CHƯƠNG TRÌNH TIẾP THEO -->
         <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-center border-b border-gray-100 bg-[#f7f7f5]">
-            <div class="w-full max-w-6xl mx-auto px-4 py-4 sm:py-5 lg:py-6">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
+            <div class="w-full max-w-6xl mx-auto px-4 py-3 sm:py-4">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-x-8 lg:gap-y-4 items-start">
 
-                    <!-- LEFT: Program title + schedule + video -->
-                    <div class="lg:col-span-7 space-y-3 sm:space-y-4 order-1">
+                    <!-- Row 1 Left: Program title + schedule -->
+                    <div class="lg:col-span-7 lg:col-start-1 lg:row-start-1 space-y-3 sm:space-y-4 order-1 lg:order-none">
                         <div class="text-center space-y-2 sm:space-y-2.5">
                             <div class="flex items-center justify-center gap-2 sm:gap-3">
                                 <span class="program-heading-line" aria-hidden="true"></span>
                                 <div class="inline-flex items-center gap-2 shrink-0">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></span>
-                                    <p class="font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-orange whitespace-nowrap">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand-rust animate-pulse"></span>
+                                    <p class="font-montserrat text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-brand-rust whitespace-nowrap">
                                         Chương trình tiếp theo:
                                     </p>
                                 </div>
                                 <span class="program-heading-line" aria-hidden="true"></span>
                             </div>
 
-                            <h1 class="font-montserrat flex items-center justify-center gap-[0.01em] text-[clamp(3rem,8.5vw,5.5rem)] font-black tracking-[-0.03em] text-slate-900 leading-none uppercase">
+                            <h1 class="font-montserrat flex items-center justify-center gap-[0.01em] text-[clamp(2.5rem,7vw,4.5rem)] font-black tracking-[-0.03em] text-slate-900 leading-none uppercase">
                                 <span>Y</span>
                                 <span class="youtube-o-logo" aria-hidden="true">
                                     <i data-lucide="play"></i>
@@ -529,106 +490,99 @@
                         <!-- Time / Location -->
                         <div class="bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
                             <div class="flex items-center gap-3 sm:gap-3.5 px-4 py-4 sm:px-5 sm:py-5">
-                                <span class="schedule-icon text-brand-orange shrink-0" aria-hidden="true">
+                                <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="calendar-days"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
                                     <p class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thời gian</p>
-                                    <p class="text-sm sm:text-[0.95rem] font-bold text-brand-orange leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
+                                    <p class="text-sm sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3 sm:gap-3.5 px-4 py-4 sm:px-5 sm:py-5">
-                                <span class="schedule-icon text-brand-orange shrink-0" aria-hidden="true">
+                                <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="map-pin"></i>
                                 </span>
                                 <div class="min-w-0 text-left">
                                     <p class="text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Địa điểm</p>
                                     <p class="text-sm sm:text-[0.95rem] font-bold leading-snug">
-                                        <span class="text-brand-orange">Phòng hội thảo Biblio,</span>
+                                        <span class="text-brand-rust">Phòng hội thảo Biblio,</span>
                                         <span class="block text-slate-800 font-semibold">Ngụy Như Kon Tum, Hà Nội</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Program video -->
-                        <div class="relative aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5">
-                            <video
-                                id="pageOneVideo"
-                                class="absolute inset-0 w-full h-full object-cover"
-                                autoplay
-                                muted
-                                loop
-                                playsinline
-                                preload="metadata"
-                                poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200"
-                                aria-label="Video giới thiệu chương trình YouTube">
-                                <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
-                            </video>
-                            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
-                            <div class="absolute left-3 right-3 bottom-3 z-10 text-white">
-                                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wide drop-shadow">
-                                    Giới thiệu chương trình YouTube – Ý tưởng đến thu nhập
-                                </p>
-                            </div>
+                    <!-- Row 1 Right: Speaker (bottom edge aligned with schedule card) -->
+                    <div class="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
+                        <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
+                        <div class="relative p-5 sm:p-6 space-y-2">
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuyên gia</p>
+                            <h3 class="font-script text-4xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
+                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                                Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
+                            </p>
                         </div>
                     </div>
 
-                    <!-- RIGHT: Speaker + achievements -->
-                    <div class="lg:col-span-5 order-2 space-y-3 sm:space-y-4">
-                        <div class="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm">
-                            <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
-                            <div class="relative p-4 sm:p-5 flex gap-3 sm:gap-4 items-start">
-                                <img
-                                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400"
-                                    alt="Diễn giả Mr Văn"
-                                    class="w-24 h-28 sm:w-28 sm:h-36 object-cover rounded-xl shrink-0 shadow-md ring-1 ring-black/5">
-                                <div class="min-w-0 space-y-1.5 pt-1">
-                                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-orange">Chuyên gia</p>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-slate-900 leading-none">Mr Văn</h3>
-                                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-                                        Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
-                                    </p>
-                                </div>
-                            </div>
+                    <!-- Row 2 Left: Program video (full column width = schedule card width) -->
+                    <div class="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-2 order-2 lg:order-none">
+                        <video
+                            id="pageOneVideo"
+                            class="absolute inset-0 w-full h-full object-cover"
+                            autoplay
+                            muted
+                            loop
+                            playsinline
+                            preload="metadata"
+                            poster="https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200"
+                            aria-label="Video giới thiệu chương trình YouTube">
+                            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+                        </video>
+                        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+                        <div class="absolute left-3 right-3 bottom-3 z-10 text-white">
+                            <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wide drop-shadow">
+                                Giới thiệu chương trình YouTube – Ý tưởng đến thu nhập
+                            </p>
                         </div>
+                    </div>
 
-                        <div class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-sm">
-                            <h2 class="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-brand-orange mb-3">
-                                Một số thành tích nổi bật
-                            </h2>
-                            <ul class="divide-y divide-gray-100">
-                                <li class="flex items-center gap-3 py-2.5 first:pt-0">
-                                    <span class="w-9 h-9 rounded-full bg-brand-orange/10 text-brand-orange flex items-center justify-center shrink-0">
-                                        <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-                                    </span>
-                                    <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Youtuber triệu đô</span>
-                                </li>
-                                <li class="flex items-center gap-3 py-2.5">
-                                    <span class="w-9 h-9 rounded-full bg-brand-orange/10 text-brand-orange flex items-center justify-center shrink-0">
-                                        <i data-lucide="calendar" class="w-4 h-4"></i>
-                                    </span>
-                                    <span class="text-sm font-bold uppercase tracking-wide text-slate-800">13 năm kinh nghiệm</span>
-                                </li>
-                                <li class="flex items-center gap-3 py-2.5">
-                                    <span class="w-9 h-9 rounded-full bg-brand-orange/10 text-brand-orange flex items-center justify-center shrink-0">
-                                        <i data-lucide="play" class="w-4 h-4"></i>
-                                    </span>
-                                    <span class="text-sm font-bold uppercase tracking-wide text-slate-800">7 kênh nút bạc + 2 kênh nút vàng</span>
-                                </li>
-                                <li class="flex items-center gap-3 py-2.5 last:pb-0">
-                                    <span class="w-9 h-9 rounded-full bg-brand-orange/10 text-brand-orange flex items-center justify-center shrink-0">
-                                        <i data-lucide="users" class="w-4 h-4"></i>
-                                    </span>
-                                    <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Hỗ trợ hàng trăm kênh bật kiếm tiền</span>
-                                </li>
-                            </ul>
-                        </div>
+                    <!-- Row 2 Right: Achievements (same height as video) -->
+                    <div class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col lg:h-full lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
+                        <h2 class="text-xs sm:text-sm font-extrabold uppercase tracking-wide text-brand-rust mb-3">
+                            Một số thành tích nổi bật
+                        </h2>
+                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col lg:justify-evenly">
+                            <li class="flex items-center gap-3 py-2.5 first:pt-0">
+                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
+                                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                                </span>
+                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Youtuber triệu đô</span>
+                            </li>
+                            <li class="flex items-center gap-3 py-2.5">
+                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
+                                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                                </span>
+                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">13 năm kinh nghiệm</span>
+                            </li>
+                            <li class="flex items-center gap-3 py-2.5">
+                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
+                                    <i data-lucide="play" class="w-4 h-4"></i>
+                                </span>
+                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">7 kênh nút bạc + 2 kênh nút vàng</span>
+                            </li>
+                            <li class="flex items-center gap-3 py-2.5 last:pb-0">
+                                <span class="w-9 h-9 rounded-full bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0">
+                                    <i data-lucide="users" class="w-4 h-4"></i>
+                                </span>
+                                <span class="text-sm font-bold uppercase tracking-wide text-slate-800">Hỗ trợ hàng trăm kênh bật kiếm tiền</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- CTA spanning both columns -->
-                <div class="mt-4 sm:mt-5 space-y-1.5 max-w-sm mx-auto w-full">
+                <div class="mt-3 sm:mt-4 space-y-1.5 max-w-sm mx-auto w-full">
                     <button
                         onclick="openRegisterModal('Page 1 CTA')"
                         class="cta-register w-full inline-flex items-center justify-center gap-2.5 text-white px-4 py-3 sm:py-3.5 font-extrabold uppercase transition-all text-[1.3rem] sm:text-[1.45rem] whitespace-nowrap">
