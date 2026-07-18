@@ -97,6 +97,43 @@
             scroll-snap-align: start;
             scroll-snap-stop: always;
         }
+        /* Main page scrollbars: thin cream track + soft brand-orange thumb */
+        .page-scroll,
+        .snap-page {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(232, 83, 18, 0.45) #fffaf5;
+        }
+        .page-scroll::-webkit-scrollbar,
+        .snap-page::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        .page-scroll::-webkit-scrollbar-track,
+        .snap-page::-webkit-scrollbar-track {
+            background: #fffaf5;
+        }
+        .page-scroll::-webkit-scrollbar-thumb,
+        .snap-page::-webkit-scrollbar-thumb {
+            background-color: rgba(232, 83, 18, 0.45);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        .page-scroll::-webkit-scrollbar-thumb:hover,
+        .snap-page::-webkit-scrollbar-thumb:hover {
+            background-color: #c94708;
+        }
+        @media (max-width: 639px) {
+            .page-scroll::-webkit-scrollbar,
+            .snap-page::-webkit-scrollbar {
+                width: 4px;
+                height: 4px;
+            }
+            .page-scroll::-webkit-scrollbar-thumb,
+            .snap-page::-webkit-scrollbar-thumb {
+                border-width: 1px;
+            }
+        }
         body.modal-open .page-scroll {
             overflow: hidden;
             touch-action: none;
