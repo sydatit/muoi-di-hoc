@@ -99,6 +99,42 @@
         }
         body.modal-open .page-scroll {
             overflow: hidden;
+            touch-action: none;
+        }
+        /* Registration modal: keep form scrollable on mobile visualViewport */
+        #registerModal {
+            height: var(--app-height, 100dvh);
+            max-height: var(--app-height, 100dvh);
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+        #modalCard {
+            max-height: min(90dvh, calc(var(--app-height, 100dvh) - 2rem));
+            min-height: 0;
+        }
+        #enrollmentForm {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+        }
+        /* Keep choice radios in-flow so mobile focus scroll does not jump the form */
+        #enrollmentForm .choice-option {
+            position: relative;
+            display: block;
+        }
+        #enrollmentForm .choice-option > input[type="radio"] {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            margin: 0;
+            opacity: 0;
+            cursor: pointer;
         }
         .program-heading-line {
             height: 1px;
@@ -1674,7 +1710,7 @@
                                 </span>
                                 <div class="min-w-0 text-left">
                                     <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Thời gian</p>
-                                    <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h Chủ nhật, ngày 19/7/2026</p>
+                                    <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h&nbsp;Chủ&nbsp;nhật,&nbsp;ngày<br class="sm:hidden"> 19/7/2026</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
@@ -1685,7 +1721,7 @@
                                     <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-900 mb-0.5">Địa điểm</p>
                                     <p class="text-xs sm:text-[0.95rem] font-bold leading-snug">
                                         <span class="text-brand-rust">Phòng hội thảo Biblio,</span>
-                                        <span class="block text-slate-800 font-semibold">Ngụy Như Kon Tum, Hà Nội</span>
+                                        <span class="block text-slate-800 font-semibold">Ngụy&nbsp;Như&nbsp;Kon&nbsp;Tum,<br class="sm:hidden"> Hà&nbsp;Nội</span>
                                     </p>
                                 </div>
                             </div>
@@ -1862,8 +1898,8 @@
                         <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
-                                    src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?auto=format&fit=crop&q=80&w=800"
-                                    alt="Chương trình YouTube – Ý tưởng đến thu nhập"
+                                    src="assets/images/youtube-y-tuong-thu-nhap.jpg"
+                                    alt="Buổi chia sẻ YouTube – Ý tưởng đến thu nhập"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -1925,8 +1961,8 @@
                         <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                             <div class="aspect-[16/10] bg-slate-100 overflow-hidden">
                                 <img
-                                    src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800"
-                                    alt="Chương trình Kinh doanh online – Bắt đầu từ đâu?"
+                                    src="assets/images/kinh-doanh-online.png"
+                                    alt="Buổi chia sẻ Kinh doanh online"
                                     class="w-full h-full object-cover"
                                     loading="lazy">
                             </div>
@@ -2099,11 +2135,11 @@
     </main>
 
     <!-- REGISTRATION POPUP MODAL -->
-    <div id="registerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300">
-        <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" id="modalCard">
+    <div id="registerModal" class="fixed inset-x-0 top-0 z-50 flex p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" onclick="closeRegisterModal()">
+        <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col" id="modalCard" onclick="event.stopPropagation()">
             <!-- Header Modal -->
             <div class="bg-brand-pink p-6 pr-14 text-white relative shrink-0">
-                <button onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng form đăng ký">
+                <button type="button" onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng form đăng ký">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
                 <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">Đăng ký tham gia</span>
@@ -2117,7 +2153,7 @@
             </div>
 
             <!-- Form Body with Scroll -->
-            <form id="enrollmentForm" onsubmit="return handleFormSubmit(event)" novalidate class="p-6 space-y-5 overflow-y-auto flex-grow">
+            <form id="enrollmentForm" onsubmit="return handleFormSubmit(event)" novalidate class="p-6 space-y-5">
                 
                 <!-- Hidden Tracking Inputs -->
                 <input type="hidden" id="track_visitorId" name="visitorId">
@@ -2180,24 +2216,24 @@
                 <fieldset>
                     <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kinh nghiệm của bạn về làm Youtube <span class="text-red-500">*</span></legend>
                     <div id="youtubeExperienceGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Không có" required class="peer sr-only">
+                        <label class="choice-option cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Không có" required class="peer">
                             <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Không có</span>
                         </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Mới tìm hiểu" class="peer sr-only">
+                        <label class="choice-option cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Mới tìm hiểu" class="peer">
                             <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Mới tìm hiểu</span>
                         </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Dưới 6 tháng" class="peer sr-only">
+                        <label class="choice-option cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Dưới 6 tháng" class="peer">
                             <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Dưới 6 tháng</span>
                         </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Khoảng 1 năm" class="peer sr-only">
+                        <label class="choice-option cursor-pointer">
+                            <input type="radio" name="youtubeExperience" value="Khoảng 1 năm" class="peer">
                             <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Khoảng 1 năm</span>
                         </label>
-                        <label class="cursor-pointer sm:col-span-2">
-                            <input type="radio" name="youtubeExperience" value="Trên 1 năm" class="peer sr-only">
+                        <label class="choice-option cursor-pointer sm:col-span-2">
+                            <input type="radio" name="youtubeExperience" value="Trên 1 năm" class="peer">
                             <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Trên 1 năm</span>
                         </label>
                     </div>
@@ -2207,17 +2243,17 @@
                 <fieldset>
                     <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cảm nhận của bạn về tiềm năng tạo ra thu nhập từ việc làm Youtube (theo thang điểm 10) <span class="text-red-500">*</span></legend>
                     <div id="incomePotentialGroup" class="grid grid-cols-6 sm:grid-cols-11 gap-1.5">
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="0" required class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">0</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">1</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="2" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">2</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="3" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">3</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="4" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">4</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="5" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">5</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="6" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">6</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="7" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">7</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="8" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">8</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="9" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">9</span></label>
-                        <label class="cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer sr-only"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">10</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="0" required class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">0</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">1</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="2" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">2</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="3" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">3</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="4" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">4</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="5" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">5</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="6" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">6</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="7" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">7</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="8" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">8</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="9" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">9</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">10</span></label>
                     </div>
                     <div class="flex justify-between text-[11px] text-gray-500 mt-1.5">
                         <span>Không có</span>
@@ -2456,11 +2492,17 @@
         // -------------------------------------------------------------
         // 2. LOGIC MỞ POPUP & FORM SUBMISSION
         // -------------------------------------------------------------
+        function isRegisterModalOpen() {
+            const modal = document.getElementById('registerModal');
+            return Boolean(modal && !modal.classList.contains('hidden'));
+        }
+
         function openRegisterModal(entryPointName) {
             trackingState.entryPoint = entryPointName;
             
             const modal = document.getElementById('registerModal');
             const card = document.getElementById('modalCard');
+            const form = document.getElementById('enrollmentForm');
             
             document.getElementById('track_visitorId').value = trackingState.visitorId;
             document.getElementById('track_cd').value = trackingState.cd;
@@ -2468,7 +2510,10 @@
             document.getElementById('track_clicks').value = trackingState.clicks;
             document.getElementById('track_entryPoint').value = trackingState.entryPoint;
 
+            document.body.classList.add('modal-open');
+            if (form) form.scrollTop = 0;
             modal.classList.remove('hidden');
+            syncAppHeight();
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
                 card.classList.remove('scale-95');
@@ -2479,13 +2524,20 @@
         function closeRegisterModal() {
             const modal = document.getElementById('registerModal');
             const card = document.getElementById('modalCard');
+            const active = document.activeElement;
+            if (active && modal && modal.contains(active) && typeof active.blur === 'function') {
+                active.blur();
+            }
             
             modal.classList.add('opacity-0');
             card.classList.remove('scale-100');
             card.classList.add('scale-95');
+            document.body.classList.remove('modal-open');
+            syncRegisterModalViewport();
             
             setTimeout(() => {
                 modal.classList.add('hidden');
+                syncRegisterModalViewport();
             }, 300);
         }
 
@@ -2502,12 +2554,33 @@
             document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
         }
 
+        function syncRegisterModalViewport() {
+            const modal = document.getElementById('registerModal');
+            if (!modal) return;
+            const vv = window.visualViewport;
+            if (!isRegisterModalOpen() || !vv) {
+                modal.style.top = '';
+                modal.style.left = '';
+                modal.style.width = '';
+                return;
+            }
+            // Pin the overlay to the visual viewport so keyboard/focus pan cannot leave a white gap.
+            modal.style.top = `${Math.round(vv.offsetTop || 0)}px`;
+            modal.style.left = `${Math.round(vv.offsetLeft || 0)}px`;
+            modal.style.width = `${Math.round(vv.width || window.innerWidth)}px`;
+        }
+
         function syncAppHeight() {
             const vv = window.visualViewport;
             const height = vv && typeof vv.height === 'number' ? vv.height : window.innerHeight;
             if (!height || height < 1) return;
             document.documentElement.style.setProperty('--app-height', `${Math.round(height)}px`);
             syncHeaderHeight();
+            syncRegisterModalViewport();
+            // While the register modal is open, avoid fighting Chrome's focus/keyboard pan.
+            if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) {
+                return;
+            }
             // Chrome Android can pan the visual viewport; keep the shell pinned at the top.
             if (window.scrollX || window.scrollY) {
                 window.scrollTo(0, 0);
@@ -2807,6 +2880,8 @@
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
                     syncAppHeight();
+                    // Do not re-snap the page under an open modal (focus/keyboard viewport churn).
+                    if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
                     goToPage(nearestPageIndex(), { instant: true });
                 }, 120);
             };
@@ -2826,12 +2901,22 @@
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
             let sectionVisible = false;
+            let soundUnlocked = false;
+            let tapStart = null;
+
+            // Keep muted autoplay reliable on mobile WebViews / older iOS.
+            video.muted = true;
+            video.defaultMuted = true;
+            video.playsInline = true;
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
 
             const tryPlay = () => {
                 const playPromise = video.play();
                 if (playPromise && typeof playPromise.catch === 'function') {
                     playPromise.catch(() => {});
                 }
+                return playPromise;
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -2847,16 +2932,66 @@
 
             observer.observe(section);
 
-            const unlockSound = () => {
+            // Only unmute from an intentional tap on the video itself.
+            // Document-level pointerdown used to unmute on any page touch; on Chrome
+            // Android that pauses muted autoplay, leaving the clip stuck until scroll-back.
+            const unlockSoundFromVideoTap = () => {
+                if (soundUnlocked || !sectionVisible) return;
+
                 video.muted = false;
                 video.volume = 1;
-                if (sectionVisible) tryPlay();
-                document.removeEventListener('pointerdown', unlockSound);
-                document.removeEventListener('keydown', unlockSound);
+
+                const recoverMutedPlayback = () => {
+                    video.muted = true;
+                    if (sectionVisible) tryPlay();
+                };
+
+                const playPromise = tryPlay();
+                if (playPromise && typeof playPromise.then === 'function') {
+                    playPromise.then(() => {
+                        // Some Android Chrome builds unmute + pause without rejecting play().
+                        if (sectionVisible && video.paused) {
+                            recoverMutedPlayback();
+                            return;
+                        }
+                        soundUnlocked = true;
+                    }).catch(() => {
+                        recoverMutedPlayback();
+                    });
+                } else {
+                    requestAnimationFrame(() => {
+                        if (sectionVisible && video.paused) {
+                            recoverMutedPlayback();
+                            return;
+                        }
+                        soundUnlocked = true;
+                    });
+                }
             };
 
-            document.addEventListener('pointerdown', unlockSound, { once: true });
-            document.addEventListener('keydown', unlockSound, { once: true });
+            const videoHost = video.closest('.p1-video') || video;
+            videoHost.addEventListener('pointerdown', (event) => {
+                if (event.isPrimary === false) return;
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                tapStart = { x: event.clientX, y: event.clientY };
+            }, { passive: true });
+
+            videoHost.addEventListener('pointerup', (event) => {
+                if (!tapStart || soundUnlocked) {
+                    tapStart = null;
+                    return;
+                }
+                const dx = event.clientX - tapStart.x;
+                const dy = event.clientY - tapStart.y;
+                tapStart = null;
+                // Ignore swipes so fullpage page changes from the video area stay mute-safe.
+                if (Math.hypot(dx, dy) > 12) return;
+                unlockSoundFromVideoTap();
+            }, { passive: true });
+
+            videoHost.addEventListener('pointercancel', () => {
+                tapStart = null;
+            }, { passive: true });
         }
 
         function showToast(title, message) {
@@ -3301,14 +3436,29 @@
                     clearFieldError('phoneNumber', 'phoneError');
                 });
             }
+            const enrollmentForm = document.getElementById('enrollmentForm');
+            const preserveEnrollmentScroll = () => {
+                if (!enrollmentForm) return;
+                const top = enrollmentForm.scrollTop;
+                requestAnimationFrame(() => {
+                    enrollmentForm.scrollTop = top;
+                    requestAnimationFrame(() => {
+                        enrollmentForm.scrollTop = top;
+                    });
+                });
+            };
             document.querySelectorAll('input[name="youtubeExperience"]').forEach((input) => {
+                input.addEventListener('focus', preserveEnrollmentScroll);
                 input.addEventListener('change', () => {
                     clearGroupError('youtubeExperienceGroup', 'youtubeExperienceError');
+                    preserveEnrollmentScroll();
                 });
             });
             document.querySelectorAll('input[name="incomePotential"]').forEach((input) => {
+                input.addEventListener('focus', preserveEnrollmentScroll);
                 input.addEventListener('change', () => {
                     clearGroupError('incomePotentialGroup', 'incomePotentialError');
+                    preserveEnrollmentScroll();
                 });
             });
             const acknowledgementInput = document.getElementById('acknowledgement');
