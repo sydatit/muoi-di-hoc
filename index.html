@@ -2991,12 +2991,22 @@
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
             let sectionVisible = false;
+            let soundUnlocked = false;
+            let tapStart = null;
+
+            // Keep muted autoplay reliable on mobile WebViews / older iOS.
+            video.muted = true;
+            video.defaultMuted = true;
+            video.playsInline = true;
+            video.setAttribute('playsinline', '');
+            video.setAttribute('webkit-playsinline', '');
 
             const tryPlay = () => {
                 const playPromise = video.play();
                 if (playPromise && typeof playPromise.catch === 'function') {
                     playPromise.catch(() => {});
                 }
+                return playPromise;
             };
 
             const observer = new IntersectionObserver((entries) => {
@@ -3012,16 +3022,66 @@
 
             observer.observe(section);
 
-            const unlockSound = () => {
+            // Only unmute from an intentional tap on the video itself.
+            // Document-level pointerdown used to unmute on any page touch; on Chrome
+            // Android that pauses muted autoplay, leaving the clip stuck until scroll-back.
+            const unlockSoundFromVideoTap = () => {
+                if (soundUnlocked || !sectionVisible) return;
+
                 video.muted = false;
                 video.volume = 1;
-                if (sectionVisible) tryPlay();
-                document.removeEventListener('pointerdown', unlockSound);
-                document.removeEventListener('keydown', unlockSound);
+
+                const recoverMutedPlayback = () => {
+                    video.muted = true;
+                    if (sectionVisible) tryPlay();
+                };
+
+                const playPromise = tryPlay();
+                if (playPromise && typeof playPromise.then === 'function') {
+                    playPromise.then(() => {
+                        // Some Android Chrome builds unmute + pause without rejecting play().
+                        if (sectionVisible && video.paused) {
+                            recoverMutedPlayback();
+                            return;
+                        }
+                        soundUnlocked = true;
+                    }).catch(() => {
+                        recoverMutedPlayback();
+                    });
+                } else {
+                    requestAnimationFrame(() => {
+                        if (sectionVisible && video.paused) {
+                            recoverMutedPlayback();
+                            return;
+                        }
+                        soundUnlocked = true;
+                    });
+                }
             };
 
-            document.addEventListener('pointerdown', unlockSound, { once: true });
-            document.addEventListener('keydown', unlockSound, { once: true });
+            const videoHost = video.closest('.p1-video') || video;
+            videoHost.addEventListener('pointerdown', (event) => {
+                if (event.isPrimary === false) return;
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                tapStart = { x: event.clientX, y: event.clientY };
+            }, { passive: true });
+
+            videoHost.addEventListener('pointerup', (event) => {
+                if (!tapStart || soundUnlocked) {
+                    tapStart = null;
+                    return;
+                }
+                const dx = event.clientX - tapStart.x;
+                const dy = event.clientY - tapStart.y;
+                tapStart = null;
+                // Ignore swipes so fullpage page changes from the video area stay mute-safe.
+                if (Math.hypot(dx, dy) > 12) return;
+                unlockSoundFromVideoTap();
+            }, { passive: true });
+
+            videoHost.addEventListener('pointercancel', () => {
+                tapStart = null;
+            }, { passive: true });
         }
 
         function showToast(title, message) {
