@@ -96,6 +96,44 @@
             overscroll-behavior-y: contain;
             scroll-snap-align: start;
             scroll-snap-stop: always;
+            /* Hide inner section scrollbars (page 2 overscroll flash); keep .page-scroll bar */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .snap-page::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+        /* Main page scrollbar only: thin orange thumb, transparent track (no cream strip) */
+        .page-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(232, 83, 18, 0.45) transparent;
+        }
+        .page-scroll::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        .page-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .page-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(232, 83, 18, 0.45);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        .page-scroll::-webkit-scrollbar-thumb:hover {
+            background-color: #c94708;
+        }
+        @media (max-width: 639px) {
+            .page-scroll::-webkit-scrollbar {
+                width: 4px;
+                height: 4px;
+            }
+            .page-scroll::-webkit-scrollbar-thumb {
+                border-width: 1px;
+            }
         }
         body.modal-open .page-scroll {
             overflow: hidden;
@@ -122,6 +160,13 @@
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #enrollmentForm::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
         }
         /* Keep choice radios in-flow so mobile focus scroll does not jump the form */
         #enrollmentForm .choice-option {
@@ -135,6 +180,44 @@
             margin: 0;
             opacity: 0;
             cursor: pointer;
+        }
+        #enrollmentForm .form-submit-bar {
+            position: sticky;
+            bottom: 0;
+            z-index: 2;
+            margin-top: 0.25rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.15rem;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, #fff 35%, #fff 100%);
+            border-top: 1px solid #f1f5f9;
+            backdrop-filter: blur(6px);
+        }
+        #enrollmentForm #submitBtn {
+            min-height: 3rem;
+            background: #E85312;
+            box-shadow: 0 6px 16px rgba(160, 50, 5, 0.18);
+        }
+        #enrollmentForm #submitBtn:hover:not(:disabled) {
+            background: #c94708;
+            box-shadow: 0 8px 20px rgba(160, 50, 5, 0.24);
+        }
+        #enrollmentForm #submitBtn:disabled {
+            opacity: 0.85;
+            cursor: wait;
+        }
+        #enrollmentForm #incomePotentialGroup .choice-option > span {
+            min-height: 2.75rem;
+            font-size: 0.875rem;
+        }
+        @media (max-width: 639px) {
+            #enrollmentForm.form-compact {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                gap: 0.9rem;
+            }
+            #enrollmentForm #incomePotentialGroup {
+                gap: 0.4rem;
+            }
         }
         .program-heading-line {
             height: 1px;
@@ -346,8 +429,8 @@
                 border-radius: 0.85rem;
             }
             #chuong-trinh .p1-hover-card.grid > div {
-                padding: 0.5rem 0.55rem;
-                gap: 0.3rem;
+                padding: 0.55rem 0.7rem;
+                gap: 0.4rem;
             }
             #chuong-trinh .schedule-icon .lucide {
                 width: 1.15rem;
@@ -371,10 +454,10 @@
                 border-radius: 0.75rem;
             }
             #chuong-trinh .p1-hover-card.relative > .relative {
-                padding: 0.6rem 0.75rem;
+                padding: 0.65rem 0.9rem;
             }
             #chuong-trinh .p1-hover-card.relative .space-y-1 > :not([hidden]) ~ :not([hidden]) {
-                margin-top: 0.08rem !important;
+                margin-top: 0.2rem !important;
             }
             #chuong-trinh .p1-hover-card.relative p.text-xs.font-bold {
                 font-size: 0.6rem;
@@ -382,17 +465,19 @@
             }
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.55rem;
+                margin-bottom: 0.15rem;
             }
+            #chuong-trinh .p1-hover-card.relative p.text-slate-600,
             #chuong-trinh .p1-hover-card.relative p.text-gray-600 {
                 font-size: 0.625rem;
-                line-height: 1.25;
+                line-height: 1.4;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
             #chuong-trinh .p1-hover-card.flex {
-                padding: 0.6rem 0.75rem;
+                padding: 0.6rem 0.9rem;
                 border-radius: 0.85rem;
                 min-height: 0;
                 flex: 0 0 auto;
@@ -404,7 +489,7 @@
             #chuong-trinh .p1-achievement {
                 padding-top: 0.35rem;
                 padding-bottom: 0.35rem;
-                gap: 0.45rem;
+                gap: 0.55rem;
             }
             #chuong-trinh .p1-achievement .lucide {
                 width: 0.95rem;
@@ -456,7 +541,7 @@
                 font-size: clamp(0.82rem, 3vw, 1rem);
             }
             #chuong-trinh .p1-hover-card.grid > div {
-                padding: 0.28rem 0.4rem;
+                padding: 0.3rem 0.55rem;
             }
             #chuong-trinh .p1-video {
                 height: auto;
@@ -466,13 +551,13 @@
                 flex: 0 0 auto;
             }
             #chuong-trinh .p1-hover-card.relative > .relative {
-                padding: 0.35rem 0.5rem;
+                padding: 0.4rem 0.7rem;
             }
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.35rem;
             }
             #chuong-trinh .p1-hover-card.flex {
-                padding: 0.35rem 0.5rem;
+                padding: 0.35rem 0.7rem;
                 flex: 0 0 auto;
             }
             #chuong-trinh .p1-achievement {
@@ -1346,7 +1431,7 @@
 
     <!-- HEADER / NAVIGATION -->
     <header class="sticky top-0 z-40 shrink-0 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
-        <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2 lg:gap-4">
+        <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-3 lg:gap-4">
             <a href="#chuong-trinh" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-1 lg:flex-none lg:w-[230px] xl:w-auto">
                 <!-- SVG Recreating the logo from logo-muoi-2.png -->
                 <div class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 group-hover:scale-105 transition-transform">
@@ -1682,7 +1767,7 @@
                 <a href="#ve-chung-toi" class="hover:text-brand-orange transition-colors">Về chúng tôi</a>
             </nav>
 
-            <button onclick="openRegisterModal('Header Button')" class="shrink-0 max-w-[8.75rem] sm:max-w-none bg-brand-rust hover:bg-[#c94708] text-white px-3 sm:px-4 py-2 rounded-full text-[10px] sm:text-xs xl:text-sm leading-tight font-medium text-center whitespace-normal shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+            <button onclick="openRegisterModal('Header Button')" class="shrink-0 max-w-[8.25rem] sm:max-w-none bg-brand-rust hover:bg-[#c94708] text-white px-2.5 sm:px-4 py-2 rounded-full text-[9px] sm:text-xs xl:text-sm leading-tight font-medium text-center whitespace-normal shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
                 Tham gia chương trình tiếp theo
             </button>
         </div>
@@ -1728,7 +1813,7 @@
 
                         <!-- Time / Location -->
                         <div class="p1-hover-card bg-white rounded-2xl border border-gray-100 shadow-sm grid grid-cols-2 divide-x divide-gray-100">
-                            <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
+                            <div class="flex items-center gap-2.5 sm:gap-3.5 px-3 py-2.5 sm:px-5 sm:py-5">
                                 <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="calendar-days"></i>
                                 </span>
@@ -1737,7 +1822,7 @@
                                     <p class="text-xs sm:text-[0.95rem] font-bold text-brand-rust leading-snug">14h&nbsp;Chủ&nbsp;nhật,&nbsp;ngày<br class="sm:hidden"> 19/7/2026</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2 sm:gap-3.5 px-2.5 py-2.5 sm:px-5 sm:py-5">
+                            <div class="flex items-center gap-2.5 sm:gap-3.5 px-3 py-2.5 sm:px-5 sm:py-5">
                                 <span class="schedule-icon text-brand-rust shrink-0" aria-hidden="true">
                                     <i data-lucide="map-pin"></i>
                                 </span>
@@ -1755,10 +1840,10 @@
                     <!-- Row 1 Right: Speaker (bottom edge aligned with schedule card) -->
                     <div class="p1-hover-card relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:self-end order-3 lg:order-none">
                         <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
-                        <div class="relative p-3.5 sm:p-6 space-y-1 sm:space-y-2">
+                        <div class="relative p-3.5 sm:p-6 space-y-1.5 sm:space-y-2.5">
                             <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuyên gia</p>
                             <h3 class="font-script text-3xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
-                            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed sm:leading-[1.6]">
                                 Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
                             </p>
                         </div>
@@ -1782,24 +1867,24 @@
                     </div>
 
                     <!-- Row 2 Right: Achievements (match video height; min-h-0 + overflow so content cannot grow the row) -->
-                    <div class="p1-hover-card bg-white border border-gray-100 rounded-2xl p-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:overflow-hidden lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
+                    <div class="p1-hover-card bg-white border border-gray-100 rounded-2xl px-4 py-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:overflow-hidden lg:col-span-5 lg:col-start-8 lg:row-start-2 lg:self-stretch order-4 lg:order-none">
                         <h2 class="text-xs sm:text-base font-bold uppercase tracking-wider text-brand-rust mb-2 sm:mb-6 lg:mb-3 shrink-0">
                             Một số thành tích nổi bật
                         </h2>
                         <ul class="divide-y divide-gray-100 flex-1 flex flex-col min-h-0 lg:justify-evenly">
-                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="dollar-sign" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
                                 <span class="text-xs sm:text-base font-semibold text-slate-800">YouTuber Triệu đô</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="calendar" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
                                 <span class="text-xs sm:text-base font-semibold text-slate-800">13 năm Kinh nghiệm</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="play" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
                                 <span class="text-xs sm:text-base font-semibold text-slate-800">7 Kênh Nút Bạc + 2 Kênh Nút Vàng</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3 sm:gap-5 py-2 sm:py-5 lg:py-3">
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
                                 <i data-lucide="users" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
                                 <span class="text-xs sm:text-base font-semibold text-slate-800">Hỗ trợ hàng trăm Kênh Bật Kiếm Tiền</span>
                             </li>
@@ -2162,23 +2247,23 @@
     <div id="registerModal" class="fixed inset-x-0 top-0 z-50 flex p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" onclick="closeRegisterModal()">
         <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 transform scale-95 transition-all duration-300 flex flex-col" id="modalCard" onclick="event.stopPropagation()">
             <!-- Header Modal -->
-            <div class="bg-brand-pink p-6 pr-14 text-white relative shrink-0">
+            <div class="bg-brand-rust p-6 pr-14 text-white relative shrink-0">
                 <button type="button" onclick="closeRegisterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-full transition-all" aria-label="Đóng form đăng ký">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
-                <span class="text-xs uppercase tracking-wider font-semibold text-brand-orange block mb-1">Đăng ký tham gia</span>
+                <span class="text-xs uppercase tracking-wider font-semibold text-orange-100 block mb-1">Đăng ký tham gia</span>
                 <h3 id="registerModalTitle" class="text-xl font-bold leading-snug">Muối Đi Học Youtube: Từ Ý Tưởng Đến Thu Nhập</h3>
-                <p class="text-xs text-white/80 mt-2 leading-relaxed">
+                <p class="text-xs text-white/85 mt-2 leading-relaxed">
                     Tìm hiểu thêm về chúng tôi và dự án Muối Đi Học —
-                    <a href="https://facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Fanpage</a>
+                    <a href="https://facebook.com/hatmuoiyeuthuong" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-orange-100">Fanpage</a>
                     ·
-                    <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-brand-orange">Website</a>
+                    <a href="https://hatmuoiyeuthuong.info.vn" target="_blank" rel="noopener noreferrer" class="font-semibold text-white underline underline-offset-2 hover:text-orange-100">Website</a>
                 </p>
             </div>
 
             <!-- Form Body with Scroll -->
-            <form id="enrollmentForm" onsubmit="return handleFormSubmit(event)" novalidate class="p-6 space-y-5">
-                
+            <form id="enrollmentForm" onsubmit="return handleFormSubmit(event)" novalidate class="form-compact p-6 space-y-4 sm:space-y-5">
+
                 <!-- Hidden Tracking Inputs -->
                 <input type="hidden" id="track_visitorId" name="visitorId">
                 <input type="hidden" id="track_cd" name="cd">
@@ -2194,10 +2279,10 @@
                             <p class="text-sm font-semibold text-slate-800 mt-0.5">Sự kiện diễn ra lúc 14h ngày 19/7/2026</p>
                         </div>
                     </div>
-                    <div class="rounded-xl border border-brand-pink/20 bg-pink-50 p-3 flex gap-3">
-                        <i data-lucide="map-pin" class="w-5 h-5 text-brand-pink shrink-0 mt-0.5"></i>
+                    <div class="rounded-xl border border-brand-rust/25 bg-orange-50 p-3 flex gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-brand-rust shrink-0 mt-0.5"></i>
                         <div>
-                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-pink">Địa điểm</p>
+                            <p class="text-[11px] uppercase tracking-wider font-semibold text-brand-rust">Địa điểm</p>
                             <p class="text-sm font-semibold text-slate-800 mt-0.5">Phòng hội thảo Biblio, 79 Ngụy Như Kon Tum, Hà Nội</p>
                         </div>
                     </div>
@@ -2209,7 +2294,7 @@
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                             <i data-lucide="user" class="w-4 h-4"></i>
                         </span>
-                        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Nguyễn Văn A" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Nguyễn Văn A" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-rust focus:bg-white transition-all">
                     </div>
                     <p id="fullNameError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
@@ -2221,7 +2306,7 @@
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                                 <i data-lucide="cake" class="w-4 h-4"></i>
                             </span>
-                            <input type="number" id="age" name="age" required min="10" max="100" inputmode="numeric" placeholder="Ví dụ: 24" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                            <input type="number" id="age" name="age" required min="10" max="100" inputmode="numeric" placeholder="Ví dụ: 24" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-rust focus:bg-white transition-all">
                         </div>
                         <p id="ageError" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
@@ -2231,65 +2316,53 @@
                             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                                 <i data-lucide="phone" class="w-4 h-4"></i>
                             </span>
-                            <input type="tel" id="phoneNumber" name="phoneNumber" required autocomplete="tel" placeholder="0901234567" inputmode="numeric" maxlength="10" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all">
+                            <input type="tel" id="phoneNumber" name="phoneNumber" required autocomplete="tel" placeholder="0901234567" inputmode="numeric" maxlength="10" class="w-full pl-9 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-rust focus:bg-white transition-all">
                         </div>
                         <p id="phoneError" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                 </div>
 
-                <fieldset>
-                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kinh nghiệm của bạn về làm Youtube <span class="text-red-500">*</span></legend>
-                    <div id="youtubeExperienceGroup" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <label class="choice-option cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Không có" required class="peer">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Không có</span>
-                        </label>
-                        <label class="choice-option cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Mới tìm hiểu" class="peer">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Mới tìm hiểu</span>
-                        </label>
-                        <label class="choice-option cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Dưới 6 tháng" class="peer">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Dưới 6 tháng</span>
-                        </label>
-                        <label class="choice-option cursor-pointer">
-                            <input type="radio" name="youtubeExperience" value="Khoảng 1 năm" class="peer">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Khoảng 1 năm</span>
-                        </label>
-                        <label class="choice-option cursor-pointer sm:col-span-2">
-                            <input type="radio" name="youtubeExperience" value="Trên 1 năm" class="peer">
-                            <span class="block rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-slate-700 transition-all peer-checked:border-brand-pink peer-checked:bg-pink-50 peer-checked:text-brand-pink peer-checked:font-semibold hover:border-brand-pink/50">Trên 1 năm</span>
-                        </label>
-                    </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="youtubeExperience">Kinh nghiệm của bạn về làm Youtube <span class="text-red-500">*</span></label>
+                    <select id="youtubeExperience" name="youtubeExperience" required class="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-rust focus:bg-white transition-all">
+                        <option value="" disabled selected>Chọn mức kinh nghiệm</option>
+                        <option value="Không có">Không có</option>
+                        <option value="Mới tìm hiểu">Mới tìm hiểu</option>
+                        <option value="Dưới 6 tháng">Dưới 6 tháng</option>
+                        <option value="Khoảng 1 năm">Khoảng 1 năm</option>
+                        <option value="Trên 1 năm">Trên 1 năm</option>
+                    </select>
                     <p id="youtubeExperienceError" class="text-red-500 text-xs mt-1 hidden"></p>
-                </fieldset>
+                </div>
 
                 <fieldset>
-                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cảm nhận của bạn về tiềm năng tạo ra thu nhập từ việc làm Youtube (theo thang điểm 10) <span class="text-red-500">*</span></legend>
+                    <legend class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Cảm nhận về tiềm năng thu nhập từ Youtube (0–10)
+                        <span class="normal-case tracking-normal font-medium text-slate-400">· Không bắt buộc</span>
+                    </legend>
                     <div id="incomePotentialGroup" class="grid grid-cols-6 sm:grid-cols-11 gap-1.5">
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="0" required class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">0</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">1</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="2" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">2</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="3" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">3</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="4" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">4</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="5" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">5</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="6" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">6</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="7" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">7</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="8" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">8</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="9" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">9</span></label>
-                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer"><span class="flex h-9 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-xs font-semibold transition-all peer-checked:border-brand-orange peer-checked:bg-brand-orange peer-checked:text-white hover:border-brand-orange">10</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="0" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">0</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="1" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">1</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="2" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">2</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="3" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">3</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="4" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">4</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="5" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">5</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="6" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">6</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="7" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">7</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="8" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">8</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="9" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">9</span></label>
+                        <label class="choice-option cursor-pointer"><input type="radio" name="incomePotential" value="10" class="peer"><span class="flex h-11 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-sm font-semibold text-slate-700 transition-all peer-checked:border-brand-rust peer-checked:bg-orange-50 peer-checked:text-brand-rust hover:border-brand-rust/50">10</span></label>
                     </div>
                     <div class="flex justify-between text-[11px] text-gray-500 mt-1.5">
                         <span>Không có</span>
                         <span>Đủ sống</span>
                         <span>Thu nhập cao</span>
                     </div>
-                    <p id="incomePotentialError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </fieldset>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1" for="expertQuestion">Câu hỏi muốn được chuyên gia trả lời (nếu có)</label>
-                    <textarea id="expertQuestion" name="expertQuestion" rows="3" placeholder="Nhập câu hỏi của bạn..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-pink focus:bg-white transition-all"></textarea>
+                    <textarea id="expertQuestion" name="expertQuestion" rows="3" placeholder="Nhập câu hỏi của bạn..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-rust focus:bg-white transition-all"></textarea>
                 </div>
 
                 <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
@@ -2305,14 +2378,14 @@
                         <p class="font-semibold">BTC sẽ liên hệ lại với bạn để xác nhận sau khi đăng ký.</p>
                     </div>
                     <label id="acknowledgementGroup" class="mt-4 flex items-start gap-2.5 cursor-pointer rounded-lg border border-amber-300 bg-white/70 p-3">
-                        <input type="checkbox" id="acknowledgement" name="acknowledgement" required class="mt-0.5 h-4 w-4 rounded border-amber-400 text-brand-pink focus:ring-brand-pink">
+                        <input type="checkbox" id="acknowledgement" name="acknowledgement" required class="mt-0.5 h-4 w-4 rounded border-amber-400 text-brand-rust focus:ring-brand-rust">
                         <span class="text-sm font-semibold text-slate-800">Tôi đã hiểu <span class="text-red-500">*</span></span>
                     </label>
                     <p id="acknowledgementError" class="text-red-500 text-xs mt-1 hidden"></p>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" id="submitBtn" class="w-full bg-brand-pink hover:bg-brand-pinkHover text-white py-3 rounded-xl font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                <div class="form-submit-bar">
+                    <button type="submit" id="submitBtn" class="w-full text-white py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2">
                         <i data-lucide="send" class="w-4 h-4"></i>
                         Đăng Ký
                     </button>
@@ -2925,7 +2998,6 @@
             if (!video || !section || !('IntersectionObserver' in window)) return;
 
             let sectionVisible = false;
-            let soundUnlocked = false;
             let tapStart = null;
 
             // Keep muted autoplay reliable on mobile WebViews / older iOS.
@@ -2956,11 +3028,16 @@
 
             observer.observe(section);
 
-            // Only unmute from an intentional tap on the video itself.
+            // Tap the video itself to toggle sound: mute → unmute → mute → …
             // Document-level pointerdown used to unmute on any page touch; on Chrome
             // Android that pauses muted autoplay, leaving the clip stuck until scroll-back.
-            const unlockSoundFromVideoTap = () => {
-                if (soundUnlocked || !sectionVisible) return;
+            const toggleSoundFromVideoTap = () => {
+                if (!sectionVisible) return;
+
+                if (!video.muted) {
+                    video.muted = true;
+                    return;
+                }
 
                 video.muted = false;
                 video.volume = 1;
@@ -2976,9 +3053,7 @@
                         // Some Android Chrome builds unmute + pause without rejecting play().
                         if (sectionVisible && video.paused) {
                             recoverMutedPlayback();
-                            return;
                         }
-                        soundUnlocked = true;
                     }).catch(() => {
                         recoverMutedPlayback();
                     });
@@ -2986,9 +3061,7 @@
                     requestAnimationFrame(() => {
                         if (sectionVisible && video.paused) {
                             recoverMutedPlayback();
-                            return;
                         }
-                        soundUnlocked = true;
                     });
                 }
             };
@@ -3001,8 +3074,7 @@
             }, { passive: true });
 
             videoHost.addEventListener('pointerup', (event) => {
-                if (!tapStart || soundUnlocked) {
-                    tapStart = null;
+                if (!tapStart) {
                     return;
                 }
                 const dx = event.clientX - tapStart.x;
@@ -3010,7 +3082,7 @@
                 tapStart = null;
                 // Ignore swipes so fullpage page changes from the video area stay mute-safe.
                 if (Math.hypot(dx, dy) > 12) return;
-                unlockSoundFromVideoTap();
+                toggleSoundFromVideoTap();
             }, { passive: true });
 
             videoHost.addEventListener('pointercancel', () => {
@@ -3043,7 +3115,7 @@
             const errorEl = document.getElementById(errorId);
             if (!field || !errorEl) return null;
             field.classList.add('border-red-500', 'focus:ring-red-500');
-            field.classList.remove('border-gray-200', 'focus:ring-brand-pink');
+            field.classList.remove('border-gray-200', 'focus:ring-brand-rust', 'focus:ring-brand-pink');
             errorEl.textContent = message;
             errorEl.classList.remove('hidden');
             return field;
@@ -3054,7 +3126,7 @@
             const errorEl = document.getElementById(errorId);
             if (!field || !errorEl) return;
             field.classList.remove('border-red-500', 'focus:ring-red-500');
-            field.classList.add('border-gray-200', 'focus:ring-brand-pink');
+            field.classList.add('border-gray-200', 'focus:ring-brand-rust');
             errorEl.textContent = '';
             errorEl.classList.add('hidden');
         }
@@ -3105,8 +3177,8 @@
             const fullName = fullNameEl.value.trim();
             const age = ageEl.value.trim();
             const phone = phoneEl.value.trim();
-            const youtubeExperience = document.querySelector('input[name="youtubeExperience"]:checked');
-            const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
+            const youtubeExperienceEl = document.getElementById('youtubeExperience');
+            const youtubeExperience = youtubeExperienceEl ? youtubeExperienceEl.value.trim() : '';
             const acknowledgement = acknowledgementEl.checked;
             let isValid = true;
             let firstErrorEl = null;
@@ -3118,8 +3190,7 @@
             clearFieldError('fullName', 'fullNameError');
             clearFieldError('age', 'ageError');
             clearFieldError('phoneNumber', 'phoneError');
-            clearGroupError('youtubeExperienceGroup', 'youtubeExperienceError');
-            clearGroupError('incomePotentialGroup', 'incomePotentialError');
+            clearFieldError('youtubeExperience', 'youtubeExperienceError');
             clearGroupError('acknowledgementGroup', 'acknowledgementError');
 
             if (!fullName) {
@@ -3148,12 +3219,7 @@
             }
 
             if (!youtubeExperience) {
-                markError(setGroupError('youtubeExperienceGroup', 'youtubeExperienceError', 'Vui lòng chọn kinh nghiệm làm Youtube.'));
-                isValid = false;
-            }
-
-            if (!incomePotential) {
-                markError(setGroupError('incomePotentialGroup', 'incomePotentialError', 'Vui lòng chọn một mức điểm từ 0 đến 10.'));
+                markError(setFieldError('youtubeExperience', 'youtubeExperienceError', 'Vui lòng chọn kinh nghiệm làm Youtube.'));
                 isValid = false;
             }
 
@@ -3191,7 +3257,7 @@
 
             const expertQuestionEl = document.getElementById('expertQuestion');
             const expertQuestion = expertQuestionEl ? expertQuestionEl.value.trim() : '';
-            const youtubeExperience = document.querySelector('input[name="youtubeExperience"]:checked');
+            const youtubeExperienceEl = document.getElementById('youtubeExperience');
             const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
             const formData = {
                 visitorId: trackingState.visitorId,
@@ -3202,7 +3268,7 @@
                 fullName: document.getElementById('fullName').value.trim(),
                 age: document.getElementById('age').value.trim(),
                 phone: document.getElementById('phoneNumber').value.trim(),
-                youtubeExperience: youtubeExperience ? youtubeExperience.value : '',
+                youtubeExperience: youtubeExperienceEl ? youtubeExperienceEl.value.trim() : '',
                 incomePotential: incomePotential ? incomePotential.value : '',
                 expertQuestion: expertQuestion || 'Không có câu hỏi',
                 acknowledgement: document.getElementById('acknowledgement').checked,
@@ -3471,19 +3537,15 @@
                     });
                 });
             };
-            document.querySelectorAll('input[name="youtubeExperience"]').forEach((input) => {
-                input.addEventListener('focus', preserveEnrollmentScroll);
-                input.addEventListener('change', () => {
-                    clearGroupError('youtubeExperienceGroup', 'youtubeExperienceError');
-                    preserveEnrollmentScroll();
+            const youtubeExperienceSelect = document.getElementById('youtubeExperience');
+            if (youtubeExperienceSelect) {
+                youtubeExperienceSelect.addEventListener('change', () => {
+                    clearFieldError('youtubeExperience', 'youtubeExperienceError');
                 });
-            });
+            }
             document.querySelectorAll('input[name="incomePotential"]').forEach((input) => {
                 input.addEventListener('focus', preserveEnrollmentScroll);
-                input.addEventListener('change', () => {
-                    clearGroupError('incomePotentialGroup', 'incomePotentialError');
-                    preserveEnrollmentScroll();
-                });
+                input.addEventListener('change', preserveEnrollmentScroll);
             });
             const acknowledgementInput = document.getElementById('acknowledgement');
             if (acknowledgementInput) {
