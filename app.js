@@ -198,8 +198,8 @@
 
             const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
             const INTERNAL_SCROLL_EPSILON = 14;
-            const WHEEL_COOLDOWN_MS = 420;
-            const TRANSITION_MS = 700;
+            const WHEEL_COOLDOWN_MS = 520;
+            const TRANSITION_MS = 1100;
             // fullPage.js default easeInOutCubic ≈ cubic-bezier(0.645, 0.045, 0.355, 1)
             const easeFullPage = createCubicBezier(0.645, 0.045, 0.355, 1);
             const navLinks = Array.from(document.querySelectorAll('a[href^="#"]')).filter((link) => {
