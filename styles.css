@@ -933,7 +933,8 @@
                 border-radius: 0.28rem;
                 flex-shrink: 0;
             }
-            #gioi-thieu .page2-program-grid article span .lucide {
+            #gioi-thieu .page2-program-grid article span .lucide,
+            #gioi-thieu .page2-program-grid article span > svg {
                 width: 0.55rem;
                 height: 0.55rem;
             }
