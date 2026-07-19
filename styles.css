@@ -611,7 +611,7 @@
             }
         }
 
-        /* Page 2 prose: desktop/tablet stays full-width (shrink-wrap is mobile-only) */
+        /* Page 2 prose: desktop/tablet full-width baseline */
         @media (min-width: 640px) {
             #gioi-thieu .page2-prose {
                 display: block;
@@ -633,7 +633,7 @@
             }
         }
 
-        /* Page 2 (#gioi-thieu): mobile matches stacked sample (no carousel / no 2-col V-M) */
+        /* Page 2 (#gioi-thieu): mobile balanced column (no shrink-wrap / no 4-col squeeze) */
         @media (max-width: 639px) {
             #gioi-thieu {
                 display: flex;
@@ -642,13 +642,14 @@
                 min-height: 0;
                 box-sizing: border-box;
                 overflow-x: hidden;
-                padding-top: 0.35rem;
-                padding-bottom: 0.4rem;
+                padding-top: 0.3rem;
+                padding-bottom: 0.35rem;
             }
             #gioi-thieu > .fp-overflow {
                 flex: 1 1 0;
                 min-height: 0;
                 height: 100%;
+                overflow-x: hidden;
             }
             #gioi-thieu .max-w-6xl {
                 flex: 1 1 0;
@@ -657,10 +658,11 @@
                 max-width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                gap: 0.5rem;
+                justify-content: flex-start;
+                gap: 0.4rem;
                 padding-left: 0.9rem;
                 padding-right: 0.9rem;
+                box-sizing: border-box;
             }
             #gioi-thieu .max-w-6xl > :not([hidden]) ~ :not([hidden]),
             #gioi-thieu .page2-top > :not([hidden]) ~ :not([hidden]),
@@ -677,61 +679,66 @@
             #gioi-thieu .page2-top {
                 display: flex;
                 flex-direction: column;
-                gap: 0.4rem;
+                gap: 0.35rem;
                 flex: 0 0 auto;
+                min-width: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-intro {
                 display: flex;
                 flex-direction: column;
-                gap: 0.32rem;
+                gap: 0.28rem;
+                min-width: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-intro-copy {
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
-                gap: 0.15rem;
+                gap: 0.12rem;
+                min-width: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-intro-copy > span {
                 font-size: 0.6rem;
                 letter-spacing: 0.14em;
             }
             #gioi-thieu .page2-intro-copy h2 {
-                flex: 0 0 7%;
+                flex: 0 0 auto;
                 display: flex;
                 align-items: center;
-                font-size: clamp(1.85rem, 9.5vw, 2.35rem);
+                font-size: clamp(1.75rem, 8.5vw, 2.2rem);
                 line-height: 1;
             }
-            /*
-             * Mobile measure: tagline defines width; body + quote wrap to match.
-             * align-self:flex-start is required — otherwise the flex parent
-             * stretches .page2-prose to full section width and the trick fails.
-             */
+            /* Full-width prose — no shrink-wrap / left-empty strip */
             #gioi-thieu .page2-prose {
-                align-self: flex-start;
-                display: inline-grid;
-                grid-template-columns: max-content;
-                justify-items: stretch;
+                align-self: stretch;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
                 max-width: 100%;
-                gap: 0.12rem;
+                min-width: 0;
+                gap: 0.18rem;
+                box-sizing: border-box;
             }
             #gioi-thieu .page2-tagline {
-                white-space: nowrap;
+                white-space: normal;
+                width: 100%;
                 max-width: 100%;
-                font-size: 0.74rem;
-                line-height: 1.2;
+                font-size: 0.72rem;
+                line-height: 1.25;
             }
             #gioi-thieu .page2-desc,
             #gioi-thieu .page2-quote {
-                width: 0;
-                min-width: 100%;
+                width: 100%;
+                min-width: 0;
                 max-width: 100%;
                 box-sizing: border-box;
             }
             #gioi-thieu .page2-desc {
                 flex: 0 0 auto;
-                font-size: 0.55rem;
-                line-height: 1.25;
+                font-size: 0.62rem;
+                line-height: 1.3;
             }
             #gioi-thieu .page2-quote {
                 padding-left: 0.6rem;
@@ -739,26 +746,29 @@
             }
             #gioi-thieu .page2-quote > .lucide {
                 display: block;
-                width: 0.7rem;
-                height: 0.7rem;
+                width: 0.75rem;
+                height: 0.75rem;
                 margin-bottom: 0.08rem;
             }
             #gioi-thieu .page2-quote p {
-                font-size: 0.55rem;
-                line-height: 1.25;
+                font-size: 0.62rem;
+                line-height: 1.3;
             }
+            /* Values: one compact row, single-line labels (desktop keeps <br>) */
             #gioi-thieu .page2-values {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 0.25rem;
+                gap: 0.2rem 0.3rem;
                 padding-top: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-values > div {
-                flex-direction: row;
+                flex-direction: column;
                 align-items: center;
                 justify-content: flex-start;
-                text-align: left;
-                gap: 0.25rem;
+                text-align: center;
+                gap: 0.15rem;
+                min-width: 0;
             }
             #gioi-thieu .page2-values span {
                 flex-shrink: 0;
@@ -769,20 +779,27 @@
                 width: 0.75rem;
                 height: 0.75rem;
             }
-            #gioi-thieu .page2-values p {
-                font-size: 0.5rem;
-                line-height: 1.15;
-                text-align: left;
+            #gioi-thieu .page2-values br {
+                display: none;
             }
-            /* Vision + Mission: two stacked rows, icon left / copy right */
+            #gioi-thieu .page2-values p {
+                font-size: 0.48rem;
+                line-height: 1.15;
+                text-align: center;
+                white-space: normal;
+            }
+            /* Vision + Mission: larger type + a bit more height */
             #gioi-thieu .page2-vision {
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
-                padding: 0.55rem 0.65rem;
-                gap: 0.45rem;
+                width: 100%;
+                min-width: 0;
+                padding: 0.65rem 0.7rem;
+                gap: 0.5rem;
                 border-radius: 0.85rem;
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+                box-sizing: border-box;
             }
             #gioi-thieu .page2-vision > .border-t {
                 display: block;
@@ -792,42 +809,48 @@
             #gioi-thieu .page2-vision > div.flex {
                 flex-direction: row;
                 align-items: flex-start;
-                gap: 0.65rem;
+                gap: 0.6rem;
+                min-width: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-vision > div.flex > span {
-                width: 1.85rem;
-                height: 1.85rem;
+                width: 2rem;
+                height: 2rem;
             }
             #gioi-thieu .page2-vision .lucide {
-                width: 0.9rem;
-                height: 0.9rem;
+                width: 0.95rem;
+                height: 0.95rem;
             }
             #gioi-thieu .page2-vision h3 {
-                font-size: 0.64rem;
+                font-size: 0.72rem;
                 letter-spacing: 0.1em;
                 color: #E85312;
             }
             #gioi-thieu .page2-vision p,
             #gioi-thieu .page2-vision li {
-                font-size: 0.6rem;
-                line-height: 1.3;
+                font-size: 0.68rem;
+                line-height: 1.35;
             }
             #gioi-thieu .page2-vision .min-w-0 {
                 display: flex;
                 flex-direction: column;
-                gap: 0.15rem;
+                gap: 0.18rem;
+                min-width: 0;
+                flex: 1 1 auto;
             }
             #gioi-thieu .page2-vision ul {
                 display: flex;
                 flex-direction: column;
-                gap: 0.1rem;
-                padding-left: 0.9rem;
+                gap: 0.14rem;
+                padding-left: 0.95rem;
             }
             #gioi-thieu .page2-programs {
                 display: flex;
                 flex-direction: column;
-                gap: 0.22rem;
+                gap: 0.2rem;
                 flex: 0 0 auto;
+                min-width: 0;
+                width: 100%;
             }
             #gioi-thieu .page2-programs > div:first-child {
                 gap: 0.35rem;
@@ -839,17 +862,19 @@
             #gioi-thieu .page2-programs .program-heading-line {
                 max-width: 2.1rem;
             }
-            /* Programs: vertical list — thumbnail left, title/desc right */
+            /* Programs: horizontal cards — thumb left, title/desc right */
             #gioi-thieu .page2-program-grid {
                 display: flex;
                 flex-direction: column;
                 flex-wrap: nowrap;
-                gap: 0.22rem;
-                overflow: visible;
+                gap: 0.2rem;
+                overflow: hidden;
                 margin-inline: 0;
                 padding-inline: 0;
                 padding-bottom: 0;
                 scroll-snap-type: none;
+                width: 100%;
+                min-width: 0;
             }
             #gioi-thieu .page2-program-grid article {
                 flex: 0 0 auto;
@@ -860,15 +885,17 @@
                 align-items: stretch;
                 border-radius: 0.7rem;
                 min-height: 0;
+                min-width: 0;
                 overflow: hidden;
+                box-sizing: border-box;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                flex: 0 0 32%;
-                width: 32%;
-                max-width: 5.75rem;
+                flex: 0 0 30%;
+                width: 30%;
+                max-width: 5.5rem;
                 aspect-ratio: 4 / 3 !important;
                 height: auto;
-                min-height: 2.9rem;
+                min-height: 2.8rem;
                 max-height: none;
                 align-self: stretch;
             }
@@ -881,7 +908,7 @@
             #gioi-thieu .page2-program-grid article > div:last-child {
                 flex: 1 1 auto;
                 min-width: 0;
-                padding: 0.22rem 0.35rem;
+                padding: 0.22rem 0.4rem;
                 display: flex;
                 align-items: center;
             }
@@ -889,11 +916,13 @@
                 gap: 0.2rem;
                 align-items: flex-start;
                 width: 100%;
+                min-width: 0;
             }
             #gioi-thieu .page2-program-grid article span {
                 width: 1.05rem;
                 height: 1.05rem;
                 border-radius: 0.28rem;
+                flex-shrink: 0;
             }
             #gioi-thieu .page2-program-grid article span .lucide {
                 width: 0.55rem;
@@ -903,75 +932,144 @@
                 font-size: 0.66rem;
                 line-height: 1.2;
                 display: block;
-                overflow: visible;
-                -webkit-line-clamp: unset;
+                overflow: hidden;
+                min-width: 0;
             }
             #gioi-thieu .page2-program-grid p {
                 display: block;
                 font-size: 0.55rem;
                 line-height: 1.25;
-                margin-top: 0.1rem;
+                margin-top: 0.08rem;
                 color: #64748b;
+                min-width: 0;
             }
         }
 
         /* Mid phones: modest compaction, keep stacked layout */
         @media (max-width: 639px) and (max-height: 820px) {
             #gioi-thieu {
-                padding-top: 0.28rem;
-                padding-bottom: 0.32rem;
+                padding-top: 0.22rem;
+                padding-bottom: 0.28rem;
             }
             #gioi-thieu .max-w-6xl {
-                gap: 0.35rem;
+                gap: 0.3rem;
             }
             #gioi-thieu .page2-top,
             #gioi-thieu .page2-programs {
-                gap: 0.2rem;
+                gap: 0.18rem;
             }
             #gioi-thieu .page2-intro {
-                gap: 0.25rem;
+                gap: 0.2rem;
             }
             #gioi-thieu .page2-intro-copy h2 {
-                flex: 0 0 6%;
-                font-size: clamp(1.55rem, 8vw, 2rem);
+                font-size: clamp(1.5rem, 7.5vw, 1.95rem);
+            }
+            #gioi-thieu .page2-tagline {
+                font-size: 0.66rem;
             }
             #gioi-thieu .page2-desc,
             #gioi-thieu .page2-quote p {
-                font-size: 0.5rem;
-                line-height: 1.22;
-            }
-            #gioi-thieu .page2-vision {
-                padding: 0.45rem 0.55rem;
-                gap: 0.35rem;
-            }
-            #gioi-thieu .page2-vision p,
-            #gioi-thieu .page2-vision li {
                 font-size: 0.56rem;
                 line-height: 1.25;
             }
+            #gioi-thieu .page2-values {
+                gap: 0.15rem 0.25rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 1.4rem;
+                height: 1.4rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.44rem;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 0.55rem 0.6rem;
+                gap: 0.4rem;
+            }
+            #gioi-thieu .page2-vision > div.flex > span {
+                width: 1.85rem;
+                height: 1.85rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.68rem;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.62rem;
+                line-height: 1.32;
+            }
             #gioi-thieu .page2-program-grid {
-                gap: 0.18rem;
+                gap: 0.16rem;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                flex-basis: 30%;
-                width: 30%;
-                max-width: 5.25rem;
-                min-height: 2.7rem;
+                flex-basis: 28%;
+                width: 28%;
+                max-width: 5rem;
+                min-height: 2.55rem;
             }
             #gioi-thieu .page2-program-grid article > div:last-child {
-                padding: 0.18rem 0.3rem;
+                padding: 0.16rem 0.3rem;
             }
         }
 
-        /* Short phones: light scale only — never hide programs */
+        /* Short phones: compact gaps/fonts only — never hide programs, no zoom */
         @media (max-width: 639px) and (max-height: 700px) {
             #gioi-thieu .max-w-6xl {
-                gap: 0.28rem;
-                zoom: 0.9;
+                gap: 0.22rem;
+            }
+            #gioi-thieu .page2-intro-copy h2 {
+                font-size: clamp(1.35rem, 7vw, 1.75rem);
+            }
+            #gioi-thieu .page2-tagline {
+                font-size: 0.6rem;
+            }
+            #gioi-thieu .page2-desc,
+            #gioi-thieu .page2-quote p {
+                font-size: 0.52rem;
+                line-height: 1.22;
+            }
+            #gioi-thieu .page2-values {
+                gap: 0.12rem 0.2rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+            #gioi-thieu .page2-values .lucide {
+                width: 0.62rem;
+                height: 0.62rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.4rem;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 0.45rem 0.55rem;
+                gap: 0.32rem;
+            }
+            #gioi-thieu .page2-vision > div.flex > span {
+                width: 1.7rem;
+                height: 1.7rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.64rem;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.58rem;
+                line-height: 1.3;
+            }
+            #gioi-thieu .page2-program-grid {
+                gap: 0.12rem;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                max-width: 5rem;
-                min-height: 2.55rem;
+                max-width: 4.75rem;
+                min-height: 2.4rem;
+            }
+            #gioi-thieu .page2-program-grid h4 {
+                font-size: 0.6rem;
+            }
+            #gioi-thieu .page2-program-grid p {
+                font-size: 0.5rem;
             }
         }
 
