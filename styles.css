@@ -31,86 +31,72 @@
             max-height: var(--app-height, 100dvh);
             overflow: hidden;
         }
-        .page-scroll {
-            flex: 1 1 0;
-            min-height: 0;
+        /* Fixed site header above fullPage sections */
+        .site-header {
             height: auto;
-            overflow-x: hidden;
-            overflow-y: auto;
-            overscroll-behavior-y: contain;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: auto;
         }
-        .page-scroll-track {
-            min-height: 100%;
+        /*
+         * Keep fullPage’s native 100vh section math (transform distance).
+         * Reserve space under the fixed header via padding so content matches the old viewport-minus-header layout.
+         */
+        #fullpage .fp-section,
+        #fullpage .section {
+            box-sizing: border-box;
+            padding-top: var(--header-h);
         }
-        /* JS full-page: GPU translate3d paging; nested .snap-page still scrolls internally */
-        .page-scroll.js-fullpage {
-            scroll-snap-type: none;
-            overflow: hidden;
-        }
-        .page-scroll.js-fullpage .page-scroll-track {
-            height: auto;
-            min-height: 100%;
-            will-change: transform;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-        }
-        .page-scroll.js-fullpage .snap-page {
-            height: 100%;
-            min-height: 100%;
-            scroll-snap-align: none;
-        }
-        .snap-page {
-            height: 100%;
-            min-height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            overscroll-behavior-y: contain;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            /* Hide inner section scrollbars (page 2 overscroll flash); keep .page-scroll bar */
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        .snap-page::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-            display: none;
-        }
-        /* Main page scrollbar only: thin orange thumb, transparent track (no cream strip) */
-        .page-scroll {
+        #fullpage .fp-overflow {
             scrollbar-width: thin;
             scrollbar-color: rgba(232, 83, 18, 0.45) transparent;
         }
-        .page-scroll::-webkit-scrollbar {
+        #fullpage .fp-overflow::-webkit-scrollbar {
             width: 7px;
             height: 7px;
         }
-        .page-scroll::-webkit-scrollbar-track {
+        #fullpage .fp-overflow::-webkit-scrollbar-track {
             background: transparent;
         }
-        .page-scroll::-webkit-scrollbar-thumb {
+        #fullpage .fp-overflow::-webkit-scrollbar-thumb {
             background-color: rgba(232, 83, 18, 0.45);
             border-radius: 999px;
             border: 2px solid transparent;
             background-clip: padding-box;
         }
-        .page-scroll::-webkit-scrollbar-thumb:hover {
+        #fullpage .fp-overflow::-webkit-scrollbar-thumb:hover {
             background-color: #c94708;
         }
         @media (max-width: 639px) {
-            .page-scroll::-webkit-scrollbar {
+            #fullpage .fp-overflow::-webkit-scrollbar {
                 width: 4px;
                 height: 4px;
             }
-            .page-scroll::-webkit-scrollbar-thumb {
+            #fullpage .fp-overflow::-webkit-scrollbar-thumb {
                 border-width: 1px;
             }
         }
-        body.modal-open .page-scroll {
+        body.modal-open {
             overflow: hidden;
             touch-action: none;
+        }
+        body.modal-open #fullpage {
+            pointer-events: none;
+        }
+        .fp-watermark {
+            display: none !important;
+        }
+        /* fullPage scrollOverflow wraps section content — keep page flex layouts working */
+        #fullpage .fp-overflow {
+            box-sizing: border-box;
+        }
+        #gioi-thieu > .fp-overflow {
+            min-height: 100%;
+        }
+        #chuong-trinh > .fp-overflow,
+        #ve-chung-toi > .fp-overflow {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 100%;
+            box-sizing: border-box;
         }
         /* Registration modal: keep form scrollable on mobile visualViewport */
         #registerModal {
@@ -304,9 +290,6 @@
             }
         }
         @media (prefers-reduced-motion: reduce) {
-            .page-scroll {
-                scroll-behavior: auto;
-            }
             .p1-hover-card,
             .p1-video,
             .p1-achievement .lucide,
@@ -337,7 +320,7 @@
                 overflow: hidden;
                 box-sizing: border-box;
             }
-            #chuong-trinh > .max-w-6xl {
+            #chuong-trinh .max-w-6xl {
                 flex: 1 1 0;
                 min-height: 0;
                 min-width: 0;
@@ -352,7 +335,7 @@
                 overflow-x: hidden;
                 box-sizing: border-box;
             }
-            #chuong-trinh > .max-w-6xl > .grid {
+            #chuong-trinh .max-w-6xl > .grid {
                 flex: 1 1 0;
                 min-height: 0;
                 min-width: 0;
@@ -364,7 +347,7 @@
                 align-content: stretch;
                 overflow: hidden;
             }
-            #chuong-trinh > .max-w-6xl > .grid > :not([hidden]) ~ :not([hidden]),
+            #chuong-trinh .max-w-6xl > .grid > :not([hidden]) ~ :not([hidden]),
             #chuong-trinh .space-y-2 > :not([hidden]) ~ :not([hidden]),
             #chuong-trinh .space-y-1 > :not([hidden]) ~ :not([hidden]),
             #chuong-trinh .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
@@ -552,8 +535,8 @@
                 line-height: 1.2;
             }
             /* CTA ~9% */
-            #chuong-trinh > .max-w-6xl > .mt-2,
-            #chuong-trinh > .max-w-6xl > div:last-child {
+            #chuong-trinh .max-w-6xl > .mt-2,
+            #chuong-trinh .max-w-6xl > div:last-child {
                 flex: 0 0 9%;
                 min-height: 0;
                 margin-top: 0 !important;
@@ -575,13 +558,13 @@
 
         /* Page 1: light compaction for short phones — keep % layout + large titles */
         @media (max-width: 639px) and (max-height: 780px) {
-            #chuong-trinh > .max-w-6xl {
+            #chuong-trinh .max-w-6xl {
                 justify-content: space-between;
                 gap: 0.6%;
                 padding-top: 0.15%;
                 padding-bottom: 0.15%;
             }
-            #chuong-trinh > .max-w-6xl > .grid {
+            #chuong-trinh .max-w-6xl > .grid {
                 gap: 0.6%;
             }
             #chuong-trinh .p1-title {
@@ -632,11 +615,10 @@
                 flex-direction: column;
                 box-sizing: border-box;
                 overflow-x: hidden;
-                overflow-y: auto;
                 padding-top: 0.35rem;
                 padding-bottom: 0.4rem;
             }
-            #gioi-thieu > .max-w-6xl {
+            #gioi-thieu .max-w-6xl {
                 flex: 0 0 auto;
                 width: 100%;
                 max-width: 100%;
@@ -647,7 +629,7 @@
                 padding-left: 0.9rem;
                 padding-right: 0.9rem;
             }
-            #gioi-thieu > .max-w-6xl > :not([hidden]) ~ :not([hidden]),
+            #gioi-thieu .max-w-6xl > :not([hidden]) ~ :not([hidden]),
             #gioi-thieu .page2-top > :not([hidden]) ~ :not([hidden]),
             #gioi-thieu .page2-intro > :not([hidden]) ~ :not([hidden]),
             #gioi-thieu .page2-intro-copy > :not([hidden]) ~ :not([hidden]),
@@ -880,7 +862,7 @@
                 padding-top: 0.28rem;
                 padding-bottom: 0.32rem;
             }
-            #gioi-thieu > .max-w-6xl {
+            #gioi-thieu .max-w-6xl {
                 gap: 0.35rem;
             }
             #gioi-thieu .page2-top,
@@ -918,7 +900,7 @@
 
         /* Short phones: light scale only — never hide programs */
         @media (max-width: 639px) and (max-height: 700px) {
-            #gioi-thieu > .max-w-6xl {
+            #gioi-thieu .max-w-6xl {
                 gap: 0.28rem;
                 zoom: 0.9;
             }
