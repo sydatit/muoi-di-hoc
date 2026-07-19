@@ -138,26 +138,25 @@
             opacity: 0;
             cursor: pointer;
         }
-        #enrollmentForm .form-submit-bar {
-            position: sticky;
-            bottom: 0;
-            z-index: 2;
-            margin-top: 0.25rem;
-            padding-top: 0.75rem;
-            padding-bottom: 0.15rem;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, #fff 35%, #fff 100%);
+        #modalCard .form-submit-bar {
+            flex-shrink: 0;
+            background: #fff;
             border-top: 1px solid #f1f5f9;
-            backdrop-filter: blur(6px);
+            padding-top: 0.75rem;
+            padding-bottom: 1.25rem;
         }
+        #modalCard #submitBtn,
         #enrollmentForm #submitBtn {
             min-height: 3rem;
             background: #E85312;
             box-shadow: 0 6px 16px rgba(160, 50, 5, 0.18);
         }
+        #modalCard #submitBtn:hover:not(:disabled),
         #enrollmentForm #submitBtn:hover:not(:disabled) {
             background: #c94708;
             box-shadow: 0 8px 20px rgba(160, 50, 5, 0.24);
         }
+        #modalCard #submitBtn:disabled,
         #enrollmentForm #submitBtn:disabled {
             opacity: 0.85;
             cursor: wait;
@@ -952,6 +951,7 @@
             width: auto;
             aspect-ratio: 1;
             flex-shrink: 0;
+            object-fit: contain;
         }
         .p3-hero-brand-text {
             display: flex;
