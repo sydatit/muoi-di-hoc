@@ -41,9 +41,25 @@
             scroll-snap-type: y mandatory;
             scroll-behavior: auto;
         }
-        /* JS full-page controller owns paging; keep snap off to avoid end-of-section hitch */
+        .page-scroll-track {
+            min-height: 100%;
+        }
+        /* JS full-page: GPU translate3d paging; nested .snap-page still scrolls internally */
         .page-scroll.js-fullpage {
             scroll-snap-type: none;
+            overflow: hidden;
+        }
+        .page-scroll.js-fullpage .page-scroll-track {
+            height: auto;
+            min-height: 100%;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+        }
+        .page-scroll.js-fullpage .snap-page {
+            height: 100%;
+            min-height: 100%;
+            scroll-snap-align: none;
         }
         .snap-page {
             height: 100%;

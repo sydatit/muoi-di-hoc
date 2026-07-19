@@ -190,14 +190,18 @@
 
         function initFullPageScroll() {
             const scroller = document.getElementById('pageScroll');
-            const pages = Array.from(scroller ? scroller.querySelectorAll(':scope > .snap-page') : []);
-            if (!scroller || pages.length === 0) return;
+            const track = document.getElementById('pageScrollTrack');
+            const pages = Array.from(track ? track.querySelectorAll(':scope > .snap-page') : []);
+            if (!scroller || !track || pages.length === 0) return;
 
             scroller.classList.add('js-fullpage');
 
             const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
             const INTERNAL_SCROLL_EPSILON = 14;
-            const WHEEL_COOLDOWN_MS = 400;
+            const WHEEL_COOLDOWN_MS = 420;
+            const TRANSITION_MS = 700;
+            // fullPage.js default easeInOutCubic ≈ cubic-bezier(0.645, 0.045, 0.355, 1)
+            const easeFullPage = createCubicBezier(0.645, 0.045, 0.355, 1);
             const navLinks = Array.from(document.querySelectorAll('a[href^="#"]')).filter((link) => {
                 const id = link.getAttribute('href').slice(1);
                 return pages.some((page) => page.id === id);
@@ -209,27 +213,43 @@
             let wheelDelta = 0;
             let wheelDirection = 0;
             let lastWheelAt = 0;
-            let scrollTicking = false;
             let resizeTimer = null;
             let touchState = null;
+            let currentOffsetY = 0;
 
             const clampIndex = (index) => Math.max(0, Math.min(pages.length - 1, index));
 
-            const pageTop = (page) =>
-                page.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+            const pageHeight = () => scroller.clientHeight;
+
+            const syncPageHeights = () => {
+                const height = pageHeight();
+                pages.forEach((page) => {
+                    page.style.height = `${height}px`;
+                    page.style.minHeight = `${height}px`;
+                });
+            };
+
+            const offsetForIndex = (index) => -clampIndex(index) * pageHeight();
+
+            const applyTrackOffset = (offsetY) => {
+                currentOffsetY = offsetY;
+                track.style.transform = `translate3d(0, ${offsetY}px, 0)`;
+            };
 
             const nearestPageIndex = () => {
-                const scrollTop = scroller.scrollTop;
-                return pages.reduce((nearest, page, index) => {
-                    const currentDistance = Math.abs(pageTop(pages[nearest]) - scrollTop);
-                    const nextDistance = Math.abs(pageTop(page) - scrollTop);
-                    return nextDistance < currentDistance ? index : nearest;
-                }, 0);
+                const height = pageHeight();
+                if (height <= 0) return activeIndex;
+                return clampIndex(Math.round(-currentOffsetY / height));
             };
 
             const updateActivePage = (index, updateHash = true) => {
                 activeIndex = clampIndex(index);
                 const activePage = pages[activeIndex];
+
+                pages.forEach((page, pageIndex) => {
+                    page.classList.toggle('is-active', pageIndex === activeIndex);
+                    page.setAttribute('aria-hidden', pageIndex === activeIndex ? 'false' : 'true');
+                });
 
                 navLinks.forEach((link) => {
                     const isActive = link.getAttribute('href') === `#${activePage.id}`;
@@ -261,7 +281,7 @@
                     cancelAnimationFrame(animationFrame);
                     animationFrame = null;
                 }
-                scroller.scrollTop = pageTop(pages[index]);
+                applyTrackOffset(offsetForIndex(index));
                 transitionLocked = true;
                 wheelDelta = 0;
                 const unlockAt = performance.now() + WHEEL_COOLDOWN_MS;
@@ -280,7 +300,7 @@
             const goToPage = (index, { instant = false } = {}) => {
                 const fromIndex = activeIndex;
                 const nextIndex = clampIndex(index);
-                const destination = pageTop(pages[nextIndex]);
+                const destination = offsetForIndex(nextIndex);
 
                 if (animationFrame !== null) cancelAnimationFrame(animationFrame);
                 transitionLocked = true;
@@ -292,21 +312,18 @@
                     return;
                 }
 
-                const start = scroller.scrollTop;
+                const start = currentOffsetY;
                 const distance = destination - start;
                 if (Math.abs(distance) < 1) {
                     finishTransition(nextIndex);
                     return;
                 }
 
-                const duration = 760;
                 const startedAt = performance.now();
                 const animate = (now) => {
-                    const progress = Math.min(1, (now - startedAt) / duration);
-                    const eased = progress < 0.5
-                        ? 4 * progress * progress * progress
-                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-                    scroller.scrollTop = start + distance * eased;
+                    const progress = Math.min(1, (now - startedAt) / TRANSITION_MS);
+                    const eased = easeFullPage(progress);
+                    applyTrackOffset(start + distance * eased);
 
                     if (progress < 1) {
                         animationFrame = requestAnimationFrame(animate);
@@ -328,7 +345,7 @@
 
             const pageForEvent = (target) => {
                 const page = target instanceof Element ? target.closest('.snap-page') : null;
-                return page && page.parentElement === scroller ? page : pages[nearestPageIndex()];
+                return page && page.parentElement === track ? page : pages[nearestPageIndex()];
             };
 
             const isInputLocked = () =>
@@ -468,19 +485,11 @@
                 });
             });
 
-            scroller.addEventListener('scroll', () => {
-                if (scrollTicking || isInputLocked()) return;
-                scrollTicking = true;
-                requestAnimationFrame(() => {
-                    updateActivePage(nearestPageIndex(), false);
-                    scrollTicking = false;
-                });
-            }, { passive: true });
-
             const resyncPagePosition = () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
                     syncAppHeight();
+                    syncPageHeights();
                     // Do not re-snap the page under an open modal (focus/keyboard viewport churn).
                     if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
                     goToPage(nearestPageIndex(), { instant: true });
@@ -492,8 +501,51 @@
                 window.visualViewport.addEventListener('resize', resyncPagePosition);
             }
 
+            syncPageHeights();
             const hashIndex = pages.findIndex((page) => `#${page.id}` === window.location.hash);
             goToPage(hashIndex >= 0 ? hashIndex : 0, { instant: true });
+        }
+
+        /** CSS cubic-bezier → unit easing (t in [0,1] → eased progress). */
+        function createCubicBezier(p1x, p1y, p2x, p2y) {
+            const cx = 3 * p1x;
+            const bx = 3 * (p2x - p1x) - cx;
+            const ax = 1 - cx - bx;
+            const cy = 3 * p1y;
+            const by = 3 * (p2y - p1y) - cy;
+            const ay = 1 - cy - by;
+
+            const sampleCurveX = (t) => ((ax * t + bx) * t + cx) * t;
+            const sampleCurveY = (t) => ((ay * t + by) * t + cy) * t;
+            const sampleCurveDerivativeX = (t) => (3 * ax * t + 2 * bx) * t + cx;
+
+            const solveCurveX = (x) => {
+                let t2 = x;
+                for (let i = 0; i < 8; i += 1) {
+                    const x2 = sampleCurveX(t2) - x;
+                    if (Math.abs(x2) < 1e-6) return t2;
+                    const d2 = sampleCurveDerivativeX(t2);
+                    if (Math.abs(d2) < 1e-6) break;
+                    t2 -= x2 / d2;
+                }
+                let t0 = 0;
+                let t1 = 1;
+                t2 = x;
+                while (t0 < t1) {
+                    const x2 = sampleCurveX(t2);
+                    if (Math.abs(x2 - x) < 1e-6) return t2;
+                    if (x > x2) t0 = t2;
+                    else t1 = t2;
+                    t2 = (t1 - t0) * 0.5 + t0;
+                }
+                return t2;
+            };
+
+            return (t) => {
+                if (t <= 0) return 0;
+                if (t >= 1) return 1;
+                return sampleCurveY(solveCurveX(t));
+            };
         }
 
         function initPageOneVideoLifecycle() {
