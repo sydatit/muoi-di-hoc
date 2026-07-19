@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- fullPage.js CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fullpage.js/dist/fullpage.min.css" />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -42,10 +44,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-neutral-earth text-neutral-dark font-sans selection:bg-brand-pink/20 antialiased flex flex-col">
+<body class="bg-neutral-earth text-neutral-dark font-sans selection:bg-brand-pink/20 antialiased">
 
     <!-- HEADER / NAVIGATION -->
-    <header class="sticky top-0 z-40 shrink-0 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+    <header id="siteHeader" class="site-header fixed top-0 inset-x-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-3 lg:gap-4">
             <a href="#chuong-trinh" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-1 lg:flex-none lg:w-[230px] xl:w-auto">
                 <!-- Brand logo -->
@@ -59,7 +61,7 @@
                 </div>
             </a>
             
-            <nav class="hidden lg:flex shrink-0 items-center gap-3 xl:gap-6 text-xs xl:text-sm font-medium text-gray-600">
+            <nav id="siteNav" class="hidden lg:flex shrink-0 items-center gap-3 xl:gap-6 text-xs xl:text-sm font-medium text-gray-600">
                 <a href="#chuong-trinh" class="hover:text-brand-pink transition-colors">Chương trình tiếp theo</a>
                 <a href="#gioi-thieu" class="hover:text-brand-blue transition-colors">Dự Án Muối Đi Học</a>
                 <a href="#ve-chung-toi" class="hover:text-brand-orange transition-colors">Về chúng tôi</a>
@@ -71,12 +73,11 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main id="pageScroll" class="page-scroll flex-grow">
-        <div class="page-scroll-track" id="pageScrollTrack">
+    <!-- MAIN CONTENT (fullPage.js) -->
+    <div id="fullpage">
 
         <!-- PAGE 1: CHƯƠNG TRÌNH TIẾP THEO -->
-        <section id="chuong-trinh" class="snap-page snap-page-scrollable flex items-start lg:items-center border-b border-gray-100 bg-[#fffaf5]">
+        <section id="chuong-trinh" class="section fp-noscroll flex items-start lg:items-center border-b border-gray-100 bg-[#fffaf5]">
             <div class="w-full max-w-6xl mx-auto px-4 py-2 sm:py-4">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-5 lg:gap-x-8 lg:gap-y-4 items-start">
 
@@ -152,7 +153,6 @@
                         <video
                             id="pageOneVideo"
                             class="absolute inset-0 w-full h-full object-cover"
-                            autoplay
                             muted
                             loop
                             playsinline
@@ -206,7 +206,7 @@
         </section>
 
         <!-- PAGE 2: DỰ ÁN MUỐI ĐI HỌC -->
-        <section id="gioi-thieu" class="snap-page snap-page-scrollable bg-[#fffaf5] border-b border-gray-100 py-6 sm:py-8 lg:py-10">
+        <section id="gioi-thieu" class="section bg-[#fffaf5] border-b border-gray-100 py-6 sm:py-8 lg:py-10">
             <div class="max-w-6xl mx-auto px-4 space-y-6 sm:space-y-8 lg:space-y-10">
 
                 <!-- Top: Intro + Vision/Mission -->
@@ -391,7 +391,7 @@
         </section>
 
         <!-- PAGE 3: VỀ CHÚNG TÔI -->
-        <section id="ve-chung-toi" class="snap-page snap-page-scrollable" aria-labelledby="hmyt-title">
+        <section id="ve-chung-toi" class="section" aria-labelledby="hmyt-title">
             <div class="p3-container">
                 <header class="p3-hero">
                     <div class="p3-hero-brand">
@@ -545,8 +545,7 @@
             </div>
         </section>
 
-        </div>
-    </main>
+    </div>
 
     <!-- REGISTRATION POPUP MODAL -->
     <div id="registerModal" class="fixed inset-x-0 top-0 z-50 flex p-4 bg-slate-900/60 backdrop-blur-sm hidden opacity-0 transition-all duration-300" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle" onclick="closeRegisterModal()">
@@ -799,6 +798,7 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT: LOGIC TRACKING & INTERACTIVE -->
     <!-- ============================================== -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/fullpage.js/dist/fullpage.min.js"></script>
     <script src="app.js" defer></script>
 
     <!-- VERCEL WEB ANALYTICS -->

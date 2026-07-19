@@ -114,6 +114,7 @@
             document.body.classList.add('modal-open');
             if (form) form.scrollTop = 0;
             modal.classList.remove('hidden');
+            setFullPageScrolling(false);
             syncAppHeight();
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
@@ -134,6 +135,7 @@
             card.classList.remove('scale-100');
             card.classList.add('scale-95');
             document.body.classList.remove('modal-open');
+            setFullPageScrolling(true);
             syncRegisterModalViewport();
             
             setTimeout(() => {
@@ -152,6 +154,8 @@
             }
             if (modal) {
                 modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+                setFullPageScrolling(false);
             }
         }
         function closeIntroVideo() {
@@ -163,10 +167,14 @@
             if (frame) {
                 frame.src = '';
             }
+            if (!isRegisterModalOpen()) {
+                document.body.classList.remove('modal-open');
+                setFullPageScrolling(true);
+            }
         }
 
         function syncHeaderHeight() {
-            const header = document.querySelector('header');
+            const header = document.getElementById('siteHeader') || document.querySelector('header.site-header');
             if (!header) return;
             document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
         }
@@ -204,382 +212,129 @@
             }
         }
 
-        // Shared with initPageOneVideoLifecycle — avoid pause/play mid page-transition.
-        let isFullPageTransitioning = () => false;
-        let syncPageOneVideoPlayback = () => {};
+        const FULLPAGE_SECTION_IDS = ['chuong-trinh', 'gioi-thieu', 've-chung-toi'];
+        let fullpageApi = null;
+        let pageOneVideoVisible = false;
+        let setPageOneVideoVisible = () => {};
+        let rebuildFullPageTimer = null;
 
-        function initFullPageScroll() {
-            const scroller = document.getElementById('pageScroll');
-            const track = document.getElementById('pageScrollTrack');
-            const pages = Array.from(track ? track.querySelectorAll(':scope > .snap-page') : []);
-            if (!scroller || !track || pages.length === 0) return;
-
-            scroller.classList.add('js-fullpage');
-
-            const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-            const INTERNAL_SCROLL_EPSILON = 14;
-            const WHEEL_COOLDOWN_MS = 520;
-            const TRANSITION_MS = 780;
-            // easeOutCubic — decisive finish, less end-of-scroll stall than easeInOutCubic
-            const easeFullPage = createCubicBezier(0.33, 1, 0.68, 1);
-            const navLinks = Array.from(document.querySelectorAll('a[href^="#"]')).filter((link) => {
-                const id = link.getAttribute('href').slice(1);
-                return pages.some((page) => page.id === id);
-            });
-            let activeIndex = 0;
-            let animationFrame = null;
-            let transitionLocked = false;
-            let wheelCooldownUntil = 0;
-            let wheelDelta = 0;
-            let wheelDirection = 0;
-            let lastWheelAt = 0;
-            let resizeTimer = null;
-            let touchState = null;
-            let currentOffsetY = 0;
-
-            isFullPageTransitioning = () => transitionLocked;
-
-            const clampIndex = (index) => Math.max(0, Math.min(pages.length - 1, index));
-
-            const pageHeight = () => scroller.clientHeight;
-
-            const syncPageHeights = () => {
-                const height = pageHeight();
-                pages.forEach((page) => {
-                    page.style.height = `${height}px`;
-                    page.style.minHeight = `${height}px`;
-                });
-            };
-
-            const offsetForIndex = (index) => -clampIndex(index) * pageHeight();
-
-            const applyTrackOffset = (offsetY) => {
-                currentOffsetY = offsetY;
-                track.style.transform = `translate3d(0, ${offsetY}px, 0)`;
-            };
-
-            const nearestPageIndex = () => {
-                const height = pageHeight();
-                if (height <= 0) return activeIndex;
-                return clampIndex(Math.round(-currentOffsetY / height));
-            };
-
-            const updateActivePage = (index, { updateHash = true } = {}) => {
-                activeIndex = clampIndex(index);
-                const activePage = pages[activeIndex];
-
-                pages.forEach((page, pageIndex) => {
-                    page.classList.toggle('is-active', pageIndex === activeIndex);
-                    page.setAttribute('aria-hidden', pageIndex === activeIndex ? 'false' : 'true');
-                });
-
-                navLinks.forEach((link) => {
-                    const isActive = link.getAttribute('href') === `#${activePage.id}`;
-                    if (isActive) link.setAttribute('aria-current', 'page');
-                    else link.removeAttribute('aria-current');
-                });
-
-                if (updateHash && activePage.id && window.location.hash !== `#${activePage.id}`) {
-                    const nextUrl = `${window.location.pathname}${window.location.search}#${activePage.id}`;
-                    window.history.replaceState(null, '', nextUrl);
-                }
-            };
-
-            const preparePageScroll = (index, fromIndex) => {
-                const page = pages[index];
-                if (!page) return;
-                const maxScroll = page.scrollHeight - page.clientHeight;
-                if (maxScroll <= INTERNAL_SCROLL_EPSILON) {
-                    page.scrollTop = 0;
-                    return;
-                }
-                // Entering from above → top; from below → bottom so reverse swipe can leave immediately.
-                page.scrollTop = fromIndex > index ? maxScroll : 0;
-            };
-
-            let cooldownTimer = null;
-            const finishTransition = (index) => {
-                if (animationFrame !== null) {
-                    cancelAnimationFrame(animationFrame);
-                    animationFrame = null;
-                }
-                applyTrackOffset(Math.round(offsetForIndex(index)));
-                transitionLocked = true;
-                wheelDelta = 0;
-                const unlockAt = performance.now() + WHEEL_COOLDOWN_MS;
-                wheelCooldownUntil = unlockAt;
-                updateActivePage(index, { updateHash: false });
-                requestAnimationFrame(() => {
-                    updateActivePage(index, { updateHash: true });
-                    syncPageOneVideoPlayback();
-                });
-                if (cooldownTimer !== null) window.clearTimeout(cooldownTimer);
-                cooldownTimer = window.setTimeout(() => {
-                    cooldownTimer = null;
-                    if (wheelCooldownUntil !== unlockAt) return;
-                    transitionLocked = false;
-                    wheelDelta = 0;
-                    wheelCooldownUntil = 0;
-                }, WHEEL_COOLDOWN_MS);
-            };
-
-            const goToPage = (index, { instant = false } = {}) => {
-                const fromIndex = activeIndex;
-                const nextIndex = clampIndex(index);
-                const destination = Math.round(offsetForIndex(nextIndex));
-
-                if (animationFrame !== null) cancelAnimationFrame(animationFrame);
-                transitionLocked = true;
-                wheelCooldownUntil = Number.POSITIVE_INFINITY;
-                preparePageScroll(nextIndex, fromIndex);
-
-                if (instant || reduceMotionQuery.matches) {
-                    finishTransition(nextIndex);
-                    return;
-                }
-
-                const start = currentOffsetY;
-                const distance = destination - start;
-                if (Math.abs(distance) < 1) {
-                    finishTransition(nextIndex);
-                    return;
-                }
-
-                const startedAt = performance.now();
-                const animate = (now) => {
-                    const progress = Math.min(1, (now - startedAt) / TRANSITION_MS);
-                    const eased = easeFullPage(progress);
-                    applyTrackOffset(start + distance * eased);
-
-                    if (progress < 1) {
-                        animationFrame = requestAnimationFrame(animate);
-                    } else {
-                        finishTransition(nextIndex);
-                    }
-                };
-                animationFrame = requestAnimationFrame(animate);
-            };
-
-            const canPageScrollInternally = (page, direction) => {
-                if (!page) return false;
-                const maxScroll = page.scrollHeight - page.clientHeight;
-                if (maxScroll <= INTERNAL_SCROLL_EPSILON) return false;
-                return direction > 0
-                    ? page.scrollTop < maxScroll - INTERNAL_SCROLL_EPSILON
-                    : page.scrollTop > INTERNAL_SCROLL_EPSILON;
-            };
-
-            const pageForEvent = (target) => {
-                const page = target instanceof Element ? target.closest('.snap-page') : null;
-                return page && page.parentElement === track ? page : pages[nearestPageIndex()];
-            };
-
-            const isInputLocked = () =>
-                transitionLocked || performance.now() < wheelCooldownUntil;
-
-            scroller.addEventListener('wheel', (event) => {
-                if (document.body.classList.contains('modal-open')) return;
-                if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-
-                const direction = Math.sign(event.deltaY);
-                const page = pageForEvent(event.target);
-                const pageIndex = pages.indexOf(page);
-                if (direction === 0 || pageIndex < 0) return;
-
-                if (!isInputLocked() && canPageScrollInternally(page, direction)) {
-                    wheelDelta = 0;
-                    return;
-                }
-
-                event.preventDefault();
-                if (isInputLocked()) return;
-
-                const nextIndex = clampIndex(pageIndex + direction);
-                if (nextIndex === pageIndex) {
-                    // At first/last page: swallow residual inertia without thrashing wheelDelta.
-                    wheelDelta = 0;
-                    wheelDirection = direction;
-                    lastWheelAt = performance.now();
-                    return;
-                }
-
-                const now = performance.now();
-                if (direction !== wheelDirection || now - lastWheelAt > 180) wheelDelta = 0;
-                wheelDirection = direction;
-                lastWheelAt = now;
-                const multiplier = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? 16
-                    : event.deltaMode === WheelEvent.DOM_DELTA_PAGE ? scroller.clientHeight
-                    : 1;
-                wheelDelta += event.deltaY * multiplier;
-
-                if (Math.abs(wheelDelta) >= 40) {
-                    goToPage(nextIndex);
-                }
-            }, { passive: false });
-
-            scroller.addEventListener('touchstart', (event) => {
-                if (event.touches.length !== 1 || document.body.classList.contains('modal-open')) {
-                    touchState = null;
-                    return;
-                }
-                const touch = event.touches[0];
-                touchState = {
-                    page: pageForEvent(event.target),
-                    lastX: touch.clientX,
-                    lastY: touch.clientY,
-                    edgeDelta: 0,
-                    triggered: false
-                };
-            }, { passive: true });
-
-            scroller.addEventListener('touchmove', (event) => {
-                if (!touchState || touchState.triggered || event.touches.length !== 1) return;
-                const touch = event.touches[0];
-                const deltaX = touchState.lastX - touch.clientX;
-                const deltaY = touchState.lastY - touch.clientY;
-                touchState.lastX = touch.clientX;
-                touchState.lastY = touch.clientY;
-
-                if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
-                    touchState.edgeDelta = 0;
-                    return;
-                }
-
-                const direction = Math.sign(deltaY);
-                if (direction === 0 || canPageScrollInternally(touchState.page, direction)) {
-                    touchState.edgeDelta = 0;
-                    return;
-                }
-
-                event.preventDefault();
-                touchState.edgeDelta += deltaY;
-                if (Math.abs(touchState.edgeDelta) < 48 || isInputLocked()) return;
-
-                const pageIndex = pages.indexOf(touchState.page);
-                const nextIndex = clampIndex(pageIndex + Math.sign(touchState.edgeDelta));
-                touchState.triggered = true;
-                if (nextIndex !== pageIndex) goToPage(nextIndex);
-            }, { passive: false });
-
-            const clearTouchState = () => {
-                touchState = null;
-            };
-            scroller.addEventListener('touchend', clearTouchState, { passive: true });
-            scroller.addEventListener('touchcancel', clearTouchState, { passive: true });
-
-            document.addEventListener('keydown', (event) => {
-                if (event.defaultPrevented || document.body.classList.contains('modal-open')) return;
-                if (event.ctrlKey || event.metaKey || event.altKey) return;
-                if (event.target instanceof Element && event.target.closest(
-                    'input, textarea, select, button, a, [contenteditable="true"], [role="dialog"]'
-                )) return;
-
-                let direction = 0;
-                if (['ArrowDown', 'PageDown'].includes(event.key) || (event.key === ' ' && !event.shiftKey)) direction = 1;
-                if (['ArrowUp', 'PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey)) direction = -1;
-
-                if (event.key === 'Home' || event.key === 'End') {
-                    event.preventDefault();
-                    if (!isInputLocked()) goToPage(event.key === 'Home' ? 0 : pages.length - 1);
-                    return;
-                }
-                if (direction === 0) return;
-
-                const pageIndex = nearestPageIndex();
-                const page = pages[pageIndex];
-                if (canPageScrollInternally(page, direction)) {
-                    event.preventDefault();
-                    const shortStep = event.key === 'ArrowDown' || event.key === 'ArrowUp';
-                    const distance = shortStep ? 64 : page.clientHeight * 0.82;
-                    page.scrollBy({
-                        top: distance * direction,
-                        behavior: reduceMotionQuery.matches ? 'auto' : 'smooth'
-                    });
-                    return;
-                }
-                event.preventDefault();
-                if (!isInputLocked()) goToPage(pageIndex + direction);
-            });
-
-            navLinks.forEach((link) => {
-                link.addEventListener('click', (event) => {
-                    const id = link.getAttribute('href').slice(1);
-                    const index = pages.findIndex((page) => page.id === id);
-                    if (index < 0) return;
-                    event.preventDefault();
-                    if (!isInputLocked() || index !== activeIndex) goToPage(index);
-                });
-            });
-
-            const resyncPagePosition = () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    syncAppHeight();
-                    syncPageHeights();
-                    // Do not re-snap the page under an open modal (focus/keyboard viewport churn).
-                    if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
-                    goToPage(nearestPageIndex(), { instant: true });
-                }, 120);
-            };
-
-            window.addEventListener('resize', resyncPagePosition);
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', resyncPagePosition);
-            }
-
-            syncPageHeights();
-            const hashIndex = pages.findIndex((page) => `#${page.id}` === window.location.hash);
-            goToPage(hashIndex >= 0 ? hashIndex : 0, { instant: true });
+        function setFullPageScrolling(enabled) {
+            if (!fullpageApi) return;
+            fullpageApi.setAllowScrolling(enabled);
+            fullpageApi.setKeyboardScrolling(enabled);
         }
 
-        /** CSS cubic-bezier → unit easing (t in [0,1] → eased progress). */
-        function createCubicBezier(p1x, p1y, p2x, p2y) {
-            const cx = 3 * p1x;
-            const bx = 3 * (p2x - p1x) - cx;
-            const ax = 1 - cx - bx;
-            const cy = 3 * p1y;
-            const by = 3 * (p2y - p1y) - cy;
-            const ay = 1 - cy - by;
+        function sectionIndexFromId(id) {
+            return FULLPAGE_SECTION_IDS.indexOf(id);
+        }
 
-            const sampleCurveX = (t) => ((ax * t + bx) * t + cx) * t;
-            const sampleCurveY = (t) => ((ay * t + by) * t + cy) * t;
-            const sampleCurveDerivativeX = (t) => (3 * ax * t + 2 * bx) * t + cx;
+        function syncNavCurrent(sectionId) {
+            document.querySelectorAll('#siteNav a[href^="#"], a[href^="#chuong-trinh"], a[href^="#gioi-thieu"], a[href^="#ve-chung-toi"]').forEach((link) => {
+                const href = link.getAttribute('href');
+                if (!href || !href.startsWith('#')) return;
+                const isActive = href === `#${sectionId}`;
+                if (isActive) link.setAttribute('aria-current', 'page');
+                else link.removeAttribute('aria-current');
+            });
+        }
 
-            const solveCurveX = (x) => {
-                let t2 = x;
-                for (let i = 0; i < 8; i += 1) {
-                    const x2 = sampleCurveX(t2) - x;
-                    if (Math.abs(x2) < 1e-6) return t2;
-                    const d2 = sampleCurveDerivativeX(t2);
-                    if (Math.abs(d2) < 1e-6) break;
-                    t2 -= x2 / d2;
+        function updateSectionHash(sectionId) {
+            if (!sectionId) return;
+            const nextHash = `#${sectionId}`;
+            if (window.location.hash !== nextHash) {
+                const nextUrl = `${window.location.pathname}${window.location.search}${nextHash}`;
+                window.history.replaceState(null, '', nextUrl);
+            }
+            syncNavCurrent(sectionId);
+        }
+
+        function scheduleFullPageRebuild() {
+            if (rebuildFullPageTimer !== null) window.clearTimeout(rebuildFullPageTimer);
+            rebuildFullPageTimer = window.setTimeout(() => {
+                rebuildFullPageTimer = null;
+                if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
+                if (fullpageApi && typeof fullpageApi.reBuild === 'function') {
+                    fullpageApi.reBuild();
                 }
-                let t0 = 0;
-                let t1 = 1;
-                t2 = x;
-                while (t0 < t1) {
-                    const x2 = sampleCurveX(t2);
-                    if (Math.abs(x2 - x) < 1e-6) return t2;
-                    if (x > x2) t0 = t2;
-                    else t1 = t2;
-                    t2 = (t1 - t0) * 0.5 + t0;
-                }
-                return t2;
-            };
+            }, 120);
+        }
 
-            return (t) => {
-                if (t <= 0) return 0;
-                if (t >= 1) return 1;
-                return sampleCurveY(solveCurveX(t));
-            };
+        function initFullPageScroll() {
+            if (typeof fullpage !== 'function') return;
+            const container = document.getElementById('fullpage');
+            if (!container) return;
+
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const hashId = window.location.hash.replace(/^#/, '');
+            const hashIndex = sectionIndexFromId(hashId);
+
+            fullpageApi = new fullpage('#fullpage', {
+                // GPLv3 project: replace with your OSS/commercial key from alvarotrigo.com/fullPage
+                licenseKey: 'gplv3-license',
+                sectionSelector: '.section',
+                // Avoid anchors option — same names as section IDs conflict with fullPage.
+                lockAnchors: true,
+                recordHistory: false,
+                navigation: false,
+                scrollingSpeed: reduceMotion ? 0 : 700,
+                css3: true,
+                easingcss3: 'ease',
+                autoScrolling: true,
+                fitToSection: true,
+                fitToSectionDelay: 300,
+                scrollBar: false,
+                scrollOverflow: true,
+                scrollOverflowMacStyle: true,
+                fixedElements: '#siteHeader',
+                normalScrollElements: '#registerModal, #videoModal, #modalCard, #enrollmentForm',
+                verticalCentered: false,
+                onLeave(_origin, _destination, _direction) {
+                    // Pause page-1 video as soon as we leave so decode cost drops mid-transition.
+                    if (_origin && _origin.item && _origin.item.id === 'chuong-trinh') {
+                        setPageOneVideoVisible(false);
+                    }
+                },
+                afterLoad(_origin, destination) {
+                    const sectionEl = destination && destination.item;
+                    const sectionId = sectionEl && sectionEl.id;
+                    if (sectionId) updateSectionHash(sectionId);
+                    setPageOneVideoVisible(sectionId === 'chuong-trinh');
+                },
+                afterRender() {
+                    const active = container.querySelector('.section.active') || container.querySelector('.section');
+                    if (active && active.id) {
+                        updateSectionHash(active.id);
+                        setPageOneVideoVisible(active.id === 'chuong-trinh');
+                    }
+                },
+                afterResize() {
+                    syncHeaderHeight();
+                }
+            });
+
+            // Expose for modal helpers / debugging.
+            window.fullpage_api = fullpageApi;
+
+            document.querySelectorAll('a[href^="#"]').forEach((link) => {
+                const id = (link.getAttribute('href') || '').slice(1);
+                const index = sectionIndexFromId(id);
+                if (index < 0) return;
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    if (document.body.classList.contains('modal-open')) return;
+                    fullpageApi.moveTo(index + 1);
+                });
+            });
+
+            if (hashIndex >= 0) {
+                fullpageApi.silentMoveTo(hashIndex + 1);
+            }
         }
 
         function initPageOneVideoLifecycle() {
             const video = document.getElementById('pageOneVideo');
-            const section = document.getElementById('chuong-trinh');
-            if (!video || !section || !('IntersectionObserver' in window)) return;
+            if (!video) return;
 
-            let sectionVisible = false;
             let tapStart = null;
 
             // Keep muted autoplay reliable on mobile WebViews / older iOS.
@@ -597,31 +352,18 @@
                 return playPromise;
             };
 
-            syncPageOneVideoPlayback = () => {
-                if (sectionVisible) {
+            setPageOneVideoVisible = (visible) => {
+                pageOneVideoVisible = Boolean(visible);
+                if (pageOneVideoVisible) {
                     tryPlay();
                 } else {
                     video.pause();
                 }
             };
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    sectionVisible = entry.isIntersecting && entry.intersectionRatio > 0.45;
-                    // Avoid pause/play mid page-transition (causes end-of-scroll hitch).
-                    if (!isFullPageTransitioning()) {
-                        syncPageOneVideoPlayback();
-                    }
-                });
-            }, { threshold: [0.45, 0.7] });
-
-            observer.observe(section);
-
             // Tap the video itself to toggle sound: mute → unmute → mute → …
-            // Document-level pointerdown used to unmute on any page touch; on Chrome
-            // Android that pauses muted autoplay, leaving the clip stuck until scroll-back.
             const toggleSoundFromVideoTap = () => {
-                if (!sectionVisible) return;
+                if (!pageOneVideoVisible) return;
 
                 if (!video.muted) {
                     video.muted = true;
@@ -633,14 +375,13 @@
 
                 const recoverMutedPlayback = () => {
                     video.muted = true;
-                    if (sectionVisible) tryPlay();
+                    if (pageOneVideoVisible) tryPlay();
                 };
 
                 const playPromise = tryPlay();
                 if (playPromise && typeof playPromise.then === 'function') {
                     playPromise.then(() => {
-                        // Some Android Chrome builds unmute + pause without rejecting play().
-                        if (sectionVisible && video.paused) {
+                        if (pageOneVideoVisible && video.paused) {
                             recoverMutedPlayback();
                         }
                     }).catch(() => {
@@ -648,7 +389,7 @@
                     });
                 } else {
                     requestAnimationFrame(() => {
-                        if (sectionVisible && video.paused) {
+                        if (pageOneVideoVisible && video.paused) {
                             recoverMutedPlayback();
                         }
                     });
@@ -663,9 +404,7 @@
             }, { passive: true });
 
             videoHost.addEventListener('pointerup', (event) => {
-                if (!tapStart) {
-                    return;
-                }
+                if (!tapStart) return;
                 const dx = event.clientX - tapStart.x;
                 const dy = event.clientY - tapStart.y;
                 tapStart = null;
@@ -1076,13 +815,19 @@
             initTracking();
             window.initPageThreeCarousels();
             syncAppHeight();
-            initFullPageScroll();
             initPageOneVideoLifecycle();
+            initFullPageScroll();
             lucide.createIcons();
 
-            window.addEventListener('resize', syncAppHeight);
+            window.addEventListener('resize', () => {
+                syncAppHeight();
+                scheduleFullPageRebuild();
+            });
             if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', syncAppHeight);
+                window.visualViewport.addEventListener('resize', () => {
+                    syncAppHeight();
+                    scheduleFullPageRebuild();
+                });
                 window.visualViewport.addEventListener('scroll', syncAppHeight);
             }
 
