@@ -188,6 +188,10 @@
             }
         }
 
+        // Shared with initPageOneVideoLifecycle — avoid pause/play mid page-transition.
+        let isFullPageTransitioning = () => false;
+        let syncPageOneVideoPlayback = () => {};
+
         function initFullPageScroll() {
             const scroller = document.getElementById('pageScroll');
             const track = document.getElementById('pageScrollTrack');
@@ -199,9 +203,9 @@
             const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
             const INTERNAL_SCROLL_EPSILON = 14;
             const WHEEL_COOLDOWN_MS = 520;
-            const TRANSITION_MS = 1100;
-            // fullPage.js default easeInOutCubic ≈ cubic-bezier(0.645, 0.045, 0.355, 1)
-            const easeFullPage = createCubicBezier(0.645, 0.045, 0.355, 1);
+            const TRANSITION_MS = 780;
+            // easeOutCubic — decisive finish, less end-of-scroll stall than easeInOutCubic
+            const easeFullPage = createCubicBezier(0.33, 1, 0.68, 1);
             const navLinks = Array.from(document.querySelectorAll('a[href^="#"]')).filter((link) => {
                 const id = link.getAttribute('href').slice(1);
                 return pages.some((page) => page.id === id);
@@ -216,6 +220,8 @@
             let resizeTimer = null;
             let touchState = null;
             let currentOffsetY = 0;
+
+            isFullPageTransitioning = () => transitionLocked;
 
             const clampIndex = (index) => Math.max(0, Math.min(pages.length - 1, index));
 
@@ -242,7 +248,7 @@
                 return clampIndex(Math.round(-currentOffsetY / height));
             };
 
-            const updateActivePage = (index, updateHash = true) => {
+            const updateActivePage = (index, { updateHash = true } = {}) => {
                 activeIndex = clampIndex(index);
                 const activePage = pages[activeIndex];
 
@@ -281,12 +287,16 @@
                     cancelAnimationFrame(animationFrame);
                     animationFrame = null;
                 }
-                applyTrackOffset(offsetForIndex(index));
+                applyTrackOffset(Math.round(offsetForIndex(index)));
                 transitionLocked = true;
                 wheelDelta = 0;
                 const unlockAt = performance.now() + WHEEL_COOLDOWN_MS;
                 wheelCooldownUntil = unlockAt;
-                updateActivePage(index);
+                updateActivePage(index, { updateHash: false });
+                requestAnimationFrame(() => {
+                    updateActivePage(index, { updateHash: true });
+                    syncPageOneVideoPlayback();
+                });
                 if (cooldownTimer !== null) window.clearTimeout(cooldownTimer);
                 cooldownTimer = window.setTimeout(() => {
                     cooldownTimer = null;
@@ -300,7 +310,7 @@
             const goToPage = (index, { instant = false } = {}) => {
                 const fromIndex = activeIndex;
                 const nextIndex = clampIndex(index);
-                const destination = offsetForIndex(nextIndex);
+                const destination = Math.round(offsetForIndex(nextIndex));
 
                 if (animationFrame !== null) cancelAnimationFrame(animationFrame);
                 transitionLocked = true;
@@ -571,13 +581,20 @@
                 return playPromise;
             };
 
+            syncPageOneVideoPlayback = () => {
+                if (sectionVisible) {
+                    tryPlay();
+                } else {
+                    video.pause();
+                }
+            };
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     sectionVisible = entry.isIntersecting && entry.intersectionRatio > 0.45;
-                    if (sectionVisible) {
-                        tryPlay();
-                    } else {
-                        video.pause();
+                    // Avoid pause/play mid page-transition (causes end-of-scroll hitch).
+                    if (!isFullPageTransitioning()) {
+                        syncPageOneVideoPlayback();
                     }
                 });
             }, { threshold: [0.45, 0.7] });
