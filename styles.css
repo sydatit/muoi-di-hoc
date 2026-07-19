@@ -88,7 +88,10 @@
             box-sizing: border-box;
         }
         #gioi-thieu > .fp-overflow {
+            display: flex;
+            flex-direction: column;
             min-height: 100%;
+            box-sizing: border-box;
         }
         #chuong-trinh > .fp-overflow,
         #ve-chung-toi > .fp-overflow {
@@ -613,19 +616,27 @@
             #gioi-thieu {
                 display: flex;
                 flex-direction: column;
+                height: 100%;
+                min-height: 0;
                 box-sizing: border-box;
                 overflow-x: hidden;
                 padding-top: 0.35rem;
                 padding-bottom: 0.4rem;
             }
+            #gioi-thieu > .fp-overflow {
+                flex: 1 1 0;
+                min-height: 0;
+                height: 100%;
+            }
             #gioi-thieu .max-w-6xl {
-                flex: 0 0 auto;
+                flex: 1 1 0;
+                min-height: 100%;
                 width: 100%;
                 max-width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start;
-                gap: 0.42rem;
+                justify-content: space-between;
+                gap: 0.5rem;
                 padding-left: 0.9rem;
                 padding-right: 0.9rem;
             }
@@ -661,8 +672,11 @@
                 letter-spacing: 0.14em;
             }
             #gioi-thieu .page2-intro-copy h2 {
-                font-size: 1.35rem;
-                line-height: 1.05;
+                flex: 0 0 7%;
+                display: flex;
+                align-items: center;
+                font-size: clamp(1.85rem, 9.5vw, 2.35rem);
+                line-height: 1;
             }
             #gioi-thieu .page2-intro-copy > p:first-of-type {
                 font-size: 0.74rem;
@@ -873,7 +887,8 @@
                 gap: 0.25rem;
             }
             #gioi-thieu .page2-intro-copy h2 {
-                font-size: 1.22rem;
+                flex: 0 0 6%;
+                font-size: clamp(1.55rem, 8vw, 2rem);
             }
             #gioi-thieu .page2-vision {
                 padding: 0.45rem 0.55rem;
