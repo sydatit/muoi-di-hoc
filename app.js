@@ -142,11 +142,27 @@
             }, 300);
         }
 
+        const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+
         function playIntroVideo() {
-            document.getElementById('videoModal').classList.remove('hidden');
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('introVideoFrame');
+            if (frame) {
+                frame.src = INTRO_VIDEO_EMBED;
+            }
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
         }
         function closeIntroVideo() {
-            document.getElementById('videoModal').classList.add('hidden');
+            const modal = document.getElementById('videoModal');
+            const frame = document.getElementById('introVideoFrame');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            if (frame) {
+                frame.src = '';
+            }
         }
 
         function syncHeaderHeight() {

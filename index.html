@@ -437,7 +437,7 @@
                             <span class="bg-rose-50 text-[#ed6a53]"><i data-lucide="heart" aria-hidden="true"></i></span>
                             <h3 id="activities-title">HÌNH ẢNH HOẠT ĐỘNG</h3>
                         </div>
-                        <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="5200" aria-label="Hình ảnh hoạt động Hạt Muối Yêu Thương">
+                        <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="3" data-mobile-visible="3" data-autoplay="5200" aria-label="Hình ảnh hoạt động Hạt Muối Yêu Thương">
                             <div class="p3-carousel-viewport">
                                 <div class="p3-carousel-track">
                                     <figure class="p3-carousel-slide" role="group" aria-label="1 trên 6">
@@ -474,23 +474,25 @@
                     </section>
                 </div>
 
-                <div class="p3-card p3-main-panel">
-                    <div class="p3-main-grid">
-                        <section class="p3-video-column" aria-labelledby="intro-video-title">
-                            <div class="p3-section-heading">
-                                <span class="bg-red-50 text-red-600"><i data-lucide="video" aria-hidden="true"></i></span>
-                                <h3 id="intro-video-title">VIDEO GIỚI THIỆU</h3>
-                            </div>
-                            <button type="button" onclick="playIntroVideo()" class="p3-video-poster group" aria-label="Phát video giới thiệu Hạt Muối Yêu Thương">
-                                <img src="activities/482011579_122261208350029670_8723631038913041069_n.jpg" alt="Tình nguyện viên trao quà hỗ trợ ngoài trời" loading="lazy">
-                                <span class="p3-video-poster-label">
-                                    <span class="p3-video-play"><i data-lucide="play" aria-hidden="true"></i></span>
-                                    <strong>HẠT MUỐI YÊU THƯƠNG</strong>
-                                    <span>Lan tỏa yêu thương · Vì một cộng đồng tốt đẹp hơn</span>
-                                </span>
-                            </button>
-                        </section>
+                <div class="p3-card p3-video-panel">
+                    <section class="p3-video-column" aria-labelledby="intro-video-title">
+                        <div class="p3-section-heading">
+                            <span class="bg-red-50 text-red-600"><i data-lucide="video" aria-hidden="true"></i></span>
+                            <h3 id="intro-video-title">VIDEO GIỚI THIỆU</h3>
+                        </div>
+                        <button type="button" onclick="playIntroVideo()" class="p3-video-poster group" aria-label="Phát video giới thiệu Hạt Muối Yêu Thương">
+                            <img src="activities/482011579_122261208350029670_8723631038913041069_n.jpg" alt="Tình nguyện viên trao quà hỗ trợ ngoài trời" loading="lazy">
+                            <span class="p3-video-poster-label">
+                                <span class="p3-video-play"><i data-lucide="play" aria-hidden="true"></i></span>
+                                <strong>HẠT MUỐI YÊU THƯƠNG</strong>
+                                <span>Lan tỏa yêu thương · Vì một cộng đồng tốt đẹp hơn</span>
+                            </span>
+                        </button>
+                    </section>
+                </div>
 
+                <div class="p3-bottom-row">
+                    <div class="p3-card p3-about-panel">
                         <article class="p3-about-card" aria-labelledby="about-hmyt-title">
                             <div class="p3-section-heading">
                                 <span class="bg-orange-50 text-[#ec6d45]"><i data-lucide="users-round" aria-hidden="true"></i></span>
@@ -503,13 +505,15 @@
                                 TÌM HIỂU THÊM <i data-lucide="arrow-right" class="h-3.5 w-3.5" aria-hidden="true"></i>
                             </a>
                         </article>
+                    </div>
 
+                    <div class="p3-card p3-recognition-panel">
                         <section class="min-w-0" aria-labelledby="recognition-title">
                             <div class="p3-section-heading">
                                 <span class="bg-amber-50 text-amber-600"><i data-lucide="award" aria-hidden="true"></i></span>
                                 <h3 id="recognition-title">SỰ GHI NHẬN</h3>
                             </div>
-                            <div class="p3-carousel" data-carousel data-desktop-visible="4" data-tablet-visible="2" data-mobile-visible="1" data-autoplay="6200" aria-label="Giấy khen và sự ghi nhận">
+                            <div class="p3-carousel" data-carousel data-desktop-visible="1" data-tablet-visible="1" data-mobile-visible="1" data-autoplay="6200" aria-label="Giấy khen và sự ghi nhận">
                                 <div class="p3-carousel-viewport">
                                     <div class="p3-carousel-track">
                                         <figure class="p3-carousel-slide" role="group" aria-label="1 trên 4">
@@ -710,19 +714,19 @@
     <!-- INTRO VIDEO MODAL -->
     <div id="videoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 hidden" role="dialog" aria-modal="true" aria-labelledby="videoModalTitle" onclick="closeIntroVideo()">
         <div class="relative w-full max-w-3xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/10" onclick="event.stopPropagation()">
-            <!-- Close Video -->
+            <h3 id="videoModalTitle" class="sr-only">Video giới thiệu Hạt Muối Yêu Thương</h3>
             <button type="button" onclick="closeIntroVideo()" class="absolute top-4 right-4 z-10 text-white hover:text-red-400 bg-black/60 hover:bg-black p-2 rounded-full transition-all" aria-label="Đóng video giới thiệu">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
-            <!-- Demo Youtube Video / Video Mockup -->
-            <div class="w-full h-full flex flex-col items-center justify-center text-center p-6 space-y-4 text-slate-300">
-                <div class="w-16 h-16 rounded-full bg-brand-pink/20 text-brand-pink flex items-center justify-center animate-pulse">
-                    <i data-lucide="video" class="w-8 h-8"></i>
-                </div>
-                <h3 id="videoModalTitle" class="font-bold text-lg text-white">Bắt đầu trình phát Video giới thiệu dự án</h3>
-                <p class="text-xs text-slate-400 max-w-sm">Trong bản thực tế, bạn chỉ việc dán link Iframe YouTube hoặc video máy chủ của HMYT vào đây để phát trực tiếp.</p>
-                <button type="button" onclick="closeIntroVideo()" class="px-5 py-2 bg-brand-pink text-white rounded-lg text-xs font-semibold">Đóng trình xem</button>
-            </div>
+            <iframe
+                id="introVideoFrame"
+                class="absolute inset-0 w-full h-full"
+                title="Video giới thiệu Hạt Muối Yêu Thương"
+                src=""
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
         </div>
     </div>
 
