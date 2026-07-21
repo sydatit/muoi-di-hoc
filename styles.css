@@ -1854,11 +1854,13 @@
             .p3-top-row {
                 flex: 0 0 40%;
                 min-height: 0;
+                display: flex;
+                flex-direction: column;
                 gap: 0.5%;
                 overflow: hidden;
             }
             .p3-activities-panel {
-                flex: 0 0 20%;
+                flex: 1 1 0;
                 min-height: 0;
                 display: flex;
                 flex-direction: column;
@@ -1882,7 +1884,7 @@
                 height: 100%;
             }
             .p3-video-panel {
-                flex: 0 0 20%;
+                flex: 1 1 0;
                 min-height: 0;
                 display: flex;
                 flex-direction: column;
