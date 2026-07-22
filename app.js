@@ -100,6 +100,11 @@
 
         function openRegisterModal(entryPointName) {
             trackingState.entryPoint = entryPointName;
+
+            // Lightbox sits above z-50 modals — close it before showing register
+            if (isImageLightboxOpen()) {
+                closeImageLightbox({ immediate: true });
+            }
             
             const modal = document.getElementById('registerModal');
             const card = document.getElementById('modalCard');
@@ -673,6 +678,8 @@
             if (img.hasAttribute('data-no-lightbox')) return false;
             if (img.closest('header.site-header, #siteHeader')) return false;
             if (img.classList.contains('p3-hero-logo')) return false;
+            // Video poster / play control opens the intro video modal, not the lightbox
+            if (img.closest('.p3-video-poster, #videoModal, [onclick*="playIntroVideo"]')) return false;
             const src = img.currentSrc || img.getAttribute('src') || '';
             if (!src || src.endsWith('.svg')) return false;
             return true;
@@ -706,11 +713,12 @@
             }
         }
 
-        function closeImageLightbox() {
+        function closeImageLightbox(options) {
             const lightbox = document.getElementById('imageLightbox');
             const lightboxImg = document.getElementById('imageLightboxImg');
             if (!lightbox || lightbox.classList.contains('hidden')) return;
 
+            const immediate = Boolean(options && options.immediate);
             lightbox.classList.remove('is-open');
             const finishClose = () => {
                 lightbox.classList.add('hidden');
@@ -730,7 +738,7 @@
             };
 
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reduceMotion) {
+            if (immediate || reduceMotion) {
                 finishClose();
                 return;
             }

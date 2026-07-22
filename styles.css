@@ -86,6 +86,9 @@
         img.js-lightbox-target {
             cursor: zoom-in;
         }
+        #fullpage .p3-video-poster img {
+            cursor: pointer;
+        }
 
         .image-lightbox {
             position: fixed;
@@ -842,8 +845,13 @@
             }
             .p3-hero-title {
                 font-size: clamp(1.9rem, 3svh + 0.5rem, 2.65rem);
+                line-height: 1.18;
+            }
+            .p3-hero-title span + span {
+                margin-top: 0.12em;
             }
             .p3-hero-tagline {
+                margin-top: 0.25rem;
                 font-size: clamp(0.9rem, 1.2svh + 0.35rem, 1.1rem);
             }
             .p3-hero-desc {
@@ -862,13 +870,20 @@
             .p3-activity-image {
                 height: 8.5rem;
                 max-height: none;
+                aspect-ratio: 4 / 3;
             }
             .p3-award-image {
                 height: 9.5rem;
                 max-height: none;
+                aspect-ratio: 4 / 3;
             }
             .p3-video-poster {
+                aspect-ratio: 16 / 9;
+                width: 100%;
+                height: auto;
+                min-height: 0;
                 max-height: min(22svh, 14rem);
+                flex: 0 0 auto;
             }
             .p3-card {
                 padding: 0.75rem 0.9rem;
@@ -2312,6 +2327,7 @@
         }
 
         @media (max-width: 1023px) {
+            /* Structural stack only — sizing lives in tablet (640–1023) or mobile (≤639) */
             .p3-main-grid {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto;
@@ -2330,34 +2346,10 @@
             .p3-hero-brand-text {
                 align-items: flex-start;
             }
-            .p3-hero-logo {
-                height: clamp(6.5rem, 16svh, 8rem);
-            }
-            .p3-hero-title {
-                font-size: clamp(1.7rem, 2.8svh + 0.65rem, 2.5rem);
-                line-height: 1.18;
-            }
-            .p3-hero-title span + span {
-                margin-top: 0.12em;
-            }
-            .p3-hero-tagline {
-                margin-top: 0.25rem;
-                font-size: clamp(0.78rem, 1.1svh + 0.3rem, 1rem);
-            }
             .p3-video-column {
                 max-width: none;
                 width: 100%;
                 margin-inline: 0;
-            }
-            .p3-activity-image {
-                max-height: none;
-                height: 5.5rem;
-                aspect-ratio: 4 / 3;
-            }
-            .p3-award-image {
-                max-height: none;
-                height: 6.5rem;
-                aspect-ratio: 4 / 3;
             }
             .p3-recognition-panel .p3-carousel,
             .p3-recognition-panel .p3-carousel-viewport {
@@ -2368,14 +2360,6 @@
             .p3-recognition-panel .p3-carousel-track,
             .p3-recognition-panel .p3-carousel-slide {
                 height: auto;
-            }
-            .p3-video-poster {
-                aspect-ratio: 16 / 9;
-                width: 100%;
-                height: auto;
-                min-height: 0;
-                max-height: min(16svh, 8.5rem);
-                flex: 0 0 auto;
             }
         }
         @media (max-width: 639px) {
@@ -2402,7 +2386,7 @@
                 box-sizing: border-box;
             }
             .p3-hero {
-                flex: 0 0 auto;
+                flex: 0 1 auto;
                 min-height: 0;
                 display: flex;
                 flex-direction: column;
@@ -2414,8 +2398,9 @@
                 padding: 0.4rem 0.55rem;
             }
             .p3-top-row {
-                flex: 0 0 46%;
+                flex: 1 1 46%;
                 min-height: 0;
+                max-height: 52%;
                 display: flex;
                 flex-direction: column;
                 gap: 0.5%;
@@ -2458,7 +2443,7 @@
                 height: 100%;
             }
             .p3-bottom-row {
-                flex: 0 0 38%;
+                flex: 1 1 38%;
                 min-height: 0;
                 max-height: 42%;
                 gap: 0.35rem;
@@ -2651,10 +2636,11 @@
         /* Short phones: slightly more bottom room, keep top competitive */
         @media (max-width: 639px) and (max-height: 740px) {
             .p3-top-row {
-                flex: 0 0 42%;
+                flex: 1 1 42%;
+                max-height: 48%;
             }
             .p3-bottom-row {
-                flex: 0 0 40%;
+                flex: 1 1 40%;
                 max-height: 44%;
             }
             .p3-hero-logo {
@@ -2671,10 +2657,11 @@
         /* Tall phones: give activities/video more height; cap about+recognition */
         @media (max-width: 639px) and (min-height: 800px) {
             .p3-top-row {
-                flex: 0 0 50%;
+                flex: 1 1 50%;
+                max-height: 54%;
             }
             .p3-bottom-row {
-                flex: 0 0 36%;
+                flex: 1 1 36%;
                 max-height: 38%;
             }
             .p3-about-panel .p3-about-card {
