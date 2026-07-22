@@ -286,7 +286,7 @@
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
                 fixedElements: '#siteHeader',
-                normalScrollElements: '#registerModal, #videoModal, #modalCard, #enrollmentForm',
+                normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
                 onLeave(_origin, _destination, _direction) {
                     // Pause page-1 video as soon as we leave so decode cost drops mid-transition.
@@ -659,10 +659,139 @@
             return false;
         }
 
+        // -------------------------------------------------------------
+        // 2b. IMAGE LIGHTBOX (tap/click to zoom, tap outside to close)
+        // -------------------------------------------------------------
+        function isImageLightboxOpen() {
+            const lightbox = document.getElementById('imageLightbox');
+            return Boolean(lightbox && !lightbox.classList.contains('hidden'));
+        }
+
+        function isLightboxableImage(img) {
+            if (!img || img.tagName !== 'IMG') return false;
+            if (img.closest('#imageLightbox')) return false;
+            if (img.hasAttribute('data-no-lightbox')) return false;
+            if (img.closest('header.site-header, #siteHeader')) return false;
+            if (img.classList.contains('p3-hero-logo')) return false;
+            const src = img.currentSrc || img.getAttribute('src') || '';
+            if (!src || src.endsWith('.svg')) return false;
+            return true;
+        }
+
+        function openImageLightbox(img) {
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('imageLightboxImg');
+            const caption = document.getElementById('imageLightboxCaption');
+            if (!lightbox || !lightboxImg || !img) return;
+
+            const src = img.currentSrc || img.src;
+            if (!src) return;
+
+            lightboxImg.src = src;
+            lightboxImg.alt = img.alt || 'Ảnh xem chi tiết';
+            if (caption) {
+                caption.textContent = img.alt || '';
+            }
+
+            document.body.classList.add('modal-open');
+            lightbox.hidden = false;
+            lightbox.classList.remove('hidden');
+            setFullPageScrolling(false);
+            requestAnimationFrame(() => {
+                lightbox.classList.add('is-open');
+            });
+
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        function closeImageLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            const lightboxImg = document.getElementById('imageLightboxImg');
+            if (!lightbox || lightbox.classList.contains('hidden')) return;
+
+            lightbox.classList.remove('is-open');
+            const finishClose = () => {
+                lightbox.classList.add('hidden');
+                lightbox.hidden = true;
+                if (lightboxImg) {
+                    lightboxImg.removeAttribute('src');
+                    lightboxImg.alt = '';
+                }
+                if (!isRegisterModalOpen()) {
+                    const videoModal = document.getElementById('videoModal');
+                    const videoOpen = videoModal && !videoModal.classList.contains('hidden');
+                    if (!videoOpen) {
+                        document.body.classList.remove('modal-open');
+                        setFullPageScrolling(true);
+                    }
+                }
+            };
+
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reduceMotion) {
+                finishClose();
+                return;
+            }
+            window.setTimeout(finishClose, 220);
+        }
+
+        function initImageLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            if (!lightbox) return;
+
+            let pointerStart = null;
+
+            document.addEventListener('pointerdown', (event) => {
+                const img = event.target.closest('img');
+                if (!img || !isLightboxableImage(img)) {
+                    pointerStart = null;
+                    return;
+                }
+                pointerStart = { x: event.clientX, y: event.clientY };
+            }, { passive: true });
+
+            document.addEventListener('click', (event) => {
+                if (isImageLightboxOpen()) return;
+                if (isRegisterModalOpen()) return;
+                const videoModal = document.getElementById('videoModal');
+                if (videoModal && !videoModal.classList.contains('hidden')) return;
+
+                const img = event.target.closest('img');
+                if (!img || !isLightboxableImage(img)) return;
+
+                // Ignore swipe/drag gestures (carousel, scroll).
+                if (pointerStart) {
+                    const dx = Math.abs(event.clientX - pointerStart.x);
+                    const dy = Math.abs(event.clientY - pointerStart.y);
+                    pointerStart = null;
+                    if (dx > 12 || dy > 12) return;
+                }
+
+                event.preventDefault();
+                openImageLightbox(img);
+            });
+
+            lightbox.addEventListener('click', (event) => {
+                if (event.target.closest('[data-lightbox-content]')) return;
+                closeImageLightbox();
+            });
+
+            const closeBtn = lightbox.querySelector('[data-lightbox-close]');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    closeImageLightbox();
+                });
+            }
+        }
+
         // Expose for inline onsubmit/onclick (file:// + consistency with carousel bindings)
         window.openRegisterModal = openRegisterModal;
         window.closeRegisterModal = closeRegisterModal;
         window.handleFormSubmit = handleFormSubmit;
+        window.closeImageLightbox = closeImageLightbox;
 
         // -------------------------------------------------------------
         // 3. PAGE 3 ACTIVITY + RECOGNITION CAROUSELS
@@ -814,6 +943,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             initTracking();
             window.initPageThreeCarousels();
+            initImageLightbox();
             syncAppHeight();
             initPageOneVideoLifecycle();
             initFullPageScroll();
@@ -835,7 +965,9 @@
                 if (event.key !== 'Escape') return;
                 const registerModal = document.getElementById('registerModal');
                 const videoModal = document.getElementById('videoModal');
-                if (registerModal && !registerModal.classList.contains('hidden')) {
+                if (isImageLightboxOpen()) {
+                    closeImageLightbox();
+                } else if (registerModal && !registerModal.classList.contains('hidden')) {
                     closeRegisterModal();
                 } else if (videoModal && !videoModal.classList.contains('hidden')) {
                     closeIntroVideo();
