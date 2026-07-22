@@ -1,6 +1,6 @@
         :root {
             --header-h: 4.25rem;
-            --app-height: 100dvh;
+            --app-height: 100svh;
         }
         .gradient-text {
             background: linear-gradient(135deg, #ed1b8d 0%, #00a896 50%, #0072bc 100%);
@@ -24,11 +24,11 @@
         }
         html, body {
             height: 100%;
-            height: 100dvh;
-            height: var(--app-height, 100dvh);
+            height: 100svh;
+            height: var(--app-height, 100svh);
             max-height: 100%;
-            max-height: 100dvh;
-            max-height: var(--app-height, 100dvh);
+            max-height: 100svh;
+            max-height: var(--app-height, 100svh);
             overflow: hidden;
         }
         /* Fixed site header above fullPage sections */
@@ -36,7 +36,7 @@
             height: auto;
         }
         /*
-         * Keep fullPage’s native 100vh section math (transform distance).
+         * Section heights are synced to --app-height (visualViewport) in app.js.
          * Reserve space under the fixed header via padding so content matches the old viewport-minus-header layout.
          */
         #fullpage .fp-section,
@@ -103,15 +103,15 @@
         }
         /* Registration modal: keep form scrollable on mobile visualViewport */
         #registerModal {
-            height: var(--app-height, 100dvh);
-            max-height: var(--app-height, 100dvh);
+            height: var(--app-height, 100svh);
+            max-height: var(--app-height, 100svh);
             align-items: center;
             justify-content: center;
             overflow: hidden;
             overscroll-behavior: none;
         }
         #modalCard {
-            max-height: min(90dvh, calc(var(--app-height, 100dvh) - 2rem));
+            max-height: min(90svh, calc(var(--app-height, 100svh) - 2rem));
             min-height: 0;
         }
         #enrollmentForm {
@@ -424,7 +424,6 @@
             #chuong-trinh .p1-hover-card.grid {
                 flex: 0 0 8%;
                 min-height: 8svh;
-                min-height: 8dvh;
                 max-height: 100%;
                 border-radius: 0.85rem;
                 box-sizing: border-box;

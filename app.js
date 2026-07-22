@@ -195,13 +195,44 @@
             modal.style.width = `${Math.round(vv.width || window.innerWidth)}px`;
         }
 
-        function syncAppHeight() {
+        function syncFullPageSectionHeights(heightPx) {
+            const container = document.getElementById('fullpage');
+            if (!container || !heightPx || heightPx < 1) return;
+
+            // Prefer .fp-section after init; fall back to .section before fullPage decorates.
+            let sections = container.querySelectorAll('.fp-section');
+            if (!sections.length) sections = container.querySelectorAll('.section');
+            if (!sections.length) return;
+
+            const rounded = Math.round(heightPx);
+            const heightCss = `${rounded}px`;
+            sections.forEach((section) => {
+                section.style.height = heightCss;
+            });
+
+            // Keep the transform track tall enough for fullPage's section math.
+            const trackHeight = `${rounded * sections.length}px`;
+            const wrapper = container.querySelector(':scope > .fp-wrapper');
+            if (wrapper) {
+                wrapper.style.height = trackHeight;
+            } else if (container.style.height) {
+                container.style.height = trackHeight;
+            }
+        }
+
+        function getAppViewportHeight() {
             const vv = window.visualViewport;
             const height = vv && typeof vv.height === 'number' ? vv.height : window.innerHeight;
-            if (!height || height < 1) return;
-            document.documentElement.style.setProperty('--app-height', `${Math.round(height)}px`);
+            return height && height >= 1 ? Math.round(height) : 0;
+        }
+
+        function syncAppHeight() {
+            const height = getAppViewportHeight();
+            if (!height) return;
+            document.documentElement.style.setProperty('--app-height', `${height}px`);
             syncHeaderHeight();
             syncRegisterModalViewport();
+            syncFullPageSectionHeights(height);
             // While the register modal is open, avoid fighting Chrome's focus/keyboard pan.
             if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) {
                 return;
@@ -255,6 +286,8 @@
                 if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
                 if (fullpageApi && typeof fullpageApi.reBuild === 'function') {
                     fullpageApi.reBuild();
+                    // fullPage reBuild uses innerHeight — re-align to visualViewport/--app-height.
+                    syncFullPageSectionHeights(getAppViewportHeight());
                 }
             }, 120);
         }
@@ -306,9 +339,11 @@
                         updateSectionHash(active.id);
                         setPageOneVideoVisible(active.id === 'chuong-trinh');
                     }
+                    syncFullPageSectionHeights(getAppViewportHeight());
                 },
                 afterResize() {
                     syncHeaderHeight();
+                    syncFullPageSectionHeights(getAppViewportHeight());
                 }
             });
 
