@@ -144,19 +144,28 @@
             }, 300);
         }
 
+        const PAGE_ONE_VIDEO_EMBED = 'https://www.youtube.com/embed/UptVsKjjPsU?autoplay=1&rel=0';
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
 
-        function playIntroVideo() {
+        function openVideoModal(embedUrl) {
             const modal = document.getElementById('videoModal');
             const frame = document.getElementById('introVideoFrame');
             if (frame) {
-                frame.src = INTRO_VIDEO_EMBED;
+                frame.src = embedUrl;
             }
             if (modal) {
                 modal.classList.remove('hidden');
                 document.body.classList.add('modal-open');
                 setFullPageScrolling(false);
             }
+        }
+
+        function playPageOneVideo() {
+            openVideoModal(PAGE_ONE_VIDEO_EMBED);
+        }
+
+        function playIntroVideo() {
+            openVideoModal(INTRO_VIDEO_EMBED);
         }
         function closeIntroVideo() {
             const modal = document.getElementById('videoModal');
@@ -214,8 +223,6 @@
 
         const FULLPAGE_SECTION_IDS = ['chuong-trinh', 'gioi-thieu', 've-chung-toi'];
         let fullpageApi = null;
-        let pageOneVideoVisible = false;
-        let setPageOneVideoVisible = () => {};
         let rebuildFullPageTimer = null;
 
         function setFullPageScrolling(enabled) {
@@ -288,23 +295,15 @@
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
-                onLeave(_origin, _destination, _direction) {
-                    // Pause page-1 video as soon as we leave so decode cost drops mid-transition.
-                    if (_origin && _origin.item && _origin.item.id === 'chuong-trinh') {
-                        setPageOneVideoVisible(false);
-                    }
-                },
                 afterLoad(_origin, destination) {
                     const sectionEl = destination && destination.item;
                     const sectionId = sectionEl && sectionEl.id;
                     if (sectionId) updateSectionHash(sectionId);
-                    setPageOneVideoVisible(sectionId === 'chuong-trinh');
                 },
                 afterRender() {
                     const active = container.querySelector('.section.active') || container.querySelector('.section');
                     if (active && active.id) {
                         updateSectionHash(active.id);
-                        setPageOneVideoVisible(active.id === 'chuong-trinh');
                     }
                 },
                 afterResize() {
@@ -329,93 +328,6 @@
             if (hashIndex >= 0) {
                 fullpageApi.silentMoveTo(hashIndex + 1);
             }
-        }
-
-        function initPageOneVideoLifecycle() {
-            const video = document.getElementById('pageOneVideo');
-            if (!video) return;
-
-            let tapStart = null;
-
-            // Keep muted autoplay reliable on mobile WebViews / older iOS.
-            video.muted = true;
-            video.defaultMuted = true;
-            video.playsInline = true;
-            video.setAttribute('playsinline', '');
-            video.setAttribute('webkit-playsinline', '');
-
-            const tryPlay = () => {
-                const playPromise = video.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {});
-                }
-                return playPromise;
-            };
-
-            setPageOneVideoVisible = (visible) => {
-                pageOneVideoVisible = Boolean(visible);
-                if (pageOneVideoVisible) {
-                    tryPlay();
-                } else {
-                    video.pause();
-                }
-            };
-
-            // Tap the video itself to toggle sound: mute → unmute → mute → …
-            const toggleSoundFromVideoTap = () => {
-                if (!pageOneVideoVisible) return;
-
-                if (!video.muted) {
-                    video.muted = true;
-                    return;
-                }
-
-                video.muted = false;
-                video.volume = 1;
-
-                const recoverMutedPlayback = () => {
-                    video.muted = true;
-                    if (pageOneVideoVisible) tryPlay();
-                };
-
-                const playPromise = tryPlay();
-                if (playPromise && typeof playPromise.then === 'function') {
-                    playPromise.then(() => {
-                        if (pageOneVideoVisible && video.paused) {
-                            recoverMutedPlayback();
-                        }
-                    }).catch(() => {
-                        recoverMutedPlayback();
-                    });
-                } else {
-                    requestAnimationFrame(() => {
-                        if (pageOneVideoVisible && video.paused) {
-                            recoverMutedPlayback();
-                        }
-                    });
-                }
-            };
-
-            const videoHost = video.closest('.p1-video') || video;
-            videoHost.addEventListener('pointerdown', (event) => {
-                if (event.isPrimary === false) return;
-                if (event.pointerType === 'mouse' && event.button !== 0) return;
-                tapStart = { x: event.clientX, y: event.clientY };
-            }, { passive: true });
-
-            videoHost.addEventListener('pointerup', (event) => {
-                if (!tapStart) return;
-                const dx = event.clientX - tapStart.x;
-                const dy = event.clientY - tapStart.y;
-                tapStart = null;
-                // Ignore swipes so fullpage page changes from the video area stay mute-safe.
-                if (Math.hypot(dx, dy) > 12) return;
-                toggleSoundFromVideoTap();
-            }, { passive: true });
-
-            videoHost.addEventListener('pointercancel', () => {
-                tapStart = null;
-            }, { passive: true });
         }
 
         function showToast(title, message) {
@@ -945,7 +857,6 @@
             window.initPageThreeCarousels();
             initImageLightbox();
             syncAppHeight();
-            initPageOneVideoLifecycle();
             initFullPageScroll();
             lucide.createIcons();
 
