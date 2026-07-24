@@ -112,13 +112,13 @@
                     </div>
 
                     <!-- Speaker (mobile order-2 between title & schedule; desktop spans rows 1–2, self-end with schedule) -->
-                    <div class="p1-hover-card p1-speaker-card relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 lg:self-end order-2 lg:order-none">
-                        <div class="absolute -right-8 top-8 w-40 h-40 rounded-full bg-[#FF0000]/10 blur-2xl pointer-events-none" aria-hidden="true"></div>
+                    <div class="p1-hover-card p1-speaker-card relative rounded-2xl bg-white border border-gray-100 shadow-sm lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 lg:self-end order-2 lg:order-none">
+                        <div class="p1-speaker-glow" aria-hidden="true"></div>
                         <div class="p1-speaker-inner relative">
-                            <div class="p1-speaker-copy p-3.5 sm:p-5 sm:pr-2 lg:p-6 lg:pr-3 space-y-1.5 sm:space-y-2.5 min-w-0">
-                                <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-rust">Chuyên gia</p>
-                                <h3 class="font-script text-3xl sm:text-5xl font-bold text-slate-900 leading-none">Mr Văn</h3>
-                                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed sm:leading-[1.6]">
+                            <div class="p1-speaker-copy min-w-0">
+                                <p class="p1-speaker-label">Chuyên gia</p>
+                                <h3 class="p1-speaker-name font-script font-bold text-slate-900 leading-none">Mr Văn</h3>
+                                <p class="p1-speaker-desc text-slate-600">
                                     Chuyên gia đào tạo &amp; xây dựng kênh YouTube giúp hàng trăm kênh bật kiếm tiền và phát triển bền vững.
                                 </p>
                             </div>
@@ -167,26 +167,26 @@
                     </div>
 
                     <!-- Achievements (mobile order-5; desktop right col row 3) -->
-                    <div class="p1-hover-card bg-white border border-gray-100 rounded-2xl px-4 py-3.5 sm:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:overflow-hidden lg:col-span-5 lg:col-start-8 lg:row-start-3 lg:self-stretch order-5 lg:order-none">
-                        <h2 class="text-xs sm:text-base font-bold uppercase tracking-wider text-brand-rust mb-2 sm:mb-6 lg:mb-3 shrink-0 text-center">
+                    <div class="p1-hover-card p1-achievements-card bg-white border border-gray-100 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col lg:h-full lg:min-h-0 lg:col-span-5 lg:col-start-8 lg:row-start-3 lg:self-stretch order-5 lg:order-none">
+                        <h2 class="p1-achievements-title shrink-0 text-center">
                             Thành tựu đã đạt được
                         </h2>
-                        <ul class="divide-y divide-gray-100 flex-1 flex flex-col min-h-0 w-fit max-w-full mx-auto lg:justify-evenly">
-                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
-                                <i data-lucide="dollar-sign" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">YouTuber Triệu đô</span>
+                        <ul class="p1-achievements-list divide-y divide-gray-100 w-fit max-w-full mx-auto">
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-4">
+                                <i data-lucide="dollar-sign" class="p1-achievement-icon text-brand-rust shrink-0"></i>
+                                <span class="p1-achievement-text font-semibold text-slate-800">YouTuber Triệu đô</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
-                                <i data-lucide="calendar" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">13 năm Kinh nghiệm</span>
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-4">
+                                <i data-lucide="calendar" class="p1-achievement-icon text-brand-rust shrink-0"></i>
+                                <span class="p1-achievement-text font-semibold text-slate-800">13 năm Kinh nghiệm</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
-                                <i data-lucide="play" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">7 Kênh Nút Bạc + 2 Kênh Nút Vàng</span>
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-4">
+                                <i data-lucide="play" class="p1-achievement-icon text-brand-rust shrink-0"></i>
+                                <span class="p1-achievement-text font-semibold text-slate-800">7 Kênh Nút Bạc + 2 Kênh Nút Vàng</span>
                             </li>
-                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-5 py-2 sm:py-5 lg:py-3">
-                                <i data-lucide="users" class="w-[18px] h-[18px] sm:w-7 sm:h-7 text-brand-rust shrink-0"></i>
-                                <span class="text-xs sm:text-base font-semibold text-slate-800">Hỗ trợ hàng trăm Kênh Bật Kiếm Tiền</span>
+                            <li class="p1-achievement flex items-center gap-3.5 sm:gap-4">
+                                <i data-lucide="users" class="p1-achievement-icon text-brand-rust shrink-0"></i>
+                                <span class="p1-achievement-text font-semibold text-slate-800">Hỗ trợ hàng trăm Kênh Bật Kiếm Tiền</span>
                             </li>
                         </ul>
                     </div>
