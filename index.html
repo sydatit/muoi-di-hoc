@@ -150,15 +150,14 @@
 
                     <!-- Program video (mobile order-4; desktop left col row 3) -->
                     <div class="p1-video relative w-full aspect-video sm:h-auto sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-3 lg:self-start order-4 lg:order-none">
-                        <iframe
-                            id="pageOneVideo"
-                            class="absolute inset-0 w-full h-full"
-                            src="https://www.youtube.com/embed/UptVsKjjPsU?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=UptVsKjjPsU&rel=0&modestbranding=1&playsinline=1"
-                            title="Video giới thiệu chương trình"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen
-                            referrerpolicy="strict-origin-when-cross-origin"
-                        ></iframe>
+                        <button type="button" onclick="playPageOneVideo()" class="p1-video-poster group absolute inset-0 w-full h-full" aria-label="Phát video giới thiệu chương trình">
+                            <img src="https://img.youtube.com/vi/UptVsKjjPsU/hqdefault.jpg" alt="Video giới thiệu chương trình" loading="lazy">
+                            <span class="p1-video-poster-label">
+                                <span class="p1-video-play"><i data-lucide="play" aria-hidden="true"></i></span>
+                                <strong>XEM VIDEO</strong>
+                                <span>Giới thiệu chương trình</span>
+                            </span>
+                        </button>
                     </div>
 
                     <!-- Achievements (mobile order-5; desktop right col row 3) -->

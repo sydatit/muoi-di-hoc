@@ -144,19 +144,28 @@
             }, 300);
         }
 
+        const PAGE_ONE_VIDEO_EMBED = 'https://www.youtube.com/embed/UptVsKjjPsU?autoplay=1&rel=0';
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
 
-        function playIntroVideo() {
+        function openVideoModal(embedUrl) {
             const modal = document.getElementById('videoModal');
             const frame = document.getElementById('introVideoFrame');
             if (frame) {
-                frame.src = INTRO_VIDEO_EMBED;
+                frame.src = embedUrl;
             }
             if (modal) {
                 modal.classList.remove('hidden');
                 document.body.classList.add('modal-open');
                 setFullPageScrolling(false);
             }
+        }
+
+        function playPageOneVideo() {
+            openVideoModal(PAGE_ONE_VIDEO_EMBED);
+        }
+
+        function playIntroVideo() {
+            openVideoModal(INTRO_VIDEO_EMBED);
         }
         function closeIntroVideo() {
             const modal = document.getElementById('videoModal');
@@ -214,8 +223,6 @@
 
         const FULLPAGE_SECTION_IDS = ['chuong-trinh', 'gioi-thieu', 've-chung-toi'];
         let fullpageApi = null;
-        let pageOneVideoVisible = false;
-        let setPageOneVideoVisible = () => {};
         let rebuildFullPageTimer = null;
 
         function setFullPageScrolling(enabled) {
@@ -288,23 +295,15 @@
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
-                onLeave(_origin, _destination, _direction) {
-                    // Pause page-1 video as soon as we leave so decode cost drops mid-transition.
-                    if (_origin && _origin.item && _origin.item.id === 'chuong-trinh') {
-                        setPageOneVideoVisible(false);
-                    }
-                },
                 afterLoad(_origin, destination) {
                     const sectionEl = destination && destination.item;
                     const sectionId = sectionEl && sectionEl.id;
                     if (sectionId) updateSectionHash(sectionId);
-                    setPageOneVideoVisible(sectionId === 'chuong-trinh');
                 },
                 afterRender() {
                     const active = container.querySelector('.section.active') || container.querySelector('.section');
                     if (active && active.id) {
                         updateSectionHash(active.id);
-                        setPageOneVideoVisible(active.id === 'chuong-trinh');
                     }
                 },
                 afterResize() {
@@ -329,28 +328,6 @@
             if (hashIndex >= 0) {
                 fullpageApi.silentMoveTo(hashIndex + 1);
             }
-        }
-
-        function postYouTubeCommand(iframe, command) {
-            if (!iframe?.contentWindow) return;
-            iframe.contentWindow.postMessage(
-                JSON.stringify({ event: 'command', func: command, args: '' }),
-                '*'
-            );
-        }
-
-        function initPageOneVideoLifecycle() {
-            const iframe = document.getElementById('pageOneVideo');
-            if (!iframe) return;
-
-            setPageOneVideoVisible = (visible) => {
-                pageOneVideoVisible = Boolean(visible);
-                if (pageOneVideoVisible) {
-                    postYouTubeCommand(iframe, 'playVideo');
-                } else {
-                    postYouTubeCommand(iframe, 'pauseVideo');
-                }
-            };
         }
 
         function showToast(title, message) {
@@ -880,7 +857,6 @@
             window.initPageThreeCarousels();
             initImageLightbox();
             syncAppHeight();
-            initPageOneVideoLifecycle();
             initFullPageScroll();
             lucide.createIcons();
 
