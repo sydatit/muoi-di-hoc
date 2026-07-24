@@ -355,6 +355,7 @@
             height: 100%;
             max-height: 100%;
             min-height: 0;
+            overflow-x: hidden;
             box-sizing: border-box;
         }
         /* Tablet/desktop: natural content height so overflow can scroll inside the section */
@@ -416,6 +417,10 @@
             #gioi-thieu .page2-vision .lucide {
                 width: 1.2rem;
                 height: 1.2rem;
+            }
+            /* Breathe space above past-programs heading on tall desktop */
+            #gioi-thieu .page2-programs {
+                padding-top: 1.5rem;
             }
         }
         /* Registration modal: keep form scrollable on mobile visualViewport */
@@ -689,7 +694,7 @@
             .p1-expert-block::before {
                 content: '';
                 position: absolute;
-                right: -8%;
+                right: 0;
                 top: 4%;
                 width: min(28rem, 95%);
                 height: min(28rem, 70%);
@@ -770,7 +775,7 @@
             .p1-speaker-photo {
                 display: flex;
                 position: absolute;
-                right: -8%;
+                right: 0;
                 bottom: -10%;
                 width: 60%;
                 max-width: 20rem;
@@ -2823,6 +2828,9 @@
                 font-size: 0.78rem;
                 line-height: 1.35;
             }
+            #gioi-thieu .page2-programs {
+                padding-top: 0.5rem;
+            }
             #gioi-thieu .page2-program-grid {
                 gap: 0.55rem;
             }
@@ -2932,6 +2940,9 @@
             }
             #gioi-thieu .max-w-6xl {
                 gap: 0.55rem;
+            }
+            #gioi-thieu .page2-programs {
+                padding-top: 0.35rem;
             }
             #gioi-thieu .page2-vision {
                 padding: 0.55rem 0.7rem;
