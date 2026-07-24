@@ -449,6 +449,15 @@
             }
         }
         /* Page 1 expert block — mobile: contents (keep order 2+5); sm+: photo behind achievements */
+        #chuong-trinh {
+            background-color: #fffaf5;
+            background-image: radial-gradient(
+                ellipse 85% 70% at 50% 28%,
+                rgba(255, 220, 205, 0.38) 0%,
+                rgba(255, 236, 224, 0.22) 42%,
+                #fffaf5 78%
+            );
+        }
         .p1-expert-block {
             display: contents;
         }
@@ -514,6 +523,15 @@
             line-height: 1.35;
         }
         @media (min-width: 640px) {
+            #chuong-trinh {
+                background-image: radial-gradient(
+                    ellipse 72% 78% at 78% 40%,
+                    rgba(255, 210, 190, 0.48) 0%,
+                    rgba(255, 228, 210, 0.28) 32%,
+                    rgba(255, 242, 232, 0.16) 58%,
+                    #fffaf5 82%
+                );
+            }
             .p1-expert-block {
                 display: flex;
                 flex-direction: column;
@@ -522,26 +540,55 @@
                 min-height: 28rem;
                 order: 2;
             }
+            .p1-expert-block::before {
+                content: '';
+                position: absolute;
+                right: -8%;
+                top: 4%;
+                width: min(28rem, 95%);
+                height: min(28rem, 70%);
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 196, 170, 0.42) 0%,
+                    rgba(255, 220, 200, 0.18) 42%,
+                    transparent 72%
+                );
+                filter: blur(8px);
+                pointer-events: none;
+                z-index: 0;
+            }
             .p1-speaker-card {
                 overflow: visible;
-                background: transparent;
-                border-color: transparent;
-                box-shadow: none;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0;
                 flex: 1 1 auto;
                 min-height: 18rem;
                 position: relative;
                 z-index: 1;
+                transform: none !important;
+            }
+            .p1-speaker-card:hover {
+                box-shadow: none !important;
+                transform: none !important;
             }
             .p1-speaker-glow {
                 display: block;
                 position: absolute;
-                right: 8%;
-                top: 6%;
-                width: 16rem;
-                height: 16rem;
+                right: 4%;
+                top: 2%;
+                width: 20rem;
+                height: 20rem;
                 border-radius: 999px;
-                background: radial-gradient(circle, rgba(255, 180, 160, 0.55) 0%, rgba(255, 200, 190, 0.22) 45%, transparent 72%);
-                filter: blur(2px);
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 186, 165, 0.42) 0%,
+                    rgba(255, 210, 190, 0.18) 48%,
+                    transparent 74%
+                );
+                filter: blur(6px);
                 pointer-events: none;
                 z-index: 0;
             }
@@ -655,10 +702,10 @@
                 max-height: 26rem;
             }
             .p1-speaker-glow {
-                width: 18rem;
-                height: 18rem;
-                right: 2%;
-                top: 8%;
+                width: 22rem;
+                height: 22rem;
+                right: -2%;
+                top: 0%;
             }
             .p1-achievements-card {
                 margin-top: -4rem;
