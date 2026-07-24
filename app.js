@@ -150,35 +150,150 @@
         }
 
         const PAGE_ONE_VIDEO_ID = 'UptVsKjjPsU';
-        const PAGE_ONE_VIDEO_EMBED_AUTOPLAY =
-            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
-        const PAGE_ONE_VIDEO_EMBED_STATIC =
-            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=0&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+
+        let pageOnePlayer = null;
+        let pageOnePlayerReady = false;
+        let pageOneSavedTime = 0;
+        let pageOneResumePending = false;
+
+        function prefersReducedMotion() {
+            return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function buildPageOneEmbedSrc(autoplay, startSeconds) {
+            const params = new URLSearchParams({
+                autoplay: autoplay ? '1' : '0',
+                mute: '1',
+                loop: '1',
+                playlist: PAGE_ONE_VIDEO_ID,
+                controls: '1',
+                rel: '0',
+                playsinline: '1',
+                enablejsapi: '1'
+            });
+            if (startSeconds > 0) {
+                params.set('start', String(Math.floor(startSeconds)));
+            }
+            return `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?${params.toString()}`;
+        }
 
         function syncPageOneVideoMotionPreference() {
             const frame = document.getElementById('pageOneVideoFrame');
             if (!frame) return;
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const nextSrc = reduceMotion ? PAGE_ONE_VIDEO_EMBED_STATIC : PAGE_ONE_VIDEO_EMBED_AUTOPLAY;
+            const reduceMotion = prefersReducedMotion();
+
+            // Prefer controlling an existing YT player (avoids wiping playback position).
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady && reduceMotion) {
+                    try { pageOnePlayer.pauseVideo(); } catch (e) { /* ignore */ }
+                }
+                return;
+            }
+
+            const nextSrc = buildPageOneEmbedSrc(!reduceMotion, pageOneSavedTime);
             if (frame.getAttribute('src') !== nextSrc) {
                 frame.setAttribute('src', nextSrc);
             }
         }
 
         function stopPageOneVideo() {
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady) {
+                    try {
+                        const t = pageOnePlayer.getCurrentTime();
+                        if (typeof t === 'number' && !Number.isNaN(t)) {
+                            pageOneSavedTime = t;
+                        }
+                        pageOnePlayer.pauseVideo();
+                    } catch (e) { /* ignore */ }
+                }
+                // Player exists but not ready yet: leave the iframe alone so YT can finish binding.
+                return;
+            }
+
+            // API not ready yet: clear src so audio cannot continue off-section.
             const frame = document.getElementById('pageOneVideoFrame');
             if (!frame || !frame.getAttribute('src')) return;
             frame.setAttribute('src', '');
         }
 
         function restartPageOneVideo() {
+            const reduceMotion = prefersReducedMotion();
+
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady) {
+                    try {
+                        if (pageOneSavedTime > 0) {
+                            pageOnePlayer.seekTo(pageOneSavedTime, true);
+                        }
+                        if (reduceMotion) {
+                            pageOnePlayer.pauseVideo();
+                        } else {
+                            pageOnePlayer.playVideo();
+                        }
+                    } catch (e) { /* ignore */ }
+                } else {
+                    pageOneResumePending = true;
+                }
+                return;
+            }
+
+            // Fallback when YT API is unavailable: reload embed near saved time.
+            pageOneResumePending = true;
             const frame = document.getElementById('pageOneVideoFrame');
             if (!frame) return;
-            // Clear first so re-assigning the autoplay embed re-triggers muted playback
-            // (YouTube ignores a no-op src set to the same URL).
             frame.setAttribute('src', '');
-            syncPageOneVideoMotionPreference();
+            frame.setAttribute('src', buildPageOneEmbedSrc(!reduceMotion, pageOneSavedTime));
+            // If the API loaded while the iframe was empty, (re)try attaching the player.
+            initPageOneVideoPlayer();
+        }
+
+        function initPageOneVideoPlayer() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame || pageOnePlayer) return;
+
+            const createPlayer = () => {
+                if (pageOnePlayer || typeof YT === 'undefined' || !YT.Player) return;
+                const el = document.getElementById('pageOneVideoFrame');
+                if (!el) return;
+                if (!el.getAttribute('src')) {
+                    el.setAttribute(
+                        'src',
+                        buildPageOneEmbedSrc(!prefersReducedMotion(), pageOneSavedTime)
+                    );
+                }
+                pageOnePlayer = new YT.Player('pageOneVideoFrame', {
+                    events: {
+                        onReady() {
+                            pageOnePlayerReady = true;
+                            if (pageOneResumePending) {
+                                pageOneResumePending = false;
+                                restartPageOneVideo();
+                            } else if (prefersReducedMotion()) {
+                                try { pageOnePlayer.pauseVideo(); } catch (e) { /* ignore */ }
+                            }
+                        }
+                    }
+                });
+            };
+
+            if (window.YT && window.YT.Player) {
+                createPlayer();
+                return;
+            }
+
+            const previous = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = function () {
+                if (typeof previous === 'function') previous();
+                createPlayer();
+            };
+
+            if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+                const tag = document.createElement('script');
+                tag.src = 'https://www.youtube.com/iframe_api';
+                document.head.appendChild(tag);
+            }
         }
 
         function openVideoModal(embedUrl) {
@@ -1020,6 +1135,7 @@
             initImageLightbox();
             syncAppHeight();
             syncPageOneVideoMotionPreference();
+            initPageOneVideoPlayer();
             initFullPageScroll();
             lucide.createIcons();
 
