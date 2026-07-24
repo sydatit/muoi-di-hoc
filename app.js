@@ -342,6 +342,8 @@
 
         // Mobile: fit one screen (fp-noscroll). Tablet/desktop: allow scrollOverflow when content overflows.
         const pageOneMobileFitMq = window.matchMedia('(max-width: 639px)');
+        const SHORT_VIEWPORT_HEIGHT = 650;
+        let shortViewportResponsive = false;
 
         function syncPageOneScrollMode() {
             const section = document.getElementById('chuong-trinh');
@@ -350,6 +352,30 @@
             const hasNoScroll = section.classList.contains('fp-noscroll');
             if (wantNoScroll === hasNoScroll) return false;
             section.classList.toggle('fp-noscroll', wantNoScroll);
+            return true;
+        }
+
+        // Only tablet/desktop short height enters fp-responsive — never mobile (keeps % fit + snap).
+        function syncShortViewportResponsive() {
+            if (!fullpageApi) return false;
+            const width = window.innerWidth;
+            const vv = window.visualViewport;
+            const height = vv && typeof vv.height === 'number' ? vv.height : window.innerHeight;
+            const wantResponsive = width >= 640 && height > 0 && height < SHORT_VIEWPORT_HEIGHT;
+            if (wantResponsive === shortViewportResponsive) return false;
+            shortViewportResponsive = wantResponsive;
+            if (typeof fullpageApi.setResponsive === 'function') {
+                fullpageApi.setResponsive(wantResponsive);
+            } else {
+                if (typeof fullpageApi.setAutoScrolling === 'function') {
+                    fullpageApi.setAutoScrolling(!wantResponsive);
+                }
+                if (typeof fullpageApi.setFitToSection === 'function') {
+                    fullpageApi.setFitToSection(!wantResponsive);
+                }
+                document.documentElement.classList.toggle('fp-responsive', wantResponsive);
+                document.body.classList.toggle('fp-responsive', wantResponsive);
+            }
             return true;
         }
 
@@ -381,9 +407,8 @@
                 scrollBar: false,
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
-                // Short viewports only: disable snap so page 1 CTA can scroll into view.
-                // Do not set responsiveWidth — mobile needs fullPage snap + % fit layout.
-                responsiveHeight: 650,
+                // Do not use responsiveHeight — short mobile would break % fit.
+                // Short tablet/desktop handled by syncShortViewportResponsive().
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
@@ -405,6 +430,8 @@
 
             // Expose for modal helpers / debugging.
             window.fullpage_api = fullpageApi;
+
+            syncShortViewportResponsive();
 
             document.querySelectorAll('a[href^="#"]').forEach((link) => {
                 const id = (link.getAttribute('href') || '').slice(1);
@@ -429,6 +456,7 @@
 
             const onPageOneFitChange = () => {
                 if (syncPageOneScrollMode()) scheduleFullPageRebuild();
+                syncShortViewportResponsive();
             };
             if (typeof pageOneMobileFitMq.addEventListener === 'function') {
                 pageOneMobileFitMq.addEventListener('change', onPageOneFitChange);
@@ -981,11 +1009,13 @@
 
             window.addEventListener('resize', () => {
                 syncAppHeight();
+                syncShortViewportResponsive();
                 scheduleFullPageRebuild();
             });
             if (window.visualViewport) {
                 window.visualViewport.addEventListener('resize', () => {
                     syncAppHeight();
+                    syncShortViewportResponsive();
                     scheduleFullPageRebuild();
                 });
                 window.visualViewport.addEventListener('scroll', syncAppHeight);

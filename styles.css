@@ -352,14 +352,29 @@
         #ve-chung-toi > .fp-overflow {
             display: flex;
             flex-direction: column;
-            height: 100%;
-            max-height: 100%;
-            min-height: 0;
             overflow-x: hidden;
             box-sizing: border-box;
         }
-        /* Tablet/desktop: natural content height so overflow can scroll inside the section */
+        /* Mobile: fill section so % fit layouts work */
+        @media (max-width: 639px) {
+            #chuong-trinh > .fp-overflow,
+            #gioi-thieu > .fp-overflow,
+            #ve-chung-toi > .fp-overflow {
+                flex: 1 1 0;
+                height: 100%;
+                min-height: 100%;
+                max-height: none;
+            }
+        }
+        /* Tablet/desktop: capped overflow so scrollOverflow can scroll when content is taller */
         @media (min-width: 640px) {
+            #chuong-trinh > .fp-overflow,
+            #gioi-thieu > .fp-overflow,
+            #ve-chung-toi > .fp-overflow {
+                height: 100%;
+                max-height: 100%;
+                min-height: 0;
+            }
             #chuong-trinh > .fp-overflow > .max-w-6xl,
             #gioi-thieu > .fp-overflow > .max-w-6xl {
                 flex: 0 0 auto;
@@ -418,9 +433,10 @@
                 width: 1.2rem;
                 height: 1.2rem;
             }
-            /* Breathe space above past-programs heading on tall desktop */
-            #gioi-thieu .page2-programs {
-                padding-top: 1.5rem;
+            /* Keep past-programs closer to intro/vision — avoid large empty gap */
+            #gioi-thieu .max-w-6xl > .page2-programs {
+                margin-top: 1.25rem;
+                padding-top: 0;
             }
         }
         /* Registration modal: keep form scrollable on mobile visualViewport */
