@@ -150,19 +150,149 @@
         }
 
         const PAGE_ONE_VIDEO_ID = 'UptVsKjjPsU';
-        const PAGE_ONE_VIDEO_EMBED_AUTOPLAY =
-            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
-        const PAGE_ONE_VIDEO_EMBED_STATIC =
-            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=0&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+
+        let pageOnePlayer = null;
+        let pageOnePlayerReady = false;
+        let pageOneSavedTime = 0;
+        let pageOneResumePending = false;
+
+        function prefersReducedMotion() {
+            return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function buildPageOneEmbedSrc(autoplay, startSeconds) {
+            const params = new URLSearchParams({
+                autoplay: autoplay ? '1' : '0',
+                mute: '1',
+                loop: '1',
+                playlist: PAGE_ONE_VIDEO_ID,
+                controls: '1',
+                rel: '0',
+                playsinline: '1',
+                enablejsapi: '1'
+            });
+            if (startSeconds > 0) {
+                params.set('start', String(Math.floor(startSeconds)));
+            }
+            return `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?${params.toString()}`;
+        }
 
         function syncPageOneVideoMotionPreference() {
             const frame = document.getElementById('pageOneVideoFrame');
             if (!frame) return;
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const nextSrc = reduceMotion ? PAGE_ONE_VIDEO_EMBED_STATIC : PAGE_ONE_VIDEO_EMBED_AUTOPLAY;
+            const reduceMotion = prefersReducedMotion();
+
+            // Prefer controlling an existing YT player (avoids wiping playback position).
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady && reduceMotion) {
+                    try { pageOnePlayer.pauseVideo(); } catch (e) { /* ignore */ }
+                }
+                return;
+            }
+
+            const nextSrc = buildPageOneEmbedSrc(!reduceMotion, pageOneSavedTime);
             if (frame.getAttribute('src') !== nextSrc) {
                 frame.setAttribute('src', nextSrc);
+            }
+        }
+
+        function stopPageOneVideo() {
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady) {
+                    try {
+                        const t = pageOnePlayer.getCurrentTime();
+                        if (typeof t === 'number' && !Number.isNaN(t)) {
+                            pageOneSavedTime = t;
+                        }
+                        pageOnePlayer.pauseVideo();
+                    } catch (e) { /* ignore */ }
+                }
+                // Player exists but not ready yet: leave the iframe alone so YT can finish binding.
+                return;
+            }
+
+            // API not ready yet: clear src so audio cannot continue off-section.
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame || !frame.getAttribute('src')) return;
+            frame.setAttribute('src', '');
+        }
+
+        function restartPageOneVideo() {
+            const reduceMotion = prefersReducedMotion();
+
+            if (pageOnePlayer) {
+                if (pageOnePlayerReady) {
+                    try {
+                        if (pageOneSavedTime > 0) {
+                            pageOnePlayer.seekTo(pageOneSavedTime, true);
+                        }
+                        if (reduceMotion) {
+                            pageOnePlayer.pauseVideo();
+                        } else {
+                            pageOnePlayer.playVideo();
+                        }
+                    } catch (e) { /* ignore */ }
+                } else {
+                    pageOneResumePending = true;
+                }
+                return;
+            }
+
+            // Fallback when YT API is unavailable: reload embed near saved time.
+            pageOneResumePending = true;
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame) return;
+            frame.setAttribute('src', '');
+            frame.setAttribute('src', buildPageOneEmbedSrc(!reduceMotion, pageOneSavedTime));
+            // If the API loaded while the iframe was empty, (re)try attaching the player.
+            initPageOneVideoPlayer();
+        }
+
+        function initPageOneVideoPlayer() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame || pageOnePlayer) return;
+
+            const createPlayer = () => {
+                if (pageOnePlayer || typeof YT === 'undefined' || !YT.Player) return;
+                const el = document.getElementById('pageOneVideoFrame');
+                if (!el) return;
+                if (!el.getAttribute('src')) {
+                    el.setAttribute(
+                        'src',
+                        buildPageOneEmbedSrc(!prefersReducedMotion(), pageOneSavedTime)
+                    );
+                }
+                pageOnePlayer = new YT.Player('pageOneVideoFrame', {
+                    events: {
+                        onReady() {
+                            pageOnePlayerReady = true;
+                            if (pageOneResumePending) {
+                                pageOneResumePending = false;
+                                restartPageOneVideo();
+                            } else if (prefersReducedMotion()) {
+                                try { pageOnePlayer.pauseVideo(); } catch (e) { /* ignore */ }
+                            }
+                        }
+                    }
+                });
+            };
+
+            if (window.YT && window.YT.Player) {
+                createPlayer();
+                return;
+            }
+
+            const previous = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = function () {
+                if (typeof previous === 'function') previous();
+                createPlayer();
+            };
+
+            if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+                const tag = document.createElement('script');
+                tag.src = 'https://www.youtube.com/iframe_api';
+                document.head.appendChild(tag);
             }
         }
 
@@ -342,6 +472,8 @@
 
         // Mobile: fit one screen (fp-noscroll). Tablet/desktop: allow scrollOverflow when content overflows.
         const pageOneMobileFitMq = window.matchMedia('(max-width: 639px)');
+        const SHORT_VIEWPORT_HEIGHT = 650;
+        let shortViewportResponsive = false;
 
         function syncPageOneScrollMode() {
             const section = document.getElementById('chuong-trinh');
@@ -350,6 +482,30 @@
             const hasNoScroll = section.classList.contains('fp-noscroll');
             if (wantNoScroll === hasNoScroll) return false;
             section.classList.toggle('fp-noscroll', wantNoScroll);
+            return true;
+        }
+
+        // Only tablet/desktop short height enters fp-responsive — never mobile (keeps % fit + snap).
+        function syncShortViewportResponsive() {
+            if (!fullpageApi) return false;
+            const width = window.innerWidth;
+            const vv = window.visualViewport;
+            const height = vv && typeof vv.height === 'number' ? vv.height : window.innerHeight;
+            const wantResponsive = width >= 640 && height > 0 && height < SHORT_VIEWPORT_HEIGHT;
+            if (wantResponsive === shortViewportResponsive) return false;
+            shortViewportResponsive = wantResponsive;
+            if (typeof fullpageApi.setResponsive === 'function') {
+                fullpageApi.setResponsive(wantResponsive);
+            } else {
+                if (typeof fullpageApi.setAutoScrolling === 'function') {
+                    fullpageApi.setAutoScrolling(!wantResponsive);
+                }
+                if (typeof fullpageApi.setFitToSection === 'function') {
+                    fullpageApi.setFitToSection(!wantResponsive);
+                }
+                document.documentElement.classList.toggle('fp-responsive', wantResponsive);
+                document.body.classList.toggle('fp-responsive', wantResponsive);
+            }
             return true;
         }
 
@@ -381,16 +537,24 @@
                 scrollBar: false,
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
-                // Short viewports only: disable snap so page 1 CTA can scroll into view.
-                // Do not set responsiveWidth — mobile needs fullPage snap + % fit layout.
-                responsiveHeight: 650,
+                // Do not use responsiveHeight — short mobile would break % fit.
+                // Short tablet/desktop handled by syncShortViewportResponsive().
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
-                afterLoad(_origin, destination) {
+                afterLoad(origin, destination) {
                     const sectionEl = destination && destination.item;
                     const sectionId = sectionEl && sectionEl.id;
                     if (sectionId) updateSectionHash(sectionId);
+                    if (sectionId === 'chuong-trinh') {
+                        // First paint already has autoplay in the HTML src; only force
+                        // a reload when returning from another section.
+                        if (origin && origin.item) {
+                            restartPageOneVideo();
+                        }
+                    } else {
+                        stopPageOneVideo();
+                    }
                 },
                 afterRender() {
                     const active = container.querySelector('.section.active') || container.querySelector('.section');
@@ -405,6 +569,8 @@
 
             // Expose for modal helpers / debugging.
             window.fullpage_api = fullpageApi;
+
+            syncShortViewportResponsive();
 
             document.querySelectorAll('a[href^="#"]').forEach((link) => {
                 const id = (link.getAttribute('href') || '').slice(1);
@@ -429,6 +595,7 @@
 
             const onPageOneFitChange = () => {
                 if (syncPageOneScrollMode()) scheduleFullPageRebuild();
+                syncShortViewportResponsive();
             };
             if (typeof pageOneMobileFitMq.addEventListener === 'function') {
                 pageOneMobileFitMq.addEventListener('change', onPageOneFitChange);
@@ -968,6 +1135,7 @@
             initImageLightbox();
             syncAppHeight();
             syncPageOneVideoMotionPreference();
+            initPageOneVideoPlayer();
             initFullPageScroll();
             lucide.createIcons();
 
@@ -981,11 +1149,13 @@
 
             window.addEventListener('resize', () => {
                 syncAppHeight();
+                syncShortViewportResponsive();
                 scheduleFullPageRebuild();
             });
             if (window.visualViewport) {
                 window.visualViewport.addEventListener('resize', () => {
                     syncAppHeight();
+                    syncShortViewportResponsive();
                     scheduleFullPageRebuild();
                 });
                 window.visualViewport.addEventListener('scroll', syncAppHeight);
