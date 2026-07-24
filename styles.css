@@ -31,9 +31,152 @@
             max-height: var(--app-height, 100dvh);
             overflow: hidden;
         }
+        /* fullPage responsive mode: allow normal document scroll (short / narrow viewports) */
+        html.fp-responsive,
+        html.fp-responsive body,
+        body.fp-responsive {
+            height: auto;
+            max-height: none;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        html.fp-responsive #fullpage .section,
+        body.fp-responsive #fullpage .section {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+        }
+        html.fp-responsive #chuong-trinh,
+        body.fp-responsive #chuong-trinh {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+            overflow: visible !important;
+        }
+        html.fp-responsive #chuong-trinh .max-w-6xl,
+        body.fp-responsive #chuong-trinh .max-w-6xl,
+        html.fp-responsive #chuong-trinh .max-w-6xl > .grid,
+        body.fp-responsive #chuong-trinh .max-w-6xl > .grid {
+            flex: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            justify-content: flex-start !important;
+        }
+        html.fp-responsive #chuong-trinh > .fp-overflow,
+        body.fp-responsive #chuong-trinh > .fp-overflow,
+        html.fp-responsive #fullpage .section > .fp-overflow,
+        body.fp-responsive #fullpage .section > .fp-overflow {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        /* Drop mobile % flex budgets so content keeps natural height and CTA is reachable */
+        html.fp-responsive #chuong-trinh .p1-title,
+        body.fp-responsive #chuong-trinh .p1-title,
+        html.fp-responsive #chuong-trinh .p1-hover-card,
+        body.fp-responsive #chuong-trinh .p1-hover-card,
+        html.fp-responsive #chuong-trinh .p1-video,
+        body.fp-responsive #chuong-trinh .p1-video,
+        html.fp-responsive #chuong-trinh .p1-speaker-card,
+        body.fp-responsive #chuong-trinh .p1-speaker-card,
+        html.fp-responsive #chuong-trinh .max-w-6xl > .mt-2,
+        body.fp-responsive #chuong-trinh .max-w-6xl > .mt-2,
+        html.fp-responsive #chuong-trinh .max-w-6xl > div:last-child,
+        body.fp-responsive #chuong-trinh .max-w-6xl > div:last-child {
+            flex: 0 0 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
         /* Fixed site header above fullPage sections */
         .site-header {
             height: auto;
+        }
+
+        /* Mobile-only section scroll hint (Option 1 bounce chevron) */
+        .section-scroll-hint {
+            display: none;
+            position: fixed;
+            right: 0.15rem;
+            bottom: 1.25rem;
+            z-index: 30;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            width: 2rem;
+            height: 2.75rem;
+            padding: 0 0.1rem 0 0;
+            margin: 0;
+            border: 0;
+            background: transparent;
+            color: #475569;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .section-scroll-hint:hover,
+        .section-scroll-hint:focus-visible {
+            opacity: 1;
+        }
+        .section-scroll-hint:focus-visible {
+            outline: 2px solid rgba(232, 83, 18, 0.55);
+            outline-offset: 4px;
+            border-radius: 999px;
+        }
+        .section-scroll-hint.is-hidden,
+        body.modal-open .section-scroll-hint {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .section-scroll-hint__arrow {
+            display: block;
+            width: 14px;
+            height: 14px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            animation: section-scroll-bounce 2s infinite;
+        }
+        .section-scroll-hint.is-up .section-scroll-hint__arrow {
+            transform: rotate(225deg);
+            animation-name: section-scroll-bounce-up;
+        }
+        @keyframes section-scroll-bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(45deg);
+            }
+            40% {
+                transform: translateY(-8px) rotate(45deg);
+            }
+            60% {
+                transform: translateY(-4px) rotate(45deg);
+            }
+        }
+        @keyframes section-scroll-bounce-up {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(225deg);
+            }
+            40% {
+                transform: translateY(8px) rotate(225deg);
+            }
+            60% {
+                transform: translateY(4px) rotate(225deg);
+            }
+        }
+        @media (max-width: 767px) {
+            .section-scroll-hint {
+                display: flex;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .section-scroll-hint__arrow,
+            .section-scroll-hint.is-up .section-scroll-hint__arrow {
+                animation: none;
+            }
         }
         #siteNav a {
             position: relative;
@@ -2961,9 +3104,9 @@
                 padding: 0.4rem 0.55rem;
             }
             .p3-top-row {
-                flex: 1 1 46%;
+                flex: 1 1 50%;
                 min-height: 0;
-                max-height: 52%;
+                max-height: 54%;
                 display: flex;
                 flex-direction: column;
                 gap: 0.5%;
@@ -3006,9 +3149,9 @@
                 height: 100%;
             }
             .p3-bottom-row {
-                flex: 1 1 38%;
+                flex: 1 1 32%;
                 min-height: 0;
-                max-height: 42%;
+                max-height: 36%;
                 gap: 0.35rem;
                 overflow: hidden;
             }
@@ -3198,15 +3341,15 @@
             }
         }
 
-        /* Short phones: slightly more bottom room, keep top competitive */
+        /* Short phones: give activities/video more height; shrink about+recognition */
         @media (max-width: 639px) and (max-height: 740px) {
             .p3-top-row {
-                flex: 1 1 42%;
-                max-height: 48%;
+                flex: 1 1 54%;
+                max-height: 58%;
             }
             .p3-bottom-row {
-                flex: 1 1 40%;
-                max-height: 44%;
+                flex: 1 1 28%;
+                max-height: 32%;
             }
             .p3-hero-logo {
                 height: 5.75rem;
@@ -3216,6 +3359,15 @@
             }
             .p3-hero-desc {
                 -webkit-line-clamp: 2;
+            }
+            .p3-about-panel .p3-about-card p {
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .p3-about-panel .p3-about-cta {
+                margin-top: 0.28rem;
             }
         }
 

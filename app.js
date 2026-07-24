@@ -231,7 +231,11 @@
                 return;
             }
             // Chrome Android can pan the visual viewport; keep the shell pinned at the top.
-            if (window.scrollX || window.scrollY) {
+            // Skip when fullPage is in responsive mode — normal document scroll must work.
+            const isFpResponsive =
+                document.documentElement.classList.contains('fp-responsive') ||
+                document.body.classList.contains('fp-responsive');
+            if (!isFpResponsive && (window.scrollX || window.scrollY)) {
                 window.scrollTo(0, 0);
             }
         }
@@ -268,6 +272,61 @@
                 window.history.replaceState(null, '', nextUrl);
             }
             syncNavCurrent(sectionId);
+            updateSectionScrollHint(sectionId);
+        }
+
+        function updateSectionScrollHint(sectionId) {
+            const hint = document.getElementById('sectionScrollHint');
+            if (!hint) return;
+
+            const index = sectionIndexFromId(sectionId);
+            if (index < 0) {
+                hint.classList.add('is-hidden');
+                return;
+            }
+
+            hint.classList.remove('is-hidden');
+            const isLast = index >= FULLPAGE_SECTION_IDS.length - 1;
+            hint.classList.toggle('is-up', isLast);
+            hint.setAttribute(
+                'aria-label',
+                isLast ? 'Lên trang trước' : 'Xuống trang tiếp theo'
+            );
+        }
+
+        function handleSectionScrollHintClick() {
+            if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
+
+            const hint = document.getElementById('sectionScrollHint');
+            if (!hint || hint.classList.contains('is-hidden')) return;
+
+            const goUp = hint.classList.contains('is-up');
+            const active = document.querySelector('#fullpage .section.active')
+                || document.querySelector('#fullpage .section');
+            const currentId = active && active.id;
+            const currentIndex = sectionIndexFromId(currentId);
+
+            if (fullpageApi) {
+                if (goUp) {
+                    if (typeof fullpageApi.moveSectionUp === 'function') {
+                        fullpageApi.moveSectionUp();
+                    } else if (currentIndex > 0) {
+                        fullpageApi.moveTo(currentIndex);
+                    }
+                } else if (typeof fullpageApi.moveSectionDown === 'function') {
+                    fullpageApi.moveSectionDown();
+                } else if (currentIndex >= 0 && currentIndex < FULLPAGE_SECTION_IDS.length - 1) {
+                    fullpageApi.moveTo(currentIndex + 2);
+                }
+                return;
+            }
+
+            const targetIndex = goUp ? currentIndex - 1 : currentIndex + 1;
+            if (targetIndex < 0 || targetIndex >= FULLPAGE_SECTION_IDS.length) return;
+            const target = document.getElementById(FULLPAGE_SECTION_IDS[targetIndex]);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function scheduleFullPageRebuild() {
@@ -307,6 +366,9 @@
                 scrollBar: false,
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
+                // Short viewports only: disable snap so page 1 CTA can scroll into view.
+                // Do not set responsiveWidth — mobile needs fullPage snap + % fit layout.
+                responsiveHeight: 650,
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
@@ -342,6 +404,12 @@
 
             if (hashIndex >= 0) {
                 fullpageApi.silentMoveTo(hashIndex + 1);
+            }
+
+            const scrollHint = document.getElementById('sectionScrollHint');
+            if (scrollHint && !scrollHint.dataset.bound) {
+                scrollHint.dataset.bound = '1';
+                scrollHint.addEventListener('click', handleSectionScrollHintClick);
             }
         }
 
