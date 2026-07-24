@@ -166,6 +166,21 @@
             }
         }
 
+        function stopPageOneVideo() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame || !frame.getAttribute('src')) return;
+            frame.setAttribute('src', '');
+        }
+
+        function restartPageOneVideo() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame) return;
+            // Clear first so re-assigning the autoplay embed re-triggers muted playback
+            // (YouTube ignores a no-op src set to the same URL).
+            frame.setAttribute('src', '');
+            syncPageOneVideoMotionPreference();
+        }
+
         function openVideoModal(embedUrl) {
             const modal = document.getElementById('videoModal');
             const frame = document.getElementById('introVideoFrame');
@@ -412,10 +427,19 @@
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
-                afterLoad(_origin, destination) {
+                afterLoad(origin, destination) {
                     const sectionEl = destination && destination.item;
                     const sectionId = sectionEl && sectionEl.id;
                     if (sectionId) updateSectionHash(sectionId);
+                    if (sectionId === 'chuong-trinh') {
+                        // First paint already has autoplay in the HTML src; only force
+                        // a reload when returning from another section.
+                        if (origin && origin.item) {
+                            restartPageOneVideo();
+                        }
+                    } else {
+                        stopPageOneVideo();
+                    }
                 },
                 afterRender() {
                     const active = container.querySelector('.section.active') || container.querySelector('.section');
