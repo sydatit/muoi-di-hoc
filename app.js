@@ -144,8 +144,7 @@
             }, 300);
         }
 
-        const YOUTUBE_VIDEO_ID = 'UptVsKjjPsU';
-        const INTRO_VIDEO_EMBED = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
+        const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
 
         function playIntroVideo() {
             const modal = document.getElementById('videoModal');
