@@ -340,10 +340,25 @@
             }, 120);
         }
 
+        // Mobile: fit one screen (fp-noscroll). Tablet/desktop: allow scrollOverflow when content overflows.
+        const pageOneMobileFitMq = window.matchMedia('(max-width: 639px)');
+
+        function syncPageOneScrollMode() {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return false;
+            const wantNoScroll = pageOneMobileFitMq.matches;
+            const hasNoScroll = section.classList.contains('fp-noscroll');
+            if (wantNoScroll === hasNoScroll) return false;
+            section.classList.toggle('fp-noscroll', wantNoScroll);
+            return true;
+        }
+
         function initFullPageScroll() {
             if (typeof fullpage !== 'function') return;
             const container = document.getElementById('fullpage');
             if (!container) return;
+
+            syncPageOneScrollMode();
 
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const hashId = window.location.hash.replace(/^#/, '');
@@ -410,6 +425,15 @@
             if (scrollHint && !scrollHint.dataset.bound) {
                 scrollHint.dataset.bound = '1';
                 scrollHint.addEventListener('click', handleSectionScrollHintClick);
+            }
+
+            const onPageOneFitChange = () => {
+                if (syncPageOneScrollMode()) scheduleFullPageRebuild();
+            };
+            if (typeof pageOneMobileFitMq.addEventListener === 'function') {
+                pageOneMobileFitMq.addEventListener('change', onPageOneFitChange);
+            } else if (typeof pageOneMobileFitMq.addListener === 'function') {
+                pageOneMobileFitMq.addListener(onPageOneFitChange);
             }
         }
 
