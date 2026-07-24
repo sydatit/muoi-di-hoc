@@ -35,6 +35,26 @@
         .site-header {
             height: auto;
         }
+        #siteNav a {
+            position: relative;
+            padding-bottom: 0.2rem;
+            transition: color 160ms ease;
+        }
+        #siteNav a[aria-current="page"] {
+            color: #E85312;
+            font-weight: 600;
+        }
+        #siteNav a[aria-current="page"]::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 1.35rem;
+            height: 2px;
+            border-radius: 999px;
+            background: #E85312;
+            transform: translateX(-50%);
+        }
         /*
          * Keep fullPage’s native 100vh section math (transform distance).
          * Reserve space under the fixed header via padding so content matches the old viewport-minus-header layout.
@@ -361,6 +381,71 @@
                 width: 2.25rem;
                 height: 2.25rem;
             }
+        }
+        /* Page 1 speaker photo — tablet+ only */
+        .p1-speaker-photo {
+            display: none;
+        }
+        .p1-speaker-inner {
+            position: relative;
+        }
+        @media (min-width: 640px) {
+            .p1-speaker-inner {
+                display: flex;
+                align-items: stretch;
+                min-height: 11.5rem;
+            }
+            .p1-speaker-copy {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                z-index: 1;
+            }
+            .p1-speaker-photo {
+                display: flex;
+                flex: 0 0 42%;
+                align-items: flex-end;
+                justify-content: center;
+                min-width: 7.5rem;
+                max-width: 11rem;
+                position: relative;
+                z-index: 1;
+                pointer-events: none;
+            }
+            .p1-speaker-photo img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-height: 13.5rem;
+                object-fit: contain;
+                object-position: bottom center;
+                filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.18));
+            }
+        }
+        @media (min-width: 1024px) {
+            .p1-speaker-inner {
+                min-height: 0;
+                height: 100%;
+            }
+            .p1-speaker-photo {
+                flex-basis: 46%;
+                max-width: 13rem;
+            }
+            .p1-speaker-photo img {
+                max-height: min(100%, 16rem);
+            }
+        }
+        .p1-video {
+            position: relative;
+        }
+        .p1-video-frame {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
         }
         /* Page 1 (#chuong-trinh): subtle hover interactions (desktop pointer only) */
         .p1-hover-card,

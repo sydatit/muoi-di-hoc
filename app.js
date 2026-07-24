@@ -149,8 +149,22 @@
             }, 300);
         }
 
-        const PAGE_ONE_VIDEO_EMBED = 'https://www.youtube.com/embed/UptVsKjjPsU?autoplay=1&rel=0';
+        const PAGE_ONE_VIDEO_ID = 'UptVsKjjPsU';
+        const PAGE_ONE_VIDEO_EMBED_AUTOPLAY =
+            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
+        const PAGE_ONE_VIDEO_EMBED_STATIC =
+            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=0&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+
+        function syncPageOneVideoMotionPreference() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame) return;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const nextSrc = reduceMotion ? PAGE_ONE_VIDEO_EMBED_STATIC : PAGE_ONE_VIDEO_EMBED_AUTOPLAY;
+            if (frame.getAttribute('src') !== nextSrc) {
+                frame.setAttribute('src', nextSrc);
+            }
+        }
 
         function openVideoModal(embedUrl) {
             const modal = document.getElementById('videoModal');
@@ -163,10 +177,6 @@
                 document.body.classList.add('modal-open');
                 setFullPageScrolling(false);
             }
-        }
-
-        function playPageOneVideo() {
-            openVideoModal(PAGE_ONE_VIDEO_EMBED);
         }
 
         function playIntroVideo() {
@@ -865,8 +875,17 @@
             window.initPageThreeCarousels();
             initImageLightbox();
             syncAppHeight();
+            syncPageOneVideoMotionPreference();
             initFullPageScroll();
             lucide.createIcons();
+
+            const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const onMotionPrefChange = () => syncPageOneVideoMotionPreference();
+            if (typeof reduceMotionMq.addEventListener === 'function') {
+                reduceMotionMq.addEventListener('change', onMotionPrefChange);
+            } else if (typeof reduceMotionMq.addListener === 'function') {
+                reduceMotionMq.addListener(onMotionPrefChange);
+            }
 
             window.addEventListener('resize', () => {
                 syncAppHeight();
