@@ -100,6 +100,11 @@
 
         function openRegisterModal(entryPointName) {
             trackingState.entryPoint = entryPointName;
+
+            // Lightbox sits above z-50 modals — close it before showing register
+            if (isImageLightboxOpen()) {
+                closeImageLightbox({ immediate: true });
+            }
             
             const modal = document.getElementById('registerModal');
             const card = document.getElementById('modalCard');
@@ -144,8 +149,22 @@
             }, 300);
         }
 
-        const PAGE_ONE_VIDEO_EMBED = 'https://www.youtube.com/embed/UptVsKjjPsU?autoplay=1&rel=0';
+        const PAGE_ONE_VIDEO_ID = 'UptVsKjjPsU';
+        const PAGE_ONE_VIDEO_EMBED_AUTOPLAY =
+            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
+        const PAGE_ONE_VIDEO_EMBED_STATIC =
+            `https://www.youtube.com/embed/${PAGE_ONE_VIDEO_ID}?autoplay=0&mute=1&loop=1&playlist=${PAGE_ONE_VIDEO_ID}&controls=1&rel=0&playsinline=1`;
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+
+        function syncPageOneVideoMotionPreference() {
+            const frame = document.getElementById('pageOneVideoFrame');
+            if (!frame) return;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const nextSrc = reduceMotion ? PAGE_ONE_VIDEO_EMBED_STATIC : PAGE_ONE_VIDEO_EMBED_AUTOPLAY;
+            if (frame.getAttribute('src') !== nextSrc) {
+                frame.setAttribute('src', nextSrc);
+            }
+        }
 
         function openVideoModal(embedUrl) {
             const modal = document.getElementById('videoModal');
@@ -158,10 +177,6 @@
                 document.body.classList.add('modal-open');
                 setFullPageScrolling(false);
             }
-        }
-
-        function playPageOneVideo() {
-            openVideoModal(PAGE_ONE_VIDEO_EMBED);
         }
 
         function playIntroVideo() {
@@ -216,7 +231,11 @@
                 return;
             }
             // Chrome Android can pan the visual viewport; keep the shell pinned at the top.
-            if (window.scrollX || window.scrollY) {
+            // Skip when fullPage is in responsive mode — normal document scroll must work.
+            const isFpResponsive =
+                document.documentElement.classList.contains('fp-responsive') ||
+                document.body.classList.contains('fp-responsive');
+            if (!isFpResponsive && (window.scrollX || window.scrollY)) {
                 window.scrollTo(0, 0);
             }
         }
@@ -253,6 +272,61 @@
                 window.history.replaceState(null, '', nextUrl);
             }
             syncNavCurrent(sectionId);
+            updateSectionScrollHint(sectionId);
+        }
+
+        function updateSectionScrollHint(sectionId) {
+            const hint = document.getElementById('sectionScrollHint');
+            if (!hint) return;
+
+            const index = sectionIndexFromId(sectionId);
+            if (index < 0) {
+                hint.classList.add('is-hidden');
+                return;
+            }
+
+            hint.classList.remove('is-hidden');
+            const isLast = index >= FULLPAGE_SECTION_IDS.length - 1;
+            hint.classList.toggle('is-up', isLast);
+            hint.setAttribute(
+                'aria-label',
+                isLast ? 'Lên trang trước' : 'Xuống trang tiếp theo'
+            );
+        }
+
+        function handleSectionScrollHintClick() {
+            if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) return;
+
+            const hint = document.getElementById('sectionScrollHint');
+            if (!hint || hint.classList.contains('is-hidden')) return;
+
+            const goUp = hint.classList.contains('is-up');
+            const active = document.querySelector('#fullpage .section.active')
+                || document.querySelector('#fullpage .section');
+            const currentId = active && active.id;
+            const currentIndex = sectionIndexFromId(currentId);
+
+            if (fullpageApi) {
+                if (goUp) {
+                    if (typeof fullpageApi.moveSectionUp === 'function') {
+                        fullpageApi.moveSectionUp();
+                    } else if (currentIndex > 0) {
+                        fullpageApi.moveTo(currentIndex);
+                    }
+                } else if (typeof fullpageApi.moveSectionDown === 'function') {
+                    fullpageApi.moveSectionDown();
+                } else if (currentIndex >= 0 && currentIndex < FULLPAGE_SECTION_IDS.length - 1) {
+                    fullpageApi.moveTo(currentIndex + 2);
+                }
+                return;
+            }
+
+            const targetIndex = goUp ? currentIndex - 1 : currentIndex + 1;
+            if (targetIndex < 0 || targetIndex >= FULLPAGE_SECTION_IDS.length) return;
+            const target = document.getElementById(FULLPAGE_SECTION_IDS[targetIndex]);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         function scheduleFullPageRebuild() {
@@ -266,10 +340,25 @@
             }, 120);
         }
 
+        // Mobile: fit one screen (fp-noscroll). Tablet/desktop: allow scrollOverflow when content overflows.
+        const pageOneMobileFitMq = window.matchMedia('(max-width: 639px)');
+
+        function syncPageOneScrollMode() {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return false;
+            const wantNoScroll = pageOneMobileFitMq.matches;
+            const hasNoScroll = section.classList.contains('fp-noscroll');
+            if (wantNoScroll === hasNoScroll) return false;
+            section.classList.toggle('fp-noscroll', wantNoScroll);
+            return true;
+        }
+
         function initFullPageScroll() {
             if (typeof fullpage !== 'function') return;
             const container = document.getElementById('fullpage');
             if (!container) return;
+
+            syncPageOneScrollMode();
 
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const hashId = window.location.hash.replace(/^#/, '');
@@ -292,6 +381,9 @@
                 scrollBar: false,
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
+                // Short viewports only: disable snap so page 1 CTA can scroll into view.
+                // Do not set responsiveWidth — mobile needs fullPage snap + % fit layout.
+                responsiveHeight: 650,
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
@@ -327,6 +419,21 @@
 
             if (hashIndex >= 0) {
                 fullpageApi.silentMoveTo(hashIndex + 1);
+            }
+
+            const scrollHint = document.getElementById('sectionScrollHint');
+            if (scrollHint && !scrollHint.dataset.bound) {
+                scrollHint.dataset.bound = '1';
+                scrollHint.addEventListener('click', handleSectionScrollHintClick);
+            }
+
+            const onPageOneFitChange = () => {
+                if (syncPageOneScrollMode()) scheduleFullPageRebuild();
+            };
+            if (typeof pageOneMobileFitMq.addEventListener === 'function') {
+                pageOneMobileFitMq.addEventListener('change', onPageOneFitChange);
+            } else if (typeof pageOneMobileFitMq.addListener === 'function') {
+                pageOneMobileFitMq.addListener(onPageOneFitChange);
             }
         }
 
@@ -585,6 +692,8 @@
             if (img.hasAttribute('data-no-lightbox')) return false;
             if (img.closest('header.site-header, #siteHeader')) return false;
             if (img.classList.contains('p3-hero-logo')) return false;
+            // Video poster / play control opens the intro video modal, not the lightbox
+            if (img.closest('.p3-video-poster, #videoModal, [onclick*="playIntroVideo"]')) return false;
             const src = img.currentSrc || img.getAttribute('src') || '';
             if (!src || src.endsWith('.svg')) return false;
             return true;
@@ -618,11 +727,12 @@
             }
         }
 
-        function closeImageLightbox() {
+        function closeImageLightbox(options) {
             const lightbox = document.getElementById('imageLightbox');
             const lightboxImg = document.getElementById('imageLightboxImg');
             if (!lightbox || lightbox.classList.contains('hidden')) return;
 
+            const immediate = Boolean(options && options.immediate);
             lightbox.classList.remove('is-open');
             const finishClose = () => {
                 lightbox.classList.add('hidden');
@@ -642,7 +752,7 @@
             };
 
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reduceMotion) {
+            if (immediate || reduceMotion) {
                 finishClose();
                 return;
             }
@@ -857,8 +967,17 @@
             window.initPageThreeCarousels();
             initImageLightbox();
             syncAppHeight();
+            syncPageOneVideoMotionPreference();
             initFullPageScroll();
             lucide.createIcons();
+
+            const reduceMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            const onMotionPrefChange = () => syncPageOneVideoMotionPreference();
+            if (typeof reduceMotionMq.addEventListener === 'function') {
+                reduceMotionMq.addEventListener('change', onMotionPrefChange);
+            } else if (typeof reduceMotionMq.addListener === 'function') {
+                reduceMotionMq.addListener(onMotionPrefChange);
+            }
 
             window.addEventListener('resize', () => {
                 syncAppHeight();

@@ -31,9 +31,172 @@
             max-height: var(--app-height, 100dvh);
             overflow: hidden;
         }
+        /* fullPage responsive mode: allow normal document scroll (short / narrow viewports) */
+        html.fp-responsive,
+        html.fp-responsive body,
+        body.fp-responsive {
+            height: auto;
+            max-height: none;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        html.fp-responsive #fullpage .section,
+        body.fp-responsive #fullpage .section {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+        }
+        html.fp-responsive #chuong-trinh,
+        body.fp-responsive #chuong-trinh {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+            overflow: visible !important;
+        }
+        html.fp-responsive #chuong-trinh .max-w-6xl,
+        body.fp-responsive #chuong-trinh .max-w-6xl,
+        html.fp-responsive #chuong-trinh .max-w-6xl > .grid,
+        body.fp-responsive #chuong-trinh .max-w-6xl > .grid {
+            flex: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            justify-content: flex-start !important;
+        }
+        html.fp-responsive #chuong-trinh > .fp-overflow,
+        body.fp-responsive #chuong-trinh > .fp-overflow,
+        html.fp-responsive #fullpage .section > .fp-overflow,
+        body.fp-responsive #fullpage .section > .fp-overflow {
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        /* Drop mobile % flex budgets so content keeps natural height and CTA is reachable */
+        html.fp-responsive #chuong-trinh .p1-title,
+        body.fp-responsive #chuong-trinh .p1-title,
+        html.fp-responsive #chuong-trinh .p1-hover-card,
+        body.fp-responsive #chuong-trinh .p1-hover-card,
+        html.fp-responsive #chuong-trinh .p1-video,
+        body.fp-responsive #chuong-trinh .p1-video,
+        html.fp-responsive #chuong-trinh .p1-speaker-card,
+        body.fp-responsive #chuong-trinh .p1-speaker-card,
+        html.fp-responsive #chuong-trinh .max-w-6xl > .mt-2,
+        body.fp-responsive #chuong-trinh .max-w-6xl > .mt-2,
+        html.fp-responsive #chuong-trinh .max-w-6xl > div:last-child,
+        body.fp-responsive #chuong-trinh .max-w-6xl > div:last-child {
+            flex: 0 0 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
         /* Fixed site header above fullPage sections */
         .site-header {
             height: auto;
+        }
+
+        /* Mobile-only section scroll hint (Option 1 bounce chevron) */
+        .section-scroll-hint {
+            display: none;
+            position: fixed;
+            right: 0.15rem;
+            bottom: 1.25rem;
+            z-index: 30;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            width: 2rem;
+            height: 2.75rem;
+            padding: 0 0.1rem 0 0;
+            margin: 0;
+            border: 0;
+            background: transparent;
+            color: #475569;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .section-scroll-hint:hover,
+        .section-scroll-hint:focus-visible {
+            opacity: 1;
+        }
+        .section-scroll-hint:focus-visible {
+            outline: 2px solid rgba(232, 83, 18, 0.55);
+            outline-offset: 4px;
+            border-radius: 999px;
+        }
+        .section-scroll-hint.is-hidden,
+        body.modal-open .section-scroll-hint {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .section-scroll-hint__arrow {
+            display: block;
+            width: 14px;
+            height: 14px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            animation: section-scroll-bounce 2s infinite;
+        }
+        .section-scroll-hint.is-up .section-scroll-hint__arrow {
+            transform: rotate(225deg);
+            animation-name: section-scroll-bounce-up;
+        }
+        @keyframes section-scroll-bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(45deg);
+            }
+            40% {
+                transform: translateY(-8px) rotate(45deg);
+            }
+            60% {
+                transform: translateY(-4px) rotate(45deg);
+            }
+        }
+        @keyframes section-scroll-bounce-up {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(225deg);
+            }
+            40% {
+                transform: translateY(8px) rotate(225deg);
+            }
+            60% {
+                transform: translateY(4px) rotate(225deg);
+            }
+        }
+        @media (max-width: 767px) {
+            .section-scroll-hint {
+                display: flex;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .section-scroll-hint__arrow,
+            .section-scroll-hint.is-up .section-scroll-hint__arrow {
+                animation: none;
+            }
+        }
+        #siteNav a {
+            position: relative;
+            padding-bottom: 0.2rem;
+            transition: color 160ms ease;
+        }
+        #siteNav a[aria-current="page"] {
+            color: #E85312;
+            font-weight: 600;
+        }
+        #siteNav a[aria-current="page"]::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 1.35rem;
+            height: 2px;
+            border-radius: 999px;
+            background: #E85312;
+            transform: translateX(-50%);
         }
         /*
          * Keep fullPage’s native 100vh section math (transform distance).
@@ -85,6 +248,9 @@
         #fullpage img:not(.p3-hero-logo):not([src$=".svg"]),
         img.js-lightbox-target {
             cursor: zoom-in;
+        }
+        #fullpage .p3-video-poster img {
+            cursor: pointer;
         }
 
         .image-lightbox {
@@ -181,19 +347,76 @@
         #fullpage .fp-overflow {
             box-sizing: border-box;
         }
-        #gioi-thieu > .fp-overflow {
-            display: flex;
-            flex-direction: column;
-            min-height: 100%;
-            box-sizing: border-box;
-        }
         #chuong-trinh > .fp-overflow,
+        #gioi-thieu > .fp-overflow,
         #ve-chung-toi > .fp-overflow {
             display: flex;
             flex-direction: column;
             height: 100%;
-            min-height: 100%;
+            max-height: 100%;
+            min-height: 0;
             box-sizing: border-box;
+        }
+        /* Tablet/desktop: natural content height so overflow can scroll inside the section */
+        @media (min-width: 640px) {
+            #chuong-trinh > .fp-overflow > .max-w-6xl,
+            #gioi-thieu > .fp-overflow > .max-w-6xl {
+                flex: 0 0 auto;
+            }
+        }
+        #gioi-thieu .page2-eyebrow {
+            margin-top: 0.75rem;
+        }
+        /* Full logo — no crop; square asset has padding but text must stay fully visible */
+        #gioi-thieu .page2-brand-logo {
+            margin: 0;
+            padding: 0;
+            line-height: 0;
+            height: auto;
+            max-width: min(100%, 12rem);
+            display: block;
+        }
+        #gioi-thieu .page2-brand-logo img {
+            display: block;
+            height: clamp(3.5rem, 7vw, 4.75rem);
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: left center;
+        }
+        #gioi-thieu .page2-intro-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        #gioi-thieu .page2-prose > .page2-tagline {
+            margin-top: 0;
+        }
+        #gioi-thieu > .max-w-6xl,
+        #gioi-thieu > .fp-overflow > .max-w-6xl {
+            padding-top: 0.5rem;
+        }
+        /* Page 2 vision card: slightly larger on desktop side-by-side */
+        @media (min-width: 1024px) {
+            #gioi-thieu .page2-vision {
+                padding: 1.35rem 1.5rem;
+                gap: 1.25rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.95rem;
+            }
+            #gioi-thieu .page2-vision p {
+                font-size: 0.95rem;
+                line-height: 1.55;
+            }
+            #gioi-thieu .page2-vision > div.flex > span {
+                width: 2.85rem;
+                height: 2.85rem;
+            }
+            #gioi-thieu .page2-vision .lucide {
+                width: 1.2rem;
+                height: 1.2rem;
+            }
         }
         /* Registration modal: keep form scrollable on mobile visualViewport */
         #registerModal {
@@ -237,25 +460,18 @@
             opacity: 0;
             cursor: pointer;
         }
-        #modalCard .form-submit-bar {
-            flex-shrink: 0;
-            background: #fff;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 0.75rem;
-            padding-bottom: 1.25rem;
+        #enrollmentForm .form-submit-bar {
+            margin-top: 0.25rem;
         }
-        #modalCard #submitBtn,
         #enrollmentForm #submitBtn {
             min-height: 3rem;
             background: #E85312;
             box-shadow: 0 6px 16px rgba(160, 50, 5, 0.18);
         }
-        #modalCard #submitBtn:hover:not(:disabled),
         #enrollmentForm #submitBtn:hover:not(:disabled) {
             background: #c94708;
             box-shadow: 0 8px 20px rgba(160, 50, 5, 0.24);
         }
-        #modalCard #submitBtn:disabled,
         #enrollmentForm #submitBtn:disabled {
             opacity: 0.85;
             cursor: wait;
@@ -279,6 +495,25 @@
             flex: 1 1 0;
             max-width: 4.5rem;
             background: linear-gradient(90deg, transparent, #E85312 20%, #E85312 80%, transparent);
+        }
+        .program-next-label {
+            animation: program-next-breathe 3s ease-in-out infinite;
+        }
+        @keyframes program-next-breathe {
+            0%, 100% {
+                opacity: 0.72;
+                letter-spacing: 0.18em;
+            }
+            50% {
+                opacity: 1;
+                letter-spacing: 0.22em;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .program-next-label {
+                animation: none;
+                opacity: 1;
+            }
         }
         .youtube-o-logo {
             width: 0.9em;
@@ -359,12 +594,308 @@
                 height: 2.25rem;
             }
         }
+        /* Page 1 expert block — mobile: contents (keep order 2+5); sm+: photo behind achievements */
+        #chuong-trinh {
+            background-color: #fffaf5;
+            background-image: radial-gradient(
+                ellipse 85% 70% at 50% 28%,
+                rgba(255, 220, 205, 0.38) 0%,
+                rgba(255, 236, 224, 0.22) 42%,
+                #fffaf5 78%
+            );
+        }
+        .p1-expert-block {
+            display: contents;
+        }
+        .p1-speaker-card {
+            overflow: hidden;
+        }
+        .p1-speaker-glow {
+            display: none;
+        }
+        .p1-speaker-photo {
+            display: none;
+        }
+        .p1-speaker-inner {
+            position: relative;
+        }
+        .p1-speaker-copy {
+            padding: 0.9rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .p1-speaker-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #E85312;
+        }
+        .p1-speaker-name {
+            font-size: 2rem;
+        }
+        .p1-speaker-desc {
+            font-size: 0.75rem;
+            line-height: 1.55;
+        }
+        .p1-achievements-card {
+            padding: 0.9rem 1rem 0.75rem;
+            height: auto;
+            align-self: stretch;
+        }
+        .p1-achievements-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: #E85312;
+            margin-bottom: 0.35rem;
+        }
+        .p1-achievements-list {
+            display: flex;
+            flex-direction: column;
+            flex: 0 0 auto;
+        }
+        .p1-achievement {
+            padding: 0.55rem 0.15rem;
+        }
+        .p1-achievement-icon {
+            width: 1.15rem;
+            height: 1.15rem;
+        }
+        .p1-achievement-text {
+            font-size: 0.8rem;
+            line-height: 1.35;
+        }
+        @media (min-width: 640px) {
+            #chuong-trinh {
+                background-image: radial-gradient(
+                    ellipse 72% 78% at 78% 40%,
+                    rgba(255, 210, 190, 0.48) 0%,
+                    rgba(255, 228, 210, 0.28) 32%,
+                    rgba(255, 242, 232, 0.16) 58%,
+                    #fffaf5 82%
+                );
+            }
+            .p1-expert-block {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                gap: 0;
+                min-height: 28rem;
+                order: 2;
+            }
+            .p1-expert-block::before {
+                content: '';
+                position: absolute;
+                right: -8%;
+                top: 4%;
+                width: min(28rem, 95%);
+                height: min(28rem, 70%);
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 196, 170, 0.42) 0%,
+                    rgba(255, 220, 200, 0.18) 42%,
+                    transparent 72%
+                );
+                filter: blur(8px);
+                pointer-events: none;
+                z-index: 0;
+            }
+            .p1-speaker-card {
+                overflow: visible;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0;
+                flex: 1 1 auto;
+                min-height: 18rem;
+                position: relative;
+                z-index: 1;
+                transform: none !important;
+            }
+            .p1-speaker-card:hover {
+                box-shadow: none !important;
+                transform: none !important;
+            }
+            .p1-speaker-glow {
+                display: block;
+                position: absolute;
+                right: 4%;
+                top: 2%;
+                width: 20rem;
+                height: 20rem;
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 186, 165, 0.42) 0%,
+                    rgba(255, 210, 190, 0.18) 48%,
+                    transparent 74%
+                );
+                filter: blur(6px);
+                pointer-events: none;
+                z-index: 0;
+            }
+            .p1-speaker-inner {
+                display: flex;
+                align-items: flex-end;
+                position: relative;
+                min-height: 18rem;
+                height: 100%;
+                overflow: visible;
+            }
+            .p1-speaker-copy {
+                position: relative;
+                z-index: 2;
+                align-self: flex-end;
+                max-width: 48%;
+                padding: 0.75rem 0.75rem 0.75rem 1.35rem;
+                margin-bottom: 4.25rem;
+                gap: 0.55rem;
+            }
+            .p1-speaker-label {
+                font-size: 0.72rem;
+                letter-spacing: 0.2em;
+            }
+            .p1-speaker-name {
+                font-size: clamp(2.6rem, 4.5vw, 3.35rem);
+            }
+            .p1-speaker-desc {
+                font-size: 0.88rem;
+                line-height: 1.6;
+                max-width: 15rem;
+            }
+            .p1-speaker-photo {
+                display: flex;
+                position: absolute;
+                right: -8%;
+                bottom: -10%;
+                width: 60%;
+                max-width: 20rem;
+                height: auto;
+                align-items: flex-end;
+                justify-content: flex-end;
+                z-index: 1;
+                pointer-events: none;
+            }
+            .p1-speaker-photo img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-height: 22rem;
+                object-fit: contain;
+                object-position: bottom right;
+                transform: scaleX(-1);
+                filter: drop-shadow(0 12px 22px rgba(15, 23, 42, 0.18));
+            }
+            .p1-achievements-card {
+                position: relative;
+                z-index: 3;
+                margin-top: -3.5rem;
+                padding: 1.15rem 1.35rem 1rem;
+                height: auto;
+                flex: 0 0 auto;
+                align-self: stretch;
+                background: #fff;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            }
+            .p1-achievements-title {
+                font-size: 0.8rem;
+                letter-spacing: 0.16em;
+                margin-bottom: 0.55rem;
+            }
+            .p1-achievement {
+                padding: 0.7rem 0.25rem;
+                gap: 0.9rem;
+            }
+            .p1-achievement-icon {
+                width: 1.45rem;
+                height: 1.45rem;
+            }
+            .p1-achievement-text {
+                font-size: 0.95rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .p1-expert-block {
+                order: unset;
+                min-height: 0;
+                height: 100%;
+                align-self: stretch;
+            }
+            .p1-speaker-card {
+                min-height: 20rem;
+            }
+            .p1-speaker-inner {
+                min-height: 20rem;
+                align-items: flex-end;
+            }
+            .p1-speaker-copy {
+                padding: 0.85rem 0.85rem 0.85rem 0.25rem;
+                max-width: 46%;
+                align-self: flex-end;
+                margin-bottom: 5rem;
+            }
+            .p1-speaker-photo {
+                width: 64%;
+                max-width: 22rem;
+                right: -10%;
+                bottom: -12%;
+            }
+            .p1-speaker-photo img {
+                max-height: 26rem;
+            }
+            .p1-speaker-glow {
+                width: 22rem;
+                height: 22rem;
+                right: -2%;
+                top: 0%;
+            }
+            .p1-achievements-card {
+                margin-top: -4rem;
+                padding: 1rem 1.25rem 0.85rem;
+                justify-content: flex-start;
+                gap: 0.15rem;
+            }
+            .p1-achievements-title {
+                font-size: 0.78rem;
+                margin-bottom: 0.25rem;
+            }
+            .p1-achievements-list {
+                width: 100%;
+                max-width: 22rem;
+            }
+            .p1-achievement {
+                padding: 0.55rem 0.2rem;
+            }
+            .p1-achievement-icon {
+                width: 1.35rem;
+                height: 1.35rem;
+            }
+            .p1-achievement-text {
+                font-size: 0.9rem;
+            }
+        }
+        .p1-video {
+            position: relative;
+        }
+        .p1-video-frame {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
         /* Page 1 (#chuong-trinh): subtle hover interactions (desktop pointer only) */
         .p1-hover-card,
         .p1-video {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .p1-achievement .lucide {
+        .p1-achievement .lucide,
+        .p1-achievement-icon {
             transition: transform 0.2s ease;
         }
         .p1-video-poster {
@@ -548,9 +1079,22 @@
             #chuong-trinh .program-heading-line {
                 max-width: 1.75rem;
             }
+            #chuong-trinh .program-next-label,
             #chuong-trinh .text-center p.font-montserrat {
                 font-size: 0.65rem;
-                letter-spacing: 0.14em;
+            }
+            #chuong-trinh .program-next-label {
+                animation-name: program-next-breathe-sm;
+            }
+            @keyframes program-next-breathe-sm {
+                0%, 100% {
+                    opacity: 0.72;
+                    letter-spacing: 0.14em;
+                }
+                50% {
+                    opacity: 1;
+                    letter-spacing: 0.17em;
+                }
             }
             #chuong-trinh h1 {
                 font-size: clamp(2.15rem, 9.5vw, 2.75rem);
@@ -623,12 +1167,14 @@
                 border-radius: 0.75rem;
             }
             /* Speaker ~16% */
+            #chuong-trinh .p1-speaker-card,
             #chuong-trinh .p1-hover-card.relative {
                 flex: 0 0 16%;
                 min-height: 0;
                 overflow: hidden;
                 height: auto;
             }
+            #chuong-trinh .p1-speaker-copy,
             #chuong-trinh .p1-hover-card.relative > .relative {
                 padding: 0.45rem 0.8rem;
                 height: 100%;
@@ -641,14 +1187,17 @@
             #chuong-trinh .p1-hover-card.relative .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
                 margin-top: 0.15rem !important;
             }
+            #chuong-trinh .p1-speaker-label,
             #chuong-trinh .p1-hover-card.relative p.text-xs.font-bold {
                 font-size: 0.6rem;
                 letter-spacing: 0.14em;
             }
+            #chuong-trinh .p1-speaker-name,
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.45rem;
                 margin-bottom: 0.1rem;
             }
+            #chuong-trinh .p1-speaker-desc,
             #chuong-trinh .p1-hover-card.relative p.text-slate-600,
             #chuong-trinh .p1-hover-card.relative p.text-gray-600 {
                 font-size: 0.625rem;
@@ -658,7 +1207,7 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
-            /* Achievements ~20% (grow/shrink to fill leftover column space) */
+            /* Achievements — hug content (beat .p1-hover-card.flex grow specificity) */
             #chuong-trinh .p1-hover-card.flex {
                 flex: 1 1 19%;
                 padding: 0.45rem 0.8rem;
@@ -667,12 +1216,22 @@
                 overflow: hidden;
                 height: auto;
             }
-            #chuong-trinh .p1-hover-card.flex > h2 {
+            #chuong-trinh .p1-hover-card.p1-achievements-card {
+                flex: 0 0 auto;
+                height: auto;
+                min-height: 0;
+                align-self: stretch;
+                justify-content: flex-start;
+                overflow: visible;
+                padding: 0.45rem 0.8rem;
+            }
+            #chuong-trinh .p1-hover-card.flex > h2,
+            #chuong-trinh .p1-achievements-title {
                 font-size: 0.6rem;
                 margin-bottom: 0.1rem;
                 text-align: center;
             }
-            #chuong-trinh .p1-hover-card.flex > ul {
+            #chuong-trinh .p1-hover-card.flex > ul:not(.p1-achievements-list) {
                 width: fit-content;
                 max-width: 100%;
                 margin-left: auto;
@@ -680,17 +1239,19 @@
                 justify-content: space-evenly;
             }
             #chuong-trinh .p1-achievement {
-                padding-top: 0.22rem;
-                padding-bottom: 0.22rem;
-                gap: 0.5rem;
+                padding-top: 0.35rem;
+                padding-bottom: 0.35rem;
+                gap: 0.55rem;
             }
-            #chuong-trinh .p1-achievement .lucide {
+            #chuong-trinh .p1-achievement .lucide,
+            #chuong-trinh .p1-achievement-icon {
                 width: 0.95rem;
                 height: 0.95rem;
             }
-            #chuong-trinh .p1-achievement span {
-                font-size: 0.65rem;
-                line-height: 1.2;
+            #chuong-trinh .p1-achievement span,
+            #chuong-trinh .p1-achievement-text {
+                font-size: 0.7rem;
+                line-height: 1.25;
             }
             /* CTA ~9% */
             #chuong-trinh .max-w-6xl > .mt-2,
@@ -788,6 +1349,181 @@
             }
         }
 
+        /* ========== TABLET (iPad Mini/Air/Pro 11 portrait): 640–1023 ========== */
+        @media (min-width: 640px) and (max-width: 1023px) {
+            /* Page 1 */
+            #chuong-trinh .max-w-6xl {
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+            }
+            #chuong-trinh .grid {
+                gap: 0.85rem 1rem;
+            }
+            #chuong-trinh .p1-title h1 {
+                font-size: clamp(2.4rem, 5.5vw, 3.4rem);
+            }
+            #chuong-trinh .p1-title h2 {
+                font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+            }
+            #chuong-trinh .p1-desc {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+            #chuong-trinh .schedule-icon {
+                width: 2.35rem;
+                height: 2.35rem;
+            }
+            #chuong-trinh .p1-video {
+                max-height: min(36vh, 22rem);
+            }
+            #chuong-trinh .p1-achievement span {
+                font-size: 0.95rem;
+            }
+            #chuong-trinh .cta-register {
+                font-size: 1.2rem;
+                padding-top: 0.85rem;
+                padding-bottom: 0.85rem;
+            }
+
+            /* Page 2 */
+            #gioi-thieu {
+                padding-top: 0.75rem;
+                padding-bottom: 0.85rem;
+            }
+            #gioi-thieu .max-w-6xl {
+                gap: 1.25rem;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3.35rem, 6vw, 4.5rem);
+            }
+            #gioi-thieu .page2-tagline {
+                font-size: 1.05rem;
+            }
+            #gioi-thieu .page2-desc {
+                font-size: 0.95rem;
+                line-height: 1.55;
+            }
+            #gioi-thieu .page2-quote p {
+                font-size: 0.95rem;
+            }
+            #gioi-thieu .page2-values {
+                gap: 0.75rem 1rem;
+                padding-top: 0.35rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 2.75rem;
+                height: 2.75rem;
+            }
+            #gioi-thieu .page2-values .lucide {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.8rem;
+                line-height: 1.3;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 1.3rem 1.4rem;
+                gap: 1rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.9rem;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.92rem;
+                line-height: 1.5;
+            }
+            #gioi-thieu .page2-programs h3 {
+                font-size: 0.8rem;
+            }
+            #gioi-thieu .page2-program-grid {
+                gap: 0.85rem;
+            }
+            #gioi-thieu .page2-program-grid article {
+                min-height: 8.5rem;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child {
+                min-height: 8.5rem;
+            }
+            #gioi-thieu .page2-program-grid h4 {
+                font-size: 0.95rem;
+            }
+            #gioi-thieu .page2-program-grid p {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+
+            /* Page 3 */
+            #ve-chung-toi .p3-container {
+                gap: 0.75rem;
+                padding-block: 0.55rem 0.75rem;
+            }
+            .p3-hero-logo {
+                height: clamp(7rem, 14svh, 9rem);
+            }
+            .p3-hero-title {
+                font-size: clamp(1.9rem, 3svh + 0.5rem, 2.65rem);
+                line-height: 1.18;
+            }
+            .p3-hero-title span + span {
+                margin-top: 0.12em;
+            }
+            .p3-hero-tagline {
+                margin-top: 0.25rem;
+                font-size: clamp(0.9rem, 1.2svh + 0.35rem, 1.1rem);
+            }
+            .p3-hero-desc {
+                font-size: 0.88rem;
+                line-height: 1.45;
+                max-width: 36rem;
+            }
+            .p3-top-row {
+                gap: 0.75rem;
+            }
+            .p3-bottom-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+                min-height: 11rem;
+            }
+            .p3-activity-image {
+                height: 8.5rem;
+                max-height: none;
+                aspect-ratio: 4 / 3;
+            }
+            .p3-award-image {
+                height: 9.5rem;
+                max-height: none;
+                aspect-ratio: 4 / 3;
+            }
+            .p3-video-poster {
+                aspect-ratio: 16 / 9;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                max-height: min(22svh, 14rem);
+                flex: 0 0 auto;
+            }
+            .p3-card {
+                padding: 0.75rem 0.9rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.8rem;
+                line-height: 1.45;
+            }
+            .p3-about-cta {
+                margin-top: 0.65rem;
+                font-size: 0.72rem;
+                padding: 0.45rem 1rem;
+            }
+            .p3-section-heading h3 {
+                font-size: 0.72rem;
+            }
+        }
+
         /* Page 2 (#gioi-thieu): mobile balanced column (no shrink-wrap / no 4-col squeeze) */
         @media (max-width: 639px) {
             #gioi-thieu {
@@ -813,8 +1549,8 @@
                 max-width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start;
-                gap: 0.4rem;
+                justify-content: space-between;
+                gap: 0.45rem;
                 padding-left: 0.9rem;
                 padding-right: 0.9rem;
                 box-sizing: border-box;
@@ -850,20 +1586,23 @@
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
-                gap: 0.12rem;
+                gap: 0.2rem;
                 min-width: 0;
                 width: 100%;
             }
-            #gioi-thieu .page2-intro-copy > span {
+            #gioi-thieu .page2-intro-copy > span,
+            #gioi-thieu .page2-eyebrow {
                 font-size: 0.6rem;
                 letter-spacing: 0.14em;
+                margin-top: 0.35rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
                 flex: 0 0 auto;
-                display: flex;
-                align-items: center;
-                font-size: clamp(1.75rem, 8.5vw, 2.2rem);
-                line-height: 1;
+                height: auto;
+                max-width: min(100%, 11rem);
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3rem, 16vw, 3.85rem);
             }
             /* Full-width prose — modest gaps between body, quote, (values below via intro gap) */
             #gioi-thieu .page2-prose {
@@ -909,12 +1648,12 @@
                 font-size: 0.62rem;
                 line-height: 1.3;
             }
-            /* Values: one compact row — icon left, text right (desktop keeps column + <br>) */
+            /* Values: readable 4-col row — icon + text (floor ~9–10px) */
             #gioi-thieu .page2-values {
                 display: grid;
                 grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 0.15rem 0.25rem;
-                padding-top: 0;
+                gap: 0.2rem 0.28rem;
+                padding-top: 0.15rem;
                 width: 100%;
             }
             #gioi-thieu .page2-values > div {
@@ -922,24 +1661,24 @@
                 align-items: center;
                 justify-content: flex-start;
                 text-align: left;
-                gap: 0.22rem;
+                gap: 0.28rem;
                 min-width: 0;
             }
             #gioi-thieu .page2-values span {
                 flex-shrink: 0;
-                width: 1.65rem;
-                height: 1.65rem;
+                width: 1.8rem;
+                height: 1.8rem;
             }
             #gioi-thieu .page2-values .lucide {
-                width: 0.82rem;
-                height: 0.82rem;
+                width: 0.9rem;
+                height: 0.9rem;
             }
             #gioi-thieu .page2-values br {
                 display: none;
             }
             #gioi-thieu .page2-values p {
-                font-size: 0.44rem;
-                line-height: 1.15;
+                font-size: 0.6rem;
+                line-height: 1.2;
                 text-align: left;
                 white-space: normal;
                 min-width: 0;
@@ -1011,27 +1750,28 @@
             #gioi-thieu .page2-programs {
                 display: flex;
                 flex-direction: column;
-                gap: 0.2rem;
-                flex: 0 0 auto;
+                gap: 0.35rem;
+                flex: 1 1 auto;
                 min-width: 0;
                 width: 100%;
+                justify-content: flex-end;
             }
             #gioi-thieu .page2-programs > div:first-child {
-                gap: 0.35rem;
+                gap: 0.4rem;
             }
             #gioi-thieu .page2-programs h3 {
-                font-size: 0.62rem;
+                font-size: 0.7rem;
                 letter-spacing: 0.12em;
             }
             #gioi-thieu .page2-programs .program-heading-line {
-                max-width: 2.1rem;
+                max-width: 2.4rem;
             }
-            /* Programs: horizontal cards — thumb left, title/desc right */
+            /* Programs: larger thumbs, tighter text — less empty card space */
             #gioi-thieu .page2-program-grid {
                 display: flex;
                 flex-direction: column;
                 flex-wrap: nowrap;
-                gap: 0.2rem;
+                gap: 0.35rem;
                 overflow: hidden;
                 margin-inline: 0;
                 padding-inline: 0;
@@ -1039,27 +1779,29 @@
                 scroll-snap-type: none;
                 width: 100%;
                 min-width: 0;
+                flex: 1 1 auto;
             }
             #gioi-thieu .page2-program-grid article {
-                flex: 0 0 auto;
+                flex: 1 1 0;
                 width: 100%;
                 max-width: 100%;
                 display: flex;
                 flex-direction: row;
                 align-items: stretch;
-                border-radius: 0.7rem;
-                min-height: 0;
+                border-radius: 0.75rem;
+                min-height: 3.75rem;
                 min-width: 0;
                 overflow: hidden;
                 box-sizing: border-box;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                flex: 0 0 30%;
-                width: 30%;
-                max-width: 5.5rem;
+                flex: 0 0 40%;
+                width: 40%;
+                max-width: none;
+                min-width: 7rem;
                 aspect-ratio: 4 / 3 !important;
                 height: auto;
-                min-height: 2.8rem;
+                min-height: 3.75rem;
                 max-height: none;
                 align-self: stretch;
             }
@@ -1072,56 +1814,57 @@
             #gioi-thieu .page2-program-grid article > div:last-child {
                 flex: 1 1 auto;
                 min-width: 0;
-                padding: 0.22rem 0.4rem;
+                padding: 0.35rem 0.55rem;
                 display: flex;
                 align-items: center;
             }
             #gioi-thieu .page2-program-grid article > div:last-child > div {
                 gap: 0.2rem;
                 align-items: flex-start;
+                justify-content: center;
                 width: 100%;
                 min-width: 0;
             }
             #gioi-thieu .page2-program-grid article span {
-                width: 1.05rem;
-                height: 1.05rem;
-                border-radius: 0.28rem;
+                width: 1.2rem;
+                height: 1.2rem;
+                border-radius: 0.3rem;
                 flex-shrink: 0;
             }
             #gioi-thieu .page2-program-grid article span .lucide,
             #gioi-thieu .page2-program-grid article span > svg {
-                width: 0.55rem;
-                height: 0.55rem;
+                width: 0.65rem;
+                height: 0.65rem;
             }
             #gioi-thieu .page2-program-grid h4 {
-                font-size: 0.66rem;
-                line-height: 1.2;
+                font-size: 0.78rem;
+                line-height: 1.25;
                 display: block;
                 overflow: hidden;
                 min-width: 0;
             }
             #gioi-thieu .page2-program-grid p {
                 display: block;
-                font-size: 0.55rem;
-                line-height: 1.25;
-                margin-top: 0.08rem;
+                font-size: 0.65rem;
+                line-height: 1.3;
+                margin-top: 0.1rem;
                 color: #64748b;
                 min-width: 0;
             }
         }
 
-        /* Mid phones: modest compaction, keep stacked layout */
+        /* Mid phones: modest compaction, keep stacked layout — never crush values below ~10px */
         @media (max-width: 639px) and (max-height: 820px) {
             #gioi-thieu {
                 padding-top: 0.22rem;
                 padding-bottom: 0.28rem;
             }
             #gioi-thieu .max-w-6xl {
-                gap: 0.3rem;
+                gap: 0.35rem;
             }
             #gioi-thieu .page2-top,
             #gioi-thieu .page2-programs {
-                gap: 0.18rem;
+                gap: 0.28rem;
             }
             #gioi-thieu .page2-intro {
                 gap: 0.42rem;
@@ -1129,30 +1872,36 @@
             #gioi-thieu .page2-prose {
                 gap: 0.38rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(1.5rem, 7.5vw, 1.95rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(2.75rem, 14vw, 3.4rem);
             }
             #gioi-thieu .page2-tagline {
-                font-size: 0.66rem;
+                font-size: 0.68rem;
             }
             #gioi-thieu .page2-desc,
             #gioi-thieu .page2-quote p {
-                font-size: 0.56rem;
-                line-height: 1.25;
+                font-size: 0.6rem;
+                line-height: 1.28;
             }
             #gioi-thieu .page2-values {
-                gap: 0.12rem 0.2rem;
+                gap: 0.16rem 0.22rem;
+            }
+            #gioi-thieu .page2-values > div {
+                gap: 0.22rem;
             }
             #gioi-thieu .page2-values span {
-                width: 1.5rem;
-                height: 1.5rem;
+                width: 1.7rem;
+                height: 1.7rem;
             }
             #gioi-thieu .page2-values .lucide {
-                width: 0.75rem;
-                height: 0.75rem;
+                width: 0.85rem;
+                height: 0.85rem;
             }
             #gioi-thieu .page2-values p {
-                font-size: 0.42rem;
+                font-size: 0.58rem;
             }
             #gioi-thieu .page2-vision {
                 padding: 0.55rem 0.6rem;
@@ -1163,31 +1912,42 @@
                 height: 1.85rem;
             }
             #gioi-thieu .page2-vision h3 {
-                font-size: 0.68rem;
+                font-size: 0.7rem;
             }
             #gioi-thieu .page2-vision p,
             #gioi-thieu .page2-vision li {
-                font-size: 0.62rem;
+                font-size: 0.64rem;
                 line-height: 1.32;
             }
             #gioi-thieu .page2-program-grid {
-                gap: 0.16rem;
+                gap: 0.28rem;
+            }
+            #gioi-thieu .page2-program-grid article {
+                min-height: 3.4rem;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                flex-basis: 28%;
-                width: 28%;
-                max-width: 5rem;
-                min-height: 2.55rem;
+                flex: 0 0 38%;
+                width: 38%;
+                min-width: 6.5rem;
+                max-width: none;
+                min-height: 3.4rem;
             }
             #gioi-thieu .page2-program-grid article > div:last-child {
-                padding: 0.16rem 0.3rem;
+                padding: 0.28rem 0.45rem;
+            }
+            #gioi-thieu .page2-program-grid h4 {
+                font-size: 0.72rem;
+            }
+            #gioi-thieu .page2-program-grid p {
+                font-size: 0.6rem;
             }
         }
 
-        /* Short phones: compact gaps/fonts only — never hide programs, no zoom */
+        /* Short phones: compact gaps only — floor typography, larger thumbs than before */
         @media (max-width: 639px) and (max-height: 700px) {
             #gioi-thieu .max-w-6xl {
-                gap: 0.22rem;
+                gap: 0.28rem;
+                justify-content: flex-start;
             }
             #gioi-thieu .page2-intro {
                 gap: 0.36rem;
@@ -1195,30 +1955,36 @@
             #gioi-thieu .page2-prose {
                 gap: 0.32rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(1.35rem, 7vw, 1.75rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(2.5rem, 12vw, 3.1rem);
             }
             #gioi-thieu .page2-tagline {
-                font-size: 0.6rem;
+                font-size: 0.64rem;
             }
             #gioi-thieu .page2-desc,
             #gioi-thieu .page2-quote p {
-                font-size: 0.52rem;
-                line-height: 1.22;
+                font-size: 0.58rem;
+                line-height: 1.25;
             }
             #gioi-thieu .page2-values {
-                gap: 0.1rem 0.15rem;
+                gap: 0.12rem 0.18rem;
+            }
+            #gioi-thieu .page2-values > div {
+                gap: 0.18rem;
             }
             #gioi-thieu .page2-values span {
-                width: 1.35rem;
-                height: 1.35rem;
+                width: 1.55rem;
+                height: 1.55rem;
             }
             #gioi-thieu .page2-values .lucide {
-                width: 0.68rem;
-                height: 0.68rem;
+                width: 0.78rem;
+                height: 0.78rem;
             }
             #gioi-thieu .page2-values p {
-                font-size: 0.38rem;
+                font-size: 0.56rem;
             }
             #gioi-thieu .page2-vision {
                 padding: 0.45rem 0.55rem;
@@ -1229,25 +1995,63 @@
                 height: 1.7rem;
             }
             #gioi-thieu .page2-vision h3 {
-                font-size: 0.64rem;
+                font-size: 0.66rem;
             }
             #gioi-thieu .page2-vision p,
             #gioi-thieu .page2-vision li {
-                font-size: 0.58rem;
+                font-size: 0.6rem;
                 line-height: 1.3;
             }
+            #gioi-thieu .page2-programs {
+                flex: 0 0 auto;
+            }
             #gioi-thieu .page2-program-grid {
-                gap: 0.12rem;
+                gap: 0.22rem;
+                flex: 0 0 auto;
+            }
+            #gioi-thieu .page2-program-grid article {
+                flex: 0 0 auto;
+                min-height: 3.15rem;
             }
             #gioi-thieu .page2-program-grid article > div:first-child {
-                max-width: 4.75rem;
-                min-height: 2.4rem;
+                flex: 0 0 36%;
+                width: 36%;
+                min-width: 6rem;
+                max-width: none;
+                min-height: 3.15rem;
             }
             #gioi-thieu .page2-program-grid h4 {
-                font-size: 0.6rem;
+                font-size: 0.68rem;
             }
             #gioi-thieu .page2-program-grid p {
-                font-size: 0.5rem;
+                font-size: 0.58rem;
+            }
+        }
+
+        /* Narrow phones: stack value icon above text if 4-col still tight */
+        @media (max-width: 375px) {
+            #gioi-thieu .page2-values > div {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 0.2rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 1.55rem;
+                height: 1.55rem;
+            }
+            #gioi-thieu .page2-values .lucide {
+                width: 0.78rem;
+                height: 0.78rem;
+            }
+            #gioi-thieu .page2-values p {
+                text-align: center;
+                font-size: 0.56rem;
+            }
+            #gioi-thieu .page2-program-grid article > div:first-child {
+                min-width: 5.75rem;
+                flex-basis: 38%;
+                width: 38%;
             }
         }
 
@@ -1264,10 +2068,10 @@
         .p3-container {
             width: min(100% - 2rem, 72rem);
             margin-inline: auto;
-            padding-block: 0.75rem 0.9rem;
+            padding-block: 0.45rem 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
+            gap: 0.5rem;
             flex: 1 1 auto;
             min-height: 0;
             box-sizing: border-box;
@@ -1474,6 +2278,14 @@
             min-width: 0;
             height: 100%;
         }
+        .p3-about-panel .p3-about-card {
+            overflow: hidden;
+        }
+        .p3-about-panel .p3-about-copy {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: auto;
+        }
         .p3-about-panel .p3-section-heading,
         .p3-recognition-panel .p3-section-heading {
             margin-bottom: 0.28rem;
@@ -1544,13 +2356,17 @@
         .p3-about-card {
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
         .p3-about-card p {
-            margin-top: 0.15rem;
-            flex: 1 1 auto;
-            font-size: 0.75rem;
-            line-height: 1.45;
+            margin: 0;
+            flex: 0 0 auto;
+            font-size: 0.7rem;
+            line-height: 1.4;
             color: #475569;
+        }
+        .p3-about-card p + p {
+            margin-top: 0.35rem;
         }
         .p3-about-cta {
             margin-top: auto;
@@ -1665,8 +2481,8 @@
             top: calc(50% - 0.7rem);
             z-index: 2;
             display: grid;
-            width: 1.7rem;
-            height: 1.7rem;
+            width: 2.5rem;
+            height: 2.5rem;
             place-items: center;
             border-radius: 999px;
             color: #fff;
@@ -1676,8 +2492,8 @@
             transition: transform 160ms ease, background-color 160ms ease;
         }
         .p3-carousel-arrow .lucide {
-            width: 0.9rem;
-            height: 0.9rem;
+            width: 1rem;
+            height: 1rem;
         }
         .p3-carousel-arrow:hover {
             background: #dc623c;
@@ -1693,20 +2509,26 @@
         .p3-carousel-dots {
             display: flex;
             justify-content: center;
-            gap: 0.35rem;
+            gap: 0.4rem;
             margin-top: 0.45rem;
             flex: 0 0 auto;
         }
         .p3-carousel-dot {
-            width: 0.4rem;
-            height: 0.4rem;
+            width: 0.55rem;
+            height: 0.55rem;
+            min-width: 0.55rem;
+            min-height: 0.55rem;
+            padding: 0.35rem;
+            box-sizing: content-box;
             border-radius: 999px;
             background: #e4c5bc;
+            background-clip: content-box;
             transition: width 180ms ease, background-color 180ms ease;
         }
         .p3-carousel-dot[aria-current="true"] {
-            width: 1.15rem;
+            width: 1.25rem;
             background: #ec6d45;
+            background-clip: content-box;
         }
         .p3-video-poster {
             position: relative;
@@ -1784,16 +2606,17 @@
             .p3-container {
                 height: 100%;
                 justify-content: flex-start;
-                gap: 0.55rem;
+                gap: 0.4rem;
+                padding-block: 0.35rem 0.65rem;
             }
             .p3-hero {
-                flex: 1 1 0;
+                flex: 0 0 auto;
                 min-height: 0;
                 max-width: min(56rem, 100%);
                 width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
             }
             .p3-hero-brand {
@@ -1801,27 +2624,27 @@
                 gap: clamp(1rem, 2.2vw, 1.75rem);
             }
             .p3-hero-logo {
-                height: clamp(6rem, 15svh, 8.5rem);
+                height: clamp(5.5rem, 12svh, 7.5rem);
             }
             .p3-hero-title {
-                font-size: clamp(2.35rem, 5svh + 0.25rem, 3.4rem);
+                font-size: clamp(2.2rem, 4.5svh + 0.25rem, 3.2rem);
                 line-height: 1;
                 letter-spacing: -0.03em;
             }
             .p3-hero-title span + span {
-                margin-top: 0.22em;
+                margin-top: 0.18em;
             }
             .p3-hero-tagline {
-                margin-top: clamp(0.45rem, 1.2svh, 0.75rem);
-                font-size: clamp(1.05rem, 1.8svh + 0.25rem, 1.35rem);
+                margin-top: clamp(0.3rem, 0.9svh, 0.55rem);
+                font-size: clamp(1rem, 1.6svh + 0.25rem, 1.25rem);
             }
             .p3-hero-desc {
-                margin-top: clamp(0.55rem, 1.4svh, 0.9rem);
+                margin-top: clamp(0.35rem, 0.9svh, 0.55rem);
                 max-width: 44rem;
-                font-size: clamp(0.8rem, 1.2svh + 0.35rem, 0.95rem);
+                font-size: clamp(0.78rem, 1.1svh + 0.35rem, 0.9rem);
             }
             .p3-hero-contacts {
-                margin-top: clamp(0.55rem, 1.4svh, 0.9rem);
+                margin-top: clamp(0.35rem, 0.9svh, 0.55rem);
             }
             .p3-content {
                 display: flex;
@@ -1829,13 +2652,13 @@
                 flex: 1 1 0;
                 min-height: 0;
                 min-width: 0;
-                gap: 0.55rem;
+                gap: 0.4rem;
             }
             .p3-top-row {
                 display: grid;
                 grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
                 gap: 0.55rem;
-                flex: 1 1 0;
+                flex: 2.1 1 0;
                 min-height: 0;
                 align-items: stretch;
             }
@@ -1868,8 +2691,15 @@
             }
             .p3-bottom-row {
                 grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-                flex: 1 1 0;
-                min-height: 0;
+                flex: 1.05 1 0;
+                min-height: 10.5rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.72rem;
+                line-height: 1.38;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.3rem;
             }
             .p3-recognition-panel .p3-carousel {
                 flex: 1 1 auto;
@@ -1904,33 +2734,136 @@
                 height: 100%;
             }
         }
-        @media (min-width: 1024px) and (max-height: 760px) {
+        @media (min-width: 1024px) and (max-height: 780px) {
+            /* Page 1 — 1280×720 / 1366×768 */
+            #chuong-trinh .max-w-6xl {
+                padding-top: 0.35rem;
+                padding-bottom: 0.35rem;
+            }
+            #chuong-trinh .grid {
+                gap: 0.55rem 1rem;
+            }
+            #chuong-trinh .p1-title {
+                gap: 0.35rem;
+            }
+            #chuong-trinh .p1-title h1 {
+                font-size: clamp(2rem, 4.2svh + 0.4rem, 3.1rem);
+            }
+            #chuong-trinh .p1-title h2 {
+                font-size: clamp(0.95rem, 1.6svh + 0.35rem, 1.35rem);
+            }
+            #chuong-trinh .p1-desc {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+            #chuong-trinh .p1-hover-card {
+                padding: 0.65rem 0.85rem;
+            }
+            #chuong-trinh .p1-video {
+                max-height: min(32svh, 16rem);
+            }
+            #chuong-trinh .p1-achievement {
+                padding-top: 0.35rem;
+                padding-bottom: 0.35rem;
+            }
+            #chuong-trinh .p1-achievement span {
+                font-size: 0.85rem;
+            }
+            #chuong-trinh .cta-register {
+                font-size: 1.1rem;
+                padding-top: 0.55rem;
+                padding-bottom: 0.55rem;
+            }
+
+            /* Page 2 */
+            #gioi-thieu {
+                padding-top: 0.45rem;
+                padding-bottom: 0.55rem;
+            }
+            #gioi-thieu .max-w-6xl {
+                gap: 0.75rem;
+            }
+            #gioi-thieu .page2-top {
+                gap: 0.65rem;
+            }
+            #gioi-thieu .page2-intro {
+                gap: 0.55rem;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3.15rem, 5svh + 0.75rem, 4.15rem);
+            }
+            #gioi-thieu .page2-tagline {
+                font-size: 0.95rem;
+            }
+            #gioi-thieu .page2-desc,
+            #gioi-thieu .page2-quote p {
+                font-size: 0.82rem;
+                line-height: 1.4;
+            }
+            #gioi-thieu .page2-values {
+                gap: 0.5rem 0.75rem;
+                padding-top: 0.2rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 2.4rem;
+                height: 2.4rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.72rem;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 0.75rem 0.9rem;
+                gap: 0.55rem;
+            }
+            #gioi-thieu .page2-vision p,
+            #gioi-thieu .page2-vision li {
+                font-size: 0.78rem;
+                line-height: 1.35;
+            }
+            #gioi-thieu .page2-program-grid {
+                gap: 0.55rem;
+            }
+            #gioi-thieu .page2-program-grid h4 {
+                font-size: 0.85rem;
+            }
+            #gioi-thieu .page2-program-grid p {
+                font-size: 0.72rem;
+            }
+
+            /* Page 3 (was max-height: 760 — expanded to cover 768) */
             .p3-container {
-                padding-block: 0.45rem 0.55rem;
-                gap: 0.45rem;
+                padding-block: 0.3rem 0.45rem;
+                gap: 0.35rem;
+            }
+            .p3-hero {
+                flex: 0 0 auto;
+                justify-content: flex-start;
             }
             .p3-hero-logo {
-                height: clamp(5rem, 16svh, 7rem);
+                height: clamp(4.5rem, 11svh, 6rem);
             }
             .p3-hero-title {
-                font-size: clamp(1.85rem, 4.2svh + 0.2rem, 2.6rem);
+                font-size: clamp(1.75rem, 3.8svh + 0.2rem, 2.4rem);
             }
             .p3-hero-title span + span {
-                margin-top: 0.18em;
+                margin-top: 0.14em;
             }
             .p3-hero-tagline {
-                margin-top: 0.35rem;
-                font-size: clamp(0.9rem, 1.4svh + 0.2rem, 1.1rem);
+                margin-top: 0.25rem;
+                font-size: clamp(0.85rem, 1.2svh + 0.2rem, 1.05rem);
             }
             .p3-hero-desc {
-                margin-top: 0.4rem;
+                margin-top: 0.3rem;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
             .p3-hero-contacts {
-                margin-top: 0.4rem;
+                margin-top: 0.3rem;
             }
             .p3-hero-contacts a {
                 padding-block: 0.25rem;
@@ -1941,10 +2874,17 @@
                 flex-basis: 1.65rem;
             }
             .p3-card {
-                padding: 0.55rem 0.7rem;
+                padding: 0.5rem 0.65rem;
             }
             .p3-content {
-                gap: 0.45rem;
+                gap: 0.35rem;
+            }
+            .p3-top-row {
+                flex: 2.2 1 0;
+            }
+            .p3-bottom-row {
+                flex: 1 1 0;
+                min-height: 9rem;
             }
             .p3-main-grid {
                 gap: 0.65rem 0.85rem;
@@ -1964,8 +2904,139 @@
                 margin-top: 0.35rem;
                 font-size: 0.75rem;
             }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.65rem;
+                line-height: 1.32;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.22rem;
+            }
+            .p3-about-cta {
+                margin-top: 0.4rem;
+                padding: 0.3rem 0.75rem;
+            }
         }
+
+        /* Extra-tight laptops (720p) */
+        @media (min-width: 1024px) and (max-height: 720px) {
+            #chuong-trinh .grid {
+                gap: 0.4rem 0.85rem;
+            }
+            #chuong-trinh .p1-video {
+                max-height: min(28svh, 13.5rem);
+            }
+            #chuong-trinh .cta-register {
+                font-size: 1rem;
+                padding-top: 0.45rem;
+                padding-bottom: 0.45rem;
+            }
+            #gioi-thieu .max-w-6xl {
+                gap: 0.55rem;
+            }
+            #gioi-thieu .page2-vision {
+                padding: 0.55rem 0.7rem;
+                gap: 0.4rem;
+            }
+            .p3-container {
+                padding-block: 0.25rem 0.35rem;
+                gap: 0.28rem;
+            }
+            .p3-hero {
+                flex: 0 0 auto;
+                justify-content: flex-start;
+            }
+            .p3-hero-logo {
+                height: clamp(4rem, 12svh, 5.25rem);
+            }
+            .p3-hero-title {
+                font-size: clamp(1.55rem, 3.5svh + 0.15rem, 2.1rem);
+            }
+            .p3-hero-desc {
+                -webkit-line-clamp: 2;
+            }
+            .p3-top-row {
+                flex: 2.3 1 0;
+            }
+            .p3-bottom-row {
+                flex: 0.95 1 0;
+                min-height: 8rem;
+            }
+            .p3-card {
+                padding: 0.4rem 0.55rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.6rem;
+                line-height: 1.28;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.18rem;
+            }
+        }
+
+        /* iPad Pro 12.9 portrait (1024×1366): tall portrait, not laptop landscape */
+        @media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
+            #chuong-trinh .grid {
+                gap: 1rem 1.25rem;
+            }
+            #chuong-trinh .p1-video {
+                max-height: min(28vh, 20rem);
+            }
+            #gioi-thieu .max-w-6xl {
+                gap: 1.5rem;
+            }
+            #gioi-thieu .page2-values span {
+                width: 3rem;
+                height: 3rem;
+            }
+            #gioi-thieu .page2-values p {
+                font-size: 0.85rem;
+            }
+            #gioi-thieu .page2-program-grid article {
+                min-height: 9.5rem;
+            }
+            .p3-container {
+                gap: 0.65rem;
+                padding-block: 0.45rem 0.7rem;
+            }
+            .p3-hero {
+                flex: 0 0 auto;
+                max-height: 26%;
+                justify-content: flex-start;
+            }
+            .p3-hero-logo {
+                height: clamp(6.5rem, 11svh, 8rem);
+            }
+            .p3-content {
+                flex: 1 1 0;
+                gap: 0.65rem;
+            }
+            .p3-top-row {
+                flex: 2.2 1 0;
+                min-height: 0;
+            }
+            .p3-bottom-row {
+                flex: 0.85 1 0;
+                max-height: 34%;
+            }
+            .p3-activity-image {
+                height: 100%;
+                max-height: none;
+            }
+            .p3-award-image {
+                height: 100%;
+                max-height: none;
+            }
+            .p3-video-poster {
+                max-height: none;
+                height: 100%;
+            }
+            .p3-about-cta {
+                margin-top: 0.75rem;
+            }
+        }
+
         @media (max-width: 1023px) {
+            /* Structural stack only — sizing lives in tablet (640–1023) or mobile (≤639) */
             .p3-main-grid {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto;
@@ -1984,34 +3055,10 @@
             .p3-hero-brand-text {
                 align-items: flex-start;
             }
-            .p3-hero-logo {
-                height: clamp(6.5rem, 16svh, 8rem);
-            }
-            .p3-hero-title {
-                font-size: clamp(1.7rem, 2.8svh + 0.65rem, 2.5rem);
-                line-height: 1.18;
-            }
-            .p3-hero-title span + span {
-                margin-top: 0.12em;
-            }
-            .p3-hero-tagline {
-                margin-top: 0.25rem;
-                font-size: clamp(0.78rem, 1.1svh + 0.3rem, 1rem);
-            }
             .p3-video-column {
                 max-width: none;
                 width: 100%;
                 margin-inline: 0;
-            }
-            .p3-activity-image {
-                max-height: none;
-                height: 5.5rem;
-                aspect-ratio: 4 / 3;
-            }
-            .p3-award-image {
-                max-height: none;
-                height: 6.5rem;
-                aspect-ratio: 4 / 3;
             }
             .p3-recognition-panel .p3-carousel,
             .p3-recognition-panel .p3-carousel-viewport {
@@ -2022,14 +3069,6 @@
             .p3-recognition-panel .p3-carousel-track,
             .p3-recognition-panel .p3-carousel-slide {
                 height: auto;
-            }
-            .p3-video-poster {
-                aspect-ratio: 16 / 9;
-                width: 100%;
-                height: auto;
-                min-height: 0;
-                max-height: min(16svh, 8.5rem);
-                flex: 0 0 auto;
             }
         }
         @media (max-width: 639px) {
@@ -2056,7 +3095,7 @@
                 box-sizing: border-box;
             }
             .p3-hero {
-                flex: 0 0 auto;
+                flex: 0 1 auto;
                 min-height: 0;
                 display: flex;
                 flex-direction: column;
@@ -2068,8 +3107,9 @@
                 padding: 0.4rem 0.55rem;
             }
             .p3-top-row {
-                flex: 0 0 40%;
+                flex: 1 1 50%;
                 min-height: 0;
+                max-height: 54%;
                 display: flex;
                 flex-direction: column;
                 gap: 0.5%;
@@ -2112,14 +3152,18 @@
                 height: 100%;
             }
             .p3-bottom-row {
-                flex: 1 1 0;
+                flex: 1 1 32%;
                 min-height: 0;
+                max-height: 36%;
                 gap: 0.35rem;
                 overflow: hidden;
             }
             .p3-about-panel,
             .p3-recognition-panel {
                 overflow: hidden;
+            }
+            .p3-about-panel .p3-about-cta {
+                margin-top: 0.4rem;
             }
             .p3-main-grid {
                 gap: 0.65rem;
@@ -2237,8 +3281,8 @@
                 justify-content: center;
             }
             .p3-recognition-panel .p3-carousel-arrow {
-                width: 1.45rem;
-                height: 1.45rem;
+                width: 2.25rem;
+                height: 2.25rem;
                 color: #5a4034;
                 background: rgba(255, 255, 255, 0.72);
                 box-shadow: 0 2px 8px rgba(90, 64, 52, 0.12);
@@ -2249,8 +3293,8 @@
                 transform: translateY(-50%) scale(1.06);
             }
             .p3-recognition-panel .p3-carousel-arrow .lucide {
-                width: 0.8rem;
-                height: 0.8rem;
+                width: 0.95rem;
+                height: 0.95rem;
             }
             .p3-recognition-panel .p3-carousel-dots {
                 margin-top: 0.28rem;
@@ -2258,10 +3302,12 @@
             .p3-about-panel .p3-about-card p {
                 font-size: 0.55rem;
                 line-height: 1.3;
-                display: -webkit-box;
-                -webkit-line-clamp: 4;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
+                display: block;
+                overflow: visible;
+                -webkit-line-clamp: unset;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.25rem;
             }
             .p3-about-panel .p3-about-cta {
                 padding: 0.28rem 0.65rem;
@@ -2297,6 +3343,59 @@
                 font-size: 0.52rem;
             }
         }
+
+        /* Short phones: give activities/video more height; shrink about+recognition */
+        @media (max-width: 639px) and (max-height: 740px) {
+            .p3-top-row {
+                flex: 1 1 54%;
+                max-height: 58%;
+            }
+            .p3-bottom-row {
+                flex: 1 1 28%;
+                max-height: 32%;
+            }
+            .p3-hero-logo {
+                height: 5.75rem;
+            }
+            .p3-hero-title {
+                font-size: 1.45rem;
+            }
+            .p3-hero-desc {
+                -webkit-line-clamp: 2;
+            }
+            .p3-about-panel .p3-about-card p {
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .p3-about-panel .p3-about-cta {
+                margin-top: 0.28rem;
+            }
+        }
+
+        /* Tall phones: give activities/video more height; cap about+recognition */
+        @media (max-width: 639px) and (min-height: 800px) {
+            .p3-top-row {
+                flex: 1 1 50%;
+                max-height: 54%;
+            }
+            .p3-bottom-row {
+                flex: 1 1 36%;
+                max-height: 38%;
+            }
+            .p3-about-panel .p3-about-card {
+                justify-content: flex-start;
+            }
+            .p3-about-panel .p3-about-cta {
+                margin-top: 0.45rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.6rem;
+                line-height: 1.32;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .p3-carousel-track,
             .p3-carousel-arrow,
