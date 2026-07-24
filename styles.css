@@ -210,6 +210,60 @@
             min-height: 100%;
             box-sizing: border-box;
         }
+        #gioi-thieu .page2-eyebrow {
+            margin-top: 0.75rem;
+        }
+        /* Full logo — no crop; square asset has padding but text must stay fully visible */
+        #gioi-thieu .page2-brand-logo {
+            margin: 0;
+            padding: 0;
+            line-height: 0;
+            height: auto;
+            max-width: min(100%, 12rem);
+            display: block;
+        }
+        #gioi-thieu .page2-brand-logo img {
+            display: block;
+            height: clamp(3.5rem, 7vw, 4.75rem);
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            object-position: left center;
+        }
+        #gioi-thieu .page2-intro-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        #gioi-thieu .page2-prose > .page2-tagline {
+            margin-top: 0;
+        }
+        #gioi-thieu > .max-w-6xl,
+        #gioi-thieu > .fp-overflow > .max-w-6xl {
+            padding-top: 0.5rem;
+        }
+        /* Page 2 vision card: slightly larger on desktop side-by-side */
+        @media (min-width: 1024px) {
+            #gioi-thieu .page2-vision {
+                padding: 1.35rem 1.5rem;
+                gap: 1.25rem;
+            }
+            #gioi-thieu .page2-vision h3 {
+                font-size: 0.95rem;
+            }
+            #gioi-thieu .page2-vision p {
+                font-size: 0.95rem;
+                line-height: 1.55;
+            }
+            #gioi-thieu .page2-vision > div.flex > span {
+                width: 2.85rem;
+                height: 2.85rem;
+            }
+            #gioi-thieu .page2-vision .lucide {
+                width: 1.2rem;
+                height: 1.2rem;
+            }
+        }
         #chuong-trinh > .fp-overflow,
         #ve-chung-toi > .fp-overflow {
             display: flex;
@@ -260,25 +314,18 @@
             opacity: 0;
             cursor: pointer;
         }
-        #modalCard .form-submit-bar {
-            flex-shrink: 0;
-            background: #fff;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 0.75rem;
-            padding-bottom: 1.25rem;
+        #enrollmentForm .form-submit-bar {
+            margin-top: 0.25rem;
         }
-        #modalCard #submitBtn,
         #enrollmentForm #submitBtn {
             min-height: 3rem;
             background: #E85312;
             box-shadow: 0 6px 16px rgba(160, 50, 5, 0.18);
         }
-        #modalCard #submitBtn:hover:not(:disabled),
         #enrollmentForm #submitBtn:hover:not(:disabled) {
             background: #c94708;
             box-shadow: 0 8px 20px rgba(160, 50, 5, 0.24);
         }
-        #modalCard #submitBtn:disabled,
         #enrollmentForm #submitBtn:disabled {
             opacity: 0.85;
             cursor: wait;
@@ -302,6 +349,25 @@
             flex: 1 1 0;
             max-width: 4.5rem;
             background: linear-gradient(90deg, transparent, #E85312 20%, #E85312 80%, transparent);
+        }
+        .program-next-label {
+            animation: program-next-breathe 3s ease-in-out infinite;
+        }
+        @keyframes program-next-breathe {
+            0%, 100% {
+                opacity: 0.72;
+                letter-spacing: 0.18em;
+            }
+            50% {
+                opacity: 1;
+                letter-spacing: 0.22em;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .program-next-label {
+                animation: none;
+                opacity: 1;
+            }
         }
         .youtube-o-logo {
             width: 0.9em;
@@ -382,7 +448,10 @@
                 height: 2.25rem;
             }
         }
-        /* Page 1 speaker photo — tablet+ only (sample B) */
+        /* Page 1 expert block — mobile: contents (keep order 2+5); sm+: photo behind achievements */
+        .p1-expert-block {
+            display: contents;
+        }
         .p1-speaker-card {
             overflow: hidden;
         }
@@ -415,103 +484,10 @@
             font-size: 0.75rem;
             line-height: 1.55;
         }
-        @media (min-width: 640px) {
-            .p1-speaker-card {
-                overflow: visible;
-            }
-            .p1-speaker-glow {
-                display: block;
-                position: absolute;
-                right: -10%;
-                top: 8%;
-                width: 14rem;
-                height: 14rem;
-                border-radius: 999px;
-                background: radial-gradient(circle, rgba(255, 180, 160, 0.55) 0%, rgba(255, 200, 190, 0.22) 45%, transparent 72%);
-                filter: blur(2px);
-                pointer-events: none;
-                z-index: 0;
-            }
-            .p1-speaker-inner {
-                display: flex;
-                align-items: stretch;
-                min-height: 13.5rem;
-                overflow: hidden;
-                border-radius: 1rem;
-            }
-            .p1-speaker-copy {
-                flex: 1 1 auto;
-                justify-content: center;
-                z-index: 1;
-                padding: 1.35rem 0.75rem 1.35rem 1.5rem;
-                gap: 0.55rem;
-            }
-            .p1-speaker-label {
-                font-size: 0.72rem;
-                letter-spacing: 0.2em;
-            }
-            .p1-speaker-name {
-                font-size: clamp(2.6rem, 4.5vw, 3.35rem);
-            }
-            .p1-speaker-desc {
-                font-size: 0.88rem;
-                line-height: 1.6;
-                max-width: 18rem;
-            }
-            .p1-speaker-photo {
-                display: flex;
-                flex: 0 0 50%;
-                align-items: flex-end;
-                justify-content: center;
-                min-width: 9rem;
-                max-width: 14rem;
-                position: relative;
-                z-index: 1;
-                pointer-events: none;
-                margin-bottom: -0.15rem;
-            }
-            .p1-speaker-photo img {
-                display: block;
-                width: 100%;
-                height: auto;
-                max-height: 15.5rem;
-                object-fit: contain;
-                object-position: bottom center;
-                filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.16));
-            }
-        }
-        @media (min-width: 1024px) {
-            .p1-speaker-card {
-                min-height: 100%;
-                display: flex;
-                flex-direction: column;
-            }
-            .p1-speaker-inner {
-                flex: 1 1 auto;
-                min-height: 15rem;
-                height: 100%;
-            }
-            .p1-speaker-copy {
-                padding: 1.5rem 0.85rem 1.5rem 1.65rem;
-            }
-            .p1-speaker-photo {
-                flex-basis: 52%;
-                max-width: 15.5rem;
-            }
-            .p1-speaker-photo img {
-                max-height: min(100%, 18.5rem);
-            }
-            .p1-speaker-glow {
-                width: 16rem;
-                height: 16rem;
-                right: -8%;
-                top: 4%;
-            }
-        }
-
-        /* Page 1 achievements — sample B denser card */
         .p1-achievements-card {
             padding: 0.9rem 1rem 0.75rem;
+            height: auto;
+            align-self: stretch;
         }
         .p1-achievements-title {
             font-size: 0.7rem;
@@ -524,6 +500,7 @@
         .p1-achievements-list {
             display: flex;
             flex-direction: column;
+            flex: 0 0 auto;
         }
         .p1-achievement {
             padding: 0.55rem 0.15rem;
@@ -537,8 +514,96 @@
             line-height: 1.35;
         }
         @media (min-width: 640px) {
+            .p1-expert-block {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                gap: 0;
+                min-height: 28rem;
+                order: 2;
+            }
+            .p1-speaker-card {
+                overflow: visible;
+                background: transparent;
+                border-color: transparent;
+                box-shadow: none;
+                flex: 1 1 auto;
+                min-height: 16rem;
+                position: relative;
+                z-index: 1;
+            }
+            .p1-speaker-glow {
+                display: block;
+                position: absolute;
+                right: 8%;
+                top: 6%;
+                width: 16rem;
+                height: 16rem;
+                border-radius: 999px;
+                background: radial-gradient(circle, rgba(255, 180, 160, 0.55) 0%, rgba(255, 200, 190, 0.22) 45%, transparent 72%);
+                filter: blur(2px);
+                pointer-events: none;
+                z-index: 0;
+            }
+            .p1-speaker-inner {
+                display: block;
+                position: relative;
+                min-height: 16rem;
+                height: 100%;
+                overflow: visible;
+            }
+            .p1-speaker-copy {
+                position: relative;
+                z-index: 2;
+                max-width: 55%;
+                padding: 1.25rem 0.75rem 1.25rem 1.35rem;
+                gap: 0.55rem;
+            }
+            .p1-speaker-label {
+                font-size: 0.72rem;
+                letter-spacing: 0.2em;
+            }
+            .p1-speaker-name {
+                font-size: clamp(2.6rem, 4.5vw, 3.35rem);
+            }
+            .p1-speaker-desc {
+                font-size: 0.88rem;
+                line-height: 1.6;
+                max-width: 16rem;
+            }
+            .p1-speaker-photo {
+                display: flex;
+                position: absolute;
+                right: -2%;
+                bottom: -12%;
+                width: 62%;
+                max-width: 20rem;
+                height: auto;
+                align-items: flex-end;
+                justify-content: flex-end;
+                z-index: 1;
+                pointer-events: none;
+            }
+            .p1-speaker-photo img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-height: 22rem;
+                object-fit: contain;
+                object-position: bottom right;
+                transform: scaleX(-1);
+                filter: drop-shadow(0 12px 22px rgba(15, 23, 42, 0.18));
+            }
             .p1-achievements-card {
+                position: relative;
+                z-index: 3;
+                margin-top: -3.5rem;
                 padding: 1.15rem 1.35rem 1rem;
+                height: auto;
+                flex: 0 0 auto;
+                align-self: stretch;
+                background: #fff;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             }
             .p1-achievements-title {
                 font-size: 0.8rem;
@@ -558,7 +623,39 @@
             }
         }
         @media (min-width: 1024px) {
+            .p1-expert-block {
+                order: unset;
+                min-height: 0;
+                height: 100%;
+                align-self: stretch;
+            }
+            .p1-speaker-card {
+                min-height: 18rem;
+            }
+            .p1-speaker-inner {
+                min-height: 18rem;
+            }
+            .p1-speaker-copy {
+                padding: 1.35rem 0.85rem 1.5rem 0.25rem;
+                max-width: 52%;
+            }
+            .p1-speaker-photo {
+                width: 68%;
+                max-width: 22rem;
+                right: -4%;
+                bottom: -14%;
+            }
+            .p1-speaker-photo img {
+                max-height: 26rem;
+            }
+            .p1-speaker-glow {
+                width: 18rem;
+                height: 18rem;
+                right: 6%;
+                top: 2%;
+            }
             .p1-achievements-card {
+                margin-top: -4rem;
                 padding: 1rem 1.25rem 0.85rem;
                 justify-content: flex-start;
                 gap: 0.15rem;
@@ -568,7 +665,6 @@
                 margin-bottom: 0.25rem;
             }
             .p1-achievements-list {
-                flex: 0 0 auto;
                 width: 100%;
                 max-width: 22rem;
             }
@@ -784,9 +880,22 @@
             #chuong-trinh .program-heading-line {
                 max-width: 1.75rem;
             }
+            #chuong-trinh .program-next-label,
             #chuong-trinh .text-center p.font-montserrat {
                 font-size: 0.65rem;
-                letter-spacing: 0.14em;
+            }
+            #chuong-trinh .program-next-label {
+                animation-name: program-next-breathe-sm;
+            }
+            @keyframes program-next-breathe-sm {
+                0%, 100% {
+                    opacity: 0.72;
+                    letter-spacing: 0.14em;
+                }
+                50% {
+                    opacity: 1;
+                    letter-spacing: 0.17em;
+                }
             }
             #chuong-trinh h1 {
                 font-size: clamp(2.15rem, 9.5vw, 2.75rem);
@@ -859,12 +968,14 @@
                 border-radius: 0.75rem;
             }
             /* Speaker ~16% */
+            #chuong-trinh .p1-speaker-card,
             #chuong-trinh .p1-hover-card.relative {
                 flex: 0 0 16%;
                 min-height: 0;
                 overflow: hidden;
                 height: auto;
             }
+            #chuong-trinh .p1-speaker-copy,
             #chuong-trinh .p1-hover-card.relative > .relative {
                 padding: 0.45rem 0.8rem;
                 height: 100%;
@@ -877,14 +988,17 @@
             #chuong-trinh .p1-hover-card.relative .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
                 margin-top: 0.15rem !important;
             }
+            #chuong-trinh .p1-speaker-label,
             #chuong-trinh .p1-hover-card.relative p.text-xs.font-bold {
                 font-size: 0.6rem;
                 letter-spacing: 0.14em;
             }
+            #chuong-trinh .p1-speaker-name,
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.45rem;
                 margin-bottom: 0.1rem;
             }
+            #chuong-trinh .p1-speaker-desc,
             #chuong-trinh .p1-hover-card.relative p.text-slate-600,
             #chuong-trinh .p1-hover-card.relative p.text-gray-600 {
                 font-size: 0.625rem;
@@ -894,7 +1008,7 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
-            /* Achievements ~20% (grow/shrink to fill leftover column space) */
+            /* Achievements — hug content (no grow gap) */
             #chuong-trinh .p1-hover-card.flex {
                 flex: 1 1 19%;
                 padding: 0.45rem 0.8rem;
@@ -903,7 +1017,14 @@
                 overflow: hidden;
                 height: auto;
             }
-            #chuong-trinh .p1-hover-card.flex > h2 {
+            #chuong-trinh .p1-achievements-card {
+                flex: 0 0 auto;
+                height: auto;
+                overflow: visible;
+                padding: 0.45rem 0.8rem;
+            }
+            #chuong-trinh .p1-hover-card.flex > h2,
+            #chuong-trinh .p1-achievements-title {
                 font-size: 0.6rem;
                 margin-bottom: 0.1rem;
                 text-align: center;
@@ -1070,8 +1191,11 @@
             #gioi-thieu .max-w-6xl {
                 gap: 1.25rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(2.1rem, 4vw, 2.6rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3.35rem, 6vw, 4.5rem);
             }
             #gioi-thieu .page2-tagline {
                 font-size: 1.05rem;
@@ -1100,16 +1224,16 @@
                 line-height: 1.3;
             }
             #gioi-thieu .page2-vision {
-                padding: 1.15rem 1.25rem;
-                gap: 0.85rem;
+                padding: 1.3rem 1.4rem;
+                gap: 1rem;
             }
             #gioi-thieu .page2-vision h3 {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
             #gioi-thieu .page2-vision p,
             #gioi-thieu .page2-vision li {
-                font-size: 0.88rem;
-                line-height: 1.45;
+                font-size: 0.92rem;
+                line-height: 1.5;
             }
             #gioi-thieu .page2-programs h3 {
                 font-size: 0.8rem;
@@ -1260,20 +1384,23 @@
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
-                gap: 0.12rem;
+                gap: 0.2rem;
                 min-width: 0;
                 width: 100%;
             }
-            #gioi-thieu .page2-intro-copy > span {
+            #gioi-thieu .page2-intro-copy > span,
+            #gioi-thieu .page2-eyebrow {
                 font-size: 0.6rem;
                 letter-spacing: 0.14em;
+                margin-top: 0.35rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
                 flex: 0 0 auto;
-                display: flex;
-                align-items: center;
-                font-size: clamp(1.75rem, 8.5vw, 2.2rem);
-                line-height: 1;
+                height: auto;
+                max-width: min(100%, 11rem);
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3rem, 16vw, 3.85rem);
             }
             /* Full-width prose — modest gaps between body, quote, (values below via intro gap) */
             #gioi-thieu .page2-prose {
@@ -1543,8 +1670,11 @@
             #gioi-thieu .page2-prose {
                 gap: 0.38rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(1.5rem, 7.5vw, 1.95rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(2.75rem, 14vw, 3.4rem);
             }
             #gioi-thieu .page2-tagline {
                 font-size: 0.68rem;
@@ -1623,8 +1753,11 @@
             #gioi-thieu .page2-prose {
                 gap: 0.32rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(1.35rem, 7vw, 1.75rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(2.5rem, 12vw, 3.1rem);
             }
             #gioi-thieu .page2-tagline {
                 font-size: 0.64rem;
@@ -1733,10 +1866,10 @@
         .p3-container {
             width: min(100% - 2rem, 72rem);
             margin-inline: auto;
-            padding-block: 0.75rem 0.9rem;
+            padding-block: 0.45rem 0.75rem;
             display: flex;
             flex-direction: column;
-            gap: 0.65rem;
+            gap: 0.5rem;
             flex: 1 1 auto;
             min-height: 0;
             box-sizing: border-box;
@@ -1943,6 +2076,14 @@
             min-width: 0;
             height: 100%;
         }
+        .p3-about-panel .p3-about-card {
+            overflow: hidden;
+        }
+        .p3-about-panel .p3-about-copy {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: auto;
+        }
         .p3-about-panel .p3-section-heading,
         .p3-recognition-panel .p3-section-heading {
             margin-bottom: 0.28rem;
@@ -2013,13 +2154,17 @@
         .p3-about-card {
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
         .p3-about-card p {
-            margin-top: 0.15rem;
-            flex: 1 1 auto;
-            font-size: 0.75rem;
-            line-height: 1.45;
+            margin: 0;
+            flex: 0 0 auto;
+            font-size: 0.7rem;
+            line-height: 1.4;
             color: #475569;
+        }
+        .p3-about-card p + p {
+            margin-top: 0.35rem;
         }
         .p3-about-cta {
             margin-top: auto;
@@ -2259,16 +2404,17 @@
             .p3-container {
                 height: 100%;
                 justify-content: flex-start;
-                gap: 0.55rem;
+                gap: 0.4rem;
+                padding-block: 0.35rem 0.65rem;
             }
             .p3-hero {
-                flex: 1 1 0;
+                flex: 0 0 auto;
                 min-height: 0;
                 max-width: min(56rem, 100%);
                 width: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
             }
             .p3-hero-brand {
@@ -2276,27 +2422,27 @@
                 gap: clamp(1rem, 2.2vw, 1.75rem);
             }
             .p3-hero-logo {
-                height: clamp(6rem, 15svh, 8.5rem);
+                height: clamp(5.5rem, 12svh, 7.5rem);
             }
             .p3-hero-title {
-                font-size: clamp(2.35rem, 5svh + 0.25rem, 3.4rem);
+                font-size: clamp(2.2rem, 4.5svh + 0.25rem, 3.2rem);
                 line-height: 1;
                 letter-spacing: -0.03em;
             }
             .p3-hero-title span + span {
-                margin-top: 0.22em;
+                margin-top: 0.18em;
             }
             .p3-hero-tagline {
-                margin-top: clamp(0.45rem, 1.2svh, 0.75rem);
-                font-size: clamp(1.05rem, 1.8svh + 0.25rem, 1.35rem);
+                margin-top: clamp(0.3rem, 0.9svh, 0.55rem);
+                font-size: clamp(1rem, 1.6svh + 0.25rem, 1.25rem);
             }
             .p3-hero-desc {
-                margin-top: clamp(0.55rem, 1.4svh, 0.9rem);
+                margin-top: clamp(0.35rem, 0.9svh, 0.55rem);
                 max-width: 44rem;
-                font-size: clamp(0.8rem, 1.2svh + 0.35rem, 0.95rem);
+                font-size: clamp(0.78rem, 1.1svh + 0.35rem, 0.9rem);
             }
             .p3-hero-contacts {
-                margin-top: clamp(0.55rem, 1.4svh, 0.9rem);
+                margin-top: clamp(0.35rem, 0.9svh, 0.55rem);
             }
             .p3-content {
                 display: flex;
@@ -2304,13 +2450,13 @@
                 flex: 1 1 0;
                 min-height: 0;
                 min-width: 0;
-                gap: 0.55rem;
+                gap: 0.4rem;
             }
             .p3-top-row {
                 display: grid;
                 grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
                 gap: 0.55rem;
-                flex: 1 1 0;
+                flex: 2.1 1 0;
                 min-height: 0;
                 align-items: stretch;
             }
@@ -2343,8 +2489,15 @@
             }
             .p3-bottom-row {
                 grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-                flex: 1 1 0;
-                min-height: 0;
+                flex: 1.05 1 0;
+                min-height: 10.5rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.72rem;
+                line-height: 1.38;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.3rem;
             }
             .p3-recognition-panel .p3-carousel {
                 flex: 1 1 auto;
@@ -2434,8 +2587,11 @@
             #gioi-thieu .page2-intro {
                 gap: 0.55rem;
             }
-            #gioi-thieu .page2-intro-copy h2 {
-                font-size: clamp(1.85rem, 3.5svh + 0.4rem, 2.35rem);
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo {
+                height: auto;
+            }
+            #gioi-thieu .page2-intro-copy h2.page2-brand-logo img {
+                height: clamp(3.15rem, 5svh + 0.75rem, 4.15rem);
             }
             #gioi-thieu .page2-tagline {
                 font-size: 0.95rem;
@@ -2477,31 +2633,35 @@
 
             /* Page 3 (was max-height: 760 — expanded to cover 768) */
             .p3-container {
-                padding-block: 0.45rem 0.55rem;
-                gap: 0.45rem;
+                padding-block: 0.3rem 0.45rem;
+                gap: 0.35rem;
+            }
+            .p3-hero {
+                flex: 0 0 auto;
+                justify-content: flex-start;
             }
             .p3-hero-logo {
-                height: clamp(5rem, 16svh, 7rem);
+                height: clamp(4.5rem, 11svh, 6rem);
             }
             .p3-hero-title {
-                font-size: clamp(1.85rem, 4.2svh + 0.2rem, 2.6rem);
+                font-size: clamp(1.75rem, 3.8svh + 0.2rem, 2.4rem);
             }
             .p3-hero-title span + span {
-                margin-top: 0.18em;
+                margin-top: 0.14em;
             }
             .p3-hero-tagline {
-                margin-top: 0.35rem;
-                font-size: clamp(0.9rem, 1.4svh + 0.2rem, 1.1rem);
+                margin-top: 0.25rem;
+                font-size: clamp(0.85rem, 1.2svh + 0.2rem, 1.05rem);
             }
             .p3-hero-desc {
-                margin-top: 0.4rem;
+                margin-top: 0.3rem;
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
             .p3-hero-contacts {
-                margin-top: 0.4rem;
+                margin-top: 0.3rem;
             }
             .p3-hero-contacts a {
                 padding-block: 0.25rem;
@@ -2512,10 +2672,17 @@
                 flex-basis: 1.65rem;
             }
             .p3-card {
-                padding: 0.55rem 0.7rem;
+                padding: 0.5rem 0.65rem;
             }
             .p3-content {
-                gap: 0.45rem;
+                gap: 0.35rem;
+            }
+            .p3-top-row {
+                flex: 2.2 1 0;
+            }
+            .p3-bottom-row {
+                flex: 1 1 0;
+                min-height: 9rem;
             }
             .p3-main-grid {
                 gap: 0.65rem 0.85rem;
@@ -2534,6 +2701,17 @@
             .p3-video-poster-label > strong {
                 margin-top: 0.35rem;
                 font-size: 0.75rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.65rem;
+                line-height: 1.32;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.22rem;
+            }
+            .p3-about-cta {
+                margin-top: 0.4rem;
+                padding: 0.3rem 0.75rem;
             }
         }
 
@@ -2558,20 +2736,38 @@
                 gap: 0.4rem;
             }
             .p3-container {
-                padding-block: 0.35rem 0.45rem;
-                gap: 0.35rem;
+                padding-block: 0.25rem 0.35rem;
+                gap: 0.28rem;
+            }
+            .p3-hero {
+                flex: 0 0 auto;
+                justify-content: flex-start;
             }
             .p3-hero-logo {
-                height: clamp(4.25rem, 14svh, 5.75rem);
+                height: clamp(4rem, 12svh, 5.25rem);
             }
             .p3-hero-title {
-                font-size: clamp(1.65rem, 3.8svh + 0.15rem, 2.25rem);
+                font-size: clamp(1.55rem, 3.5svh + 0.15rem, 2.1rem);
             }
             .p3-hero-desc {
-                -webkit-line-clamp: 1;
+                -webkit-line-clamp: 2;
+            }
+            .p3-top-row {
+                flex: 2.3 1 0;
+            }
+            .p3-bottom-row {
+                flex: 0.95 1 0;
+                min-height: 8rem;
             }
             .p3-card {
-                padding: 0.45rem 0.6rem;
+                padding: 0.4rem 0.55rem;
+            }
+            .p3-about-panel .p3-about-card p {
+                font-size: 0.6rem;
+                line-height: 1.28;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.18rem;
             }
         }
 
@@ -2597,27 +2793,28 @@
                 min-height: 9.5rem;
             }
             .p3-container {
-                gap: 0.85rem;
-                padding-block: 0.65rem 0.9rem;
+                gap: 0.65rem;
+                padding-block: 0.45rem 0.7rem;
             }
             .p3-hero {
                 flex: 0 0 auto;
-                max-height: 28%;
+                max-height: 26%;
+                justify-content: flex-start;
             }
             .p3-hero-logo {
-                height: clamp(7rem, 12svh, 9rem);
+                height: clamp(6.5rem, 11svh, 8rem);
             }
             .p3-content {
                 flex: 1 1 0;
-                gap: 0.75rem;
+                gap: 0.65rem;
             }
             .p3-top-row {
-                flex: 1 1 0;
+                flex: 2.2 1 0;
                 min-height: 0;
             }
             .p3-bottom-row {
-                flex: 0 0 32%;
-                max-height: 36%;
+                flex: 0.85 1 0;
+                max-height: 34%;
             }
             .p3-activity-image {
                 height: 100%;
@@ -2903,10 +3100,12 @@
             .p3-about-panel .p3-about-card p {
                 font-size: 0.55rem;
                 line-height: 1.3;
-                display: -webkit-box;
-                -webkit-line-clamp: 4;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
+                display: block;
+                overflow: visible;
+                -webkit-line-clamp: unset;
+            }
+            .p3-about-panel .p3-about-card p + p {
+                margin-top: 0.25rem;
             }
             .p3-about-panel .p3-about-cta {
                 padding: 0.28rem 0.65rem;
@@ -2981,8 +3180,8 @@
                 margin-top: 0.45rem;
             }
             .p3-about-panel .p3-about-card p {
-                -webkit-line-clamp: 5;
                 font-size: 0.6rem;
+                line-height: 1.32;
             }
         }
 
