@@ -95,7 +95,7 @@
             height: auto;
         }
 
-        /* Mobile-only section scroll hint (Option 1 bounce chevron) */
+        /* Mobile + tablet section scroll hint (Option 1 bounce chevron) */
         .section-scroll-hint {
             display: none;
             position: fixed;
@@ -167,7 +167,7 @@
                 transform: translateY(4px) rotate(225deg);
             }
         }
-        @media (max-width: 767px) {
+        @media (max-width: 1023px) {
             .section-scroll-hint {
                 display: flex;
             }
