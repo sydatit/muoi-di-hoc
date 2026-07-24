@@ -144,7 +144,8 @@
             }, 300);
         }
 
-        const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
+        const YOUTUBE_VIDEO_ID = 'UptVsKjjPsU';
+        const INTRO_VIDEO_EMBED = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0`;
 
         function playIntroVideo() {
             const modal = document.getElementById('videoModal');
@@ -331,91 +332,26 @@
             }
         }
 
+        function postYouTubeCommand(iframe, command) {
+            if (!iframe?.contentWindow) return;
+            iframe.contentWindow.postMessage(
+                JSON.stringify({ event: 'command', func: command, args: '' }),
+                '*'
+            );
+        }
+
         function initPageOneVideoLifecycle() {
-            const video = document.getElementById('pageOneVideo');
-            if (!video) return;
-
-            let tapStart = null;
-
-            // Keep muted autoplay reliable on mobile WebViews / older iOS.
-            video.muted = true;
-            video.defaultMuted = true;
-            video.playsInline = true;
-            video.setAttribute('playsinline', '');
-            video.setAttribute('webkit-playsinline', '');
-
-            const tryPlay = () => {
-                const playPromise = video.play();
-                if (playPromise && typeof playPromise.catch === 'function') {
-                    playPromise.catch(() => {});
-                }
-                return playPromise;
-            };
+            const iframe = document.getElementById('pageOneVideo');
+            if (!iframe) return;
 
             setPageOneVideoVisible = (visible) => {
                 pageOneVideoVisible = Boolean(visible);
                 if (pageOneVideoVisible) {
-                    tryPlay();
+                    postYouTubeCommand(iframe, 'playVideo');
                 } else {
-                    video.pause();
+                    postYouTubeCommand(iframe, 'pauseVideo');
                 }
             };
-
-            // Tap the video itself to toggle sound: mute → unmute → mute → …
-            const toggleSoundFromVideoTap = () => {
-                if (!pageOneVideoVisible) return;
-
-                if (!video.muted) {
-                    video.muted = true;
-                    return;
-                }
-
-                video.muted = false;
-                video.volume = 1;
-
-                const recoverMutedPlayback = () => {
-                    video.muted = true;
-                    if (pageOneVideoVisible) tryPlay();
-                };
-
-                const playPromise = tryPlay();
-                if (playPromise && typeof playPromise.then === 'function') {
-                    playPromise.then(() => {
-                        if (pageOneVideoVisible && video.paused) {
-                            recoverMutedPlayback();
-                        }
-                    }).catch(() => {
-                        recoverMutedPlayback();
-                    });
-                } else {
-                    requestAnimationFrame(() => {
-                        if (pageOneVideoVisible && video.paused) {
-                            recoverMutedPlayback();
-                        }
-                    });
-                }
-            };
-
-            const videoHost = video.closest('.p1-video') || video;
-            videoHost.addEventListener('pointerdown', (event) => {
-                if (event.isPrimary === false) return;
-                if (event.pointerType === 'mouse' && event.button !== 0) return;
-                tapStart = { x: event.clientX, y: event.clientY };
-            }, { passive: true });
-
-            videoHost.addEventListener('pointerup', (event) => {
-                if (!tapStart) return;
-                const dx = event.clientX - tapStart.x;
-                const dy = event.clientY - tapStart.y;
-                tapStart = null;
-                // Ignore swipes so fullpage page changes from the video area stay mute-safe.
-                if (Math.hypot(dx, dy) > 12) return;
-                toggleSoundFromVideoTap();
-            }, { passive: true });
-
-            videoHost.addEventListener('pointercancel', () => {
-                tapStart = null;
-            }, { passive: true });
         }
 
         function showToast(title, message) {

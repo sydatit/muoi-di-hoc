@@ -150,18 +150,15 @@
 
                     <!-- Program video (mobile order-4; desktop left col row 3) -->
                     <div class="p1-video relative w-full aspect-video sm:h-auto sm:aspect-video rounded-xl sm:rounded-2xl overflow-hidden shadow-xl bg-slate-950 ring-1 ring-black/5 lg:col-span-7 lg:col-start-1 lg:row-start-3 lg:self-start order-4 lg:order-none">
-                        <video
+                        <iframe
                             id="pageOneVideo"
-                            class="absolute inset-0 w-full h-full object-cover"
-                            muted
-                            loop
-                            playsinline
-                            preload="metadata"
-                            aria-label="Video giới thiệu chương trình YouTube">
-                            <source src="IMG_3540.mp4" type="video/mp4">
-                            <source src="IMG_3540.MOV" type="video/mp4">
-                            Trình duyệt của bạn không hỗ trợ phát video này.
-                        </video>
+                            class="absolute inset-0 w-full h-full"
+                            src="https://www.youtube.com/embed/UptVsKjjPsU?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=UptVsKjjPsU&rel=0&modestbranding=1&playsinline=1"
+                            title="Video giới thiệu chương trình"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            referrerpolicy="strict-origin-when-cross-origin"
+                        ></iframe>
                     </div>
 
                     <!-- Achievements (mobile order-5; desktop right col row 3) -->

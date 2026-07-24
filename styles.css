@@ -556,10 +556,10 @@
                 min-height: 0;
                 border-radius: 0.75rem;
             }
-            #chuong-trinh .p1-video video {
+            #chuong-trinh .p1-video iframe {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
+                border: 0;
             }
             /* Speaker ~16% */
             #chuong-trinh .p1-hover-card.relative {
