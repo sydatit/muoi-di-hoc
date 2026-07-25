@@ -90,6 +90,190 @@
             min-height: 0 !important;
             overflow: visible !important;
         }
+        /* Page 3: unlock fit-one-screen collapse under fp-responsive (Chrome zoom / short desktop) */
+        html.fp-responsive #ve-chung-toi,
+        body.fp-responsive #ve-chung-toi {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+            overflow: visible !important;
+        }
+        html.fp-responsive #ve-chung-toi > .fp-overflow,
+        body.fp-responsive #ve-chung-toi > .fp-overflow {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        html.fp-responsive #ve-chung-toi .p3-container,
+        body.fp-responsive #ve-chung-toi .p3-container {
+            flex: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        /* Desktop-only: restore natural heights so VIDEO / HÌNH ẢNH don't collapse (keep tablet/mobile p3 layout) */
+        @media (min-width: 1024px) {
+            html.fp-responsive #ve-chung-toi .p3-content,
+            body.fp-responsive #ve-chung-toi .p3-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                gap: 0.55rem;
+            }
+            html.fp-responsive #ve-chung-toi .p3-top-row,
+            body.fp-responsive #ve-chung-toi .p3-top-row,
+            html.fp-responsive #ve-chung-toi .p3-bottom-row,
+            body.fp-responsive #ve-chung-toi .p3-bottom-row {
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel,
+            html.fp-responsive #ve-chung-toi .p3-video-panel,
+            body.fp-responsive #ve-chung-toi .p3-video-panel,
+            html.fp-responsive #ve-chung-toi .p3-about-panel,
+            body.fp-responsive #ve-chung-toi .p3-about-panel,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel {
+                flex: none !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel > section,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel > section,
+            html.fp-responsive #ve-chung-toi .p3-video-panel > .p3-video-column,
+            body.fp-responsive #ve-chung-toi .p3-video-panel > .p3-video-column,
+            html.fp-responsive #ve-chung-toi .p3-about-panel > .p3-about-card,
+            body.fp-responsive #ve-chung-toi .p3-about-panel > .p3-about-card,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel > section,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel > section {
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel,
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-viewport,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-viewport,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-viewport,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-viewport {
+                flex: 0 0 auto !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-track,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-track,
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-slide,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-slide,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-track,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-track,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-slide,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-slide {
+                height: auto !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activity-image,
+            body.fp-responsive #ve-chung-toi .p3-activity-image {
+                aspect-ratio: 4 / 3 !important;
+                width: 100%;
+                height: auto !important;
+                max-height: 12rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-award-image,
+            body.fp-responsive #ve-chung-toi .p3-award-image {
+                aspect-ratio: 4 / 3 !important;
+                height: auto !important;
+                max-height: 12rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-video-panel .p3-video-poster,
+            body.fp-responsive #ve-chung-toi .p3-video-panel .p3-video-poster {
+                flex: 0 0 auto !important;
+                aspect-ratio: 16 / 9 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: 18rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-card,
+            body.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-card {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-copy,
+            body.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-copy {
+                flex: none !important;
+                overflow: visible !important;
+                min-height: 0 !important;
+            }
+            /* Page 1: keep speaker photo visible + align achievements with video */
+            html.fp-responsive #chuong-trinh .max-w-6xl > .grid,
+            body.fp-responsive #chuong-trinh .max-w-6xl > .grid {
+                align-items: stretch !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-expert-block,
+            body.fp-responsive #chuong-trinh .p1-expert-block {
+                align-self: stretch !important;
+                height: auto;
+                min-height: 100%;
+                justify-content: flex-start;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-card,
+            body.fp-responsive #chuong-trinh .p1-speaker-card {
+                min-height: 14rem;
+                overflow: visible !important;
+                flex: 1 1 auto !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-inner,
+            body.fp-responsive #chuong-trinh .p1-speaker-inner {
+                min-height: 14rem;
+                overflow: visible !important;
+                padding-inline: 0.75rem 0.5rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-copy,
+            body.fp-responsive #chuong-trinh .p1-speaker-copy {
+                margin-bottom: 2.75rem;
+                padding-left: 1rem;
+                max-width: 45%;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-name,
+            body.fp-responsive #chuong-trinh .p1-speaker-name {
+                white-space: nowrap;
+                font-size: clamp(2.2rem, 3.5vw, 2.85rem);
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-desc,
+            body.fp-responsive #chuong-trinh .p1-speaker-desc {
+                max-width: 15rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-photo,
+            body.fp-responsive #chuong-trinh .p1-speaker-photo {
+                right: 0;
+                bottom: 0;
+                width: 56%;
+                max-width: 17rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-photo img,
+            body.fp-responsive #chuong-trinh .p1-speaker-photo img {
+                max-height: 18rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-achievements-card,
+            body.fp-responsive #chuong-trinh .p1-achievements-card {
+                margin-top: -1.5rem;
+                margin-bottom: 0;
+                flex: 0 0 auto !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-video,
+            body.fp-responsive #chuong-trinh .p1-video {
+                max-height: none !important;
+                align-self: stretch;
+            }
+        }
         /* Fixed site header above fullPage sections */
         .site-header {
             height: auto;
@@ -260,7 +444,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+            padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(4.5rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
             background: rgba(2, 6, 23, 0.88);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
@@ -285,8 +469,23 @@
             align-items: center;
             gap: 0.75rem;
             cursor: default;
+            min-width: 0;
+            width: 100%;
         }
-        .image-lightbox-figure img {
+        .image-lightbox-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: min(96vw, 1200px);
+            max-height: min(84dvh, calc(var(--app-height, 100dvh) - 5rem));
+            overflow: hidden;
+            touch-action: none;
+            border-radius: 0.75rem;
+        }
+        .image-lightbox-figure img,
+        .image-lightbox-stage img {
             display: block;
             max-width: 100%;
             max-height: min(84dvh, calc(var(--app-height, 100dvh) - 5rem));
@@ -298,6 +497,18 @@
             cursor: default;
             user-select: none;
             -webkit-user-select: none;
+            transform-origin: center center;
+            will-change: transform;
+        }
+        .image-lightbox-stage img.is-zoomed {
+            cursor: grab;
+        }
+        .image-lightbox-stage img.is-zoomed.is-panning {
+            cursor: grabbing;
+            transition: none;
+        }
+        .image-lightbox-stage img.is-animating {
+            transition: transform 0.2s ease;
         }
         .image-lightbox-caption {
             max-width: 36rem;
@@ -334,9 +545,49 @@
             color: #f87171;
             outline: none;
         }
+        .image-lightbox-controls {
+            position: absolute;
+            bottom: max(1rem, env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem;
+            border-radius: 9999px;
+            background: rgba(15, 23, 42, 0.72);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+        .image-lightbox-zoom-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 0;
+            border-radius: 9999px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .image-lightbox-zoom-btn:hover,
+        .image-lightbox-zoom-btn:focus-visible {
+            background: rgba(255, 255, 255, 0.12);
+            outline: none;
+        }
+        .image-lightbox-zoom-btn:disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
 
         @media (prefers-reduced-motion: reduce) {
             .image-lightbox {
+                transition: none;
+            }
+            .image-lightbox-stage img.is-animating {
                 transition: none;
             }
         }
@@ -852,17 +1103,25 @@
             .p1-speaker-inner {
                 min-height: 20rem;
                 align-items: flex-end;
+                padding-inline: 0.75rem 0.5rem;
             }
             .p1-speaker-copy {
-                padding: 0.85rem 0.85rem 0.85rem 0.25rem;
-                max-width: 46%;
+                padding: 0.85rem 0.5rem 0.85rem 1rem;
+                max-width: 45%;
                 align-self: flex-end;
                 margin-bottom: 5rem;
             }
+            .p1-speaker-name {
+                white-space: nowrap;
+                font-size: clamp(2.4rem, 3.8vw, 3rem);
+            }
+            .p1-speaker-desc {
+                max-width: 15rem;
+            }
             .p1-speaker-photo {
-                width: 64%;
-                max-width: 22rem;
-                right: -10%;
+                width: 56%;
+                max-width: 20rem;
+                right: 0;
                 bottom: -12%;
             }
             .p1-speaker-photo img {
@@ -871,7 +1130,7 @@
             .p1-speaker-glow {
                 width: 22rem;
                 height: 22rem;
-                right: -2%;
+                right: 4%;
                 top: 0%;
             }
             .p1-achievements-card {
@@ -2782,6 +3041,42 @@
             }
             #chuong-trinh .p1-video {
                 max-height: min(32svh, 16rem);
+            }
+            #chuong-trinh .p1-expert-block {
+                align-self: stretch;
+                height: 100%;
+            }
+            #chuong-trinh .p1-speaker-card,
+            #chuong-trinh .p1-speaker-inner {
+                min-height: 16rem;
+                overflow: visible;
+            }
+            #chuong-trinh .p1-speaker-inner {
+                padding-inline: 0.75rem 0.5rem;
+            }
+            #chuong-trinh .p1-speaker-copy {
+                margin-bottom: 3.25rem;
+                padding-left: 1rem;
+                max-width: 45%;
+            }
+            #chuong-trinh .p1-speaker-name {
+                white-space: nowrap;
+                font-size: clamp(2.2rem, 3.5vw, 2.85rem);
+            }
+            #chuong-trinh .p1-speaker-desc {
+                max-width: 15rem;
+            }
+            #chuong-trinh .p1-speaker-photo {
+                right: 0;
+                bottom: -4%;
+                width: 56%;
+                max-width: 18rem;
+            }
+            #chuong-trinh .p1-speaker-photo img {
+                max-height: 20rem;
+            }
+            #chuong-trinh .p1-achievements-card {
+                margin-top: -2rem;
             }
             #chuong-trinh .p1-achievement {
                 padding-top: 0.35rem;
