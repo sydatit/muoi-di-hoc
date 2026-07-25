@@ -1465,6 +1465,24 @@
                 box-shadow: none !important;
                 transform: none !important;
             }
+            #chuong-trinh .p1-speaker-glow {
+                display: block;
+                position: absolute;
+                right: -8%;
+                top: 10%;
+                width: 14rem;
+                height: 14rem;
+                border-radius: 999px;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 176, 150, 0.62) 0%,
+                    rgba(255, 200, 175, 0.32) 42%,
+                    transparent 72%
+                );
+                filter: blur(10px);
+                pointer-events: none;
+                z-index: 0;
+            }
             #chuong-trinh .p1-speaker-inner {
                 position: relative;
                 height: 100%;
@@ -1483,6 +1501,8 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
+                align-items: center;
+                text-align: center;
                 gap: 0.12rem;
                 position: relative;
                 z-index: 2;
