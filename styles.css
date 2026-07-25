@@ -90,6 +90,178 @@
             min-height: 0 !important;
             overflow: visible !important;
         }
+        /* Page 3: unlock fit-one-screen collapse under fp-responsive (Chrome zoom / short desktop) */
+        html.fp-responsive #ve-chung-toi,
+        body.fp-responsive #ve-chung-toi {
+            height: auto !important;
+            min-height: 100svh;
+            min-height: var(--app-height, 100svh);
+            overflow: visible !important;
+        }
+        html.fp-responsive #ve-chung-toi > .fp-overflow,
+        body.fp-responsive #ve-chung-toi > .fp-overflow {
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        html.fp-responsive #ve-chung-toi .p3-container,
+        body.fp-responsive #ve-chung-toi .p3-container {
+            flex: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+        }
+        /* Desktop-only: restore natural heights so VIDEO / HÌNH ẢNH don't collapse (keep tablet/mobile p3 layout) */
+        @media (min-width: 1024px) {
+            html.fp-responsive #ve-chung-toi .p3-content,
+            body.fp-responsive #ve-chung-toi .p3-content {
+                display: flex !important;
+                flex-direction: column !important;
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                gap: 0.55rem;
+            }
+            html.fp-responsive #ve-chung-toi .p3-top-row,
+            body.fp-responsive #ve-chung-toi .p3-top-row,
+            html.fp-responsive #ve-chung-toi .p3-bottom-row,
+            body.fp-responsive #ve-chung-toi .p3-bottom-row {
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel,
+            html.fp-responsive #ve-chung-toi .p3-video-panel,
+            body.fp-responsive #ve-chung-toi .p3-video-panel,
+            html.fp-responsive #ve-chung-toi .p3-about-panel,
+            body.fp-responsive #ve-chung-toi .p3-about-panel,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel {
+                flex: none !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel > section,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel > section,
+            html.fp-responsive #ve-chung-toi .p3-video-panel > .p3-video-column,
+            body.fp-responsive #ve-chung-toi .p3-video-panel > .p3-video-column,
+            html.fp-responsive #ve-chung-toi .p3-about-panel > .p3-about-card,
+            body.fp-responsive #ve-chung-toi .p3-about-panel > .p3-about-card,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel > section,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel > section {
+                flex: none !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel,
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-viewport,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-viewport,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-viewport,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-viewport {
+                flex: 0 0 auto !important;
+                height: auto !important;
+                min-height: 0 !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-track,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-track,
+            html.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-slide,
+            body.fp-responsive #ve-chung-toi .p3-activities-panel .p3-carousel-slide,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-track,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-track,
+            html.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-slide,
+            body.fp-responsive #ve-chung-toi .p3-recognition-panel .p3-carousel-slide {
+                height: auto !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-activity-image,
+            body.fp-responsive #ve-chung-toi .p3-activity-image {
+                aspect-ratio: 4 / 3 !important;
+                width: 100%;
+                height: auto !important;
+                max-height: 12rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-award-image,
+            body.fp-responsive #ve-chung-toi .p3-award-image {
+                aspect-ratio: 4 / 3 !important;
+                height: auto !important;
+                max-height: 12rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-video-panel .p3-video-poster,
+            body.fp-responsive #ve-chung-toi .p3-video-panel .p3-video-poster {
+                flex: 0 0 auto !important;
+                aspect-ratio: 16 / 9 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                max-height: 18rem !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-card,
+            body.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-card {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            html.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-copy,
+            body.fp-responsive #ve-chung-toi .p3-about-panel .p3-about-copy {
+                flex: none !important;
+                overflow: visible !important;
+                min-height: 0 !important;
+            }
+            /* Page 1: keep speaker photo visible + align achievements with video */
+            html.fp-responsive #chuong-trinh .max-w-6xl > .grid,
+            body.fp-responsive #chuong-trinh .max-w-6xl > .grid {
+                align-items: stretch !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-expert-block,
+            body.fp-responsive #chuong-trinh .p1-expert-block {
+                align-self: stretch !important;
+                height: auto;
+                min-height: 100%;
+                justify-content: flex-start;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-card,
+            body.fp-responsive #chuong-trinh .p1-speaker-card {
+                min-height: 14rem;
+                overflow: visible !important;
+                flex: 1 1 auto !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-inner,
+            body.fp-responsive #chuong-trinh .p1-speaker-inner {
+                min-height: 14rem;
+                overflow: visible !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-copy,
+            body.fp-responsive #chuong-trinh .p1-speaker-copy {
+                margin-bottom: 2.75rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-photo,
+            body.fp-responsive #chuong-trinh .p1-speaker-photo {
+                right: 0;
+                bottom: 0;
+                width: 58%;
+                max-width: 18rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-speaker-photo img,
+            body.fp-responsive #chuong-trinh .p1-speaker-photo img {
+                max-height: 18rem;
+            }
+            html.fp-responsive #chuong-trinh .p1-achievements-card,
+            body.fp-responsive #chuong-trinh .p1-achievements-card {
+                margin-top: -1.5rem;
+                margin-bottom: 0;
+                flex: 0 0 auto !important;
+            }
+            html.fp-responsive #chuong-trinh .p1-video,
+            body.fp-responsive #chuong-trinh .p1-video {
+                max-height: none !important;
+                align-self: stretch;
+            }
+        }
         /* Fixed site header above fullPage sections */
         .site-header {
             height: auto;
@@ -2782,6 +2954,29 @@
             }
             #chuong-trinh .p1-video {
                 max-height: min(32svh, 16rem);
+            }
+            #chuong-trinh .p1-expert-block {
+                align-self: stretch;
+                height: 100%;
+            }
+            #chuong-trinh .p1-speaker-card,
+            #chuong-trinh .p1-speaker-inner {
+                min-height: 16rem;
+                overflow: visible;
+            }
+            #chuong-trinh .p1-speaker-copy {
+                margin-bottom: 3.25rem;
+            }
+            #chuong-trinh .p1-speaker-photo {
+                right: -4%;
+                bottom: -4%;
+                max-width: 19rem;
+            }
+            #chuong-trinh .p1-speaker-photo img {
+                max-height: 20rem;
+            }
+            #chuong-trinh .p1-achievements-card {
+                margin-top: -2rem;
             }
             #chuong-trinh .p1-achievement {
                 padding-top: 0.35rem;

@@ -503,9 +503,10 @@
                 if (typeof fullpageApi.setFitToSection === 'function') {
                     fullpageApi.setFitToSection(!wantResponsive);
                 }
-                document.documentElement.classList.toggle('fp-responsive', wantResponsive);
-                document.body.classList.toggle('fp-responsive', wantResponsive);
             }
+            // Always sync classes — CSS unlocks for Page 1 + Page 3 depend on them.
+            document.documentElement.classList.toggle('fp-responsive', wantResponsive);
+            document.body.classList.toggle('fp-responsive', wantResponsive);
             return true;
         }
 
