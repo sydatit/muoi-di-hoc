@@ -870,10 +870,11 @@
         #chuong-trinh {
             background-color: #fffaf5;
             background-image: radial-gradient(
-                ellipse 85% 70% at 50% 28%,
-                rgba(255, 220, 205, 0.38) 0%,
-                rgba(255, 236, 224, 0.22) 42%,
-                #fffaf5 78%
+                ellipse 90% 75% at 50% 30%,
+                rgba(255, 210, 190, 0.48) 0%,
+                rgba(255, 228, 210, 0.28) 38%,
+                rgba(255, 242, 232, 0.16) 62%,
+                #fffaf5 85%
             );
         }
         .p1-expert-block {
@@ -1437,31 +1438,77 @@
                 font-size: 0.65rem;
                 line-height: 1.2;
             }
-            /* Video ~24% base; grow to absorb leftover column space */
+            /* Video ~18% base; grow to absorb leftover column space */
             #chuong-trinh .p1-video {
-                flex: 1 1 24%;
+                flex: 1 1 18%;
                 height: auto;
                 aspect-ratio: auto !important;
                 max-height: none;
                 min-height: 0;
                 border-radius: 0.75rem;
             }
-            /* Speaker ~16% */
+            /* Speaker ~22% — text left + photo right, no card chrome */
             #chuong-trinh .p1-speaker-card,
             #chuong-trinh .p1-hover-card.relative {
-                flex: 0 0 16%;
+                flex: 0 0 22%;
                 min-height: 0;
-                overflow: hidden;
+                overflow: visible;
                 height: auto;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0;
+                transform: none !important;
             }
-            #chuong-trinh .p1-speaker-copy,
-            #chuong-trinh .p1-hover-card.relative > .relative {
-                padding: 0.45rem 0.8rem;
+            #chuong-trinh .p1-speaker-card:hover,
+            #chuong-trinh .p1-hover-card.relative:hover {
+                box-shadow: none !important;
+                transform: none !important;
+            }
+            #chuong-trinh .p1-speaker-inner {
+                position: relative;
                 height: 100%;
+                min-height: 0;
+                overflow: visible;
+                display: flex;
+                align-items: center;
+                padding: 0.35rem 0.15rem;
+                box-sizing: border-box;
+            }
+            #chuong-trinh .p1-speaker-copy {
+                padding: 0;
+                height: auto;
+                max-width: 55%;
                 box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
+                gap: 0.12rem;
+                position: relative;
+                z-index: 2;
+            }
+            #chuong-trinh .p1-speaker-photo {
+                display: flex;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 48%;
+                max-width: 10.5rem;
+                height: 100%;
+                align-items: stretch;
+                justify-content: stretch;
+                overflow: hidden;
+                z-index: 1;
+                pointer-events: none;
+            }
+            #chuong-trinh .p1-speaker-photo img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: top center;
+                transform: scaleX(-1);
+                filter: drop-shadow(0 8px 16px rgba(15, 23, 42, 0.16));
             }
             #chuong-trinh .p1-hover-card.relative .space-y-1 > :not([hidden]) ~ :not([hidden]),
             #chuong-trinh .p1-hover-card.relative .space-y-1\.5 > :not([hidden]) ~ :not([hidden]) {
@@ -1475,15 +1522,16 @@
             #chuong-trinh .p1-speaker-name,
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.45rem;
-                margin-bottom: 0.1rem;
+                margin-bottom: 0;
+                line-height: 1;
             }
             #chuong-trinh .p1-speaker-desc,
             #chuong-trinh .p1-hover-card.relative p.text-slate-600,
             #chuong-trinh .p1-hover-card.relative p.text-gray-600 {
-                font-size: 0.625rem;
-                line-height: 1.35;
+                font-size: 0.55rem;
+                line-height: 1.25;
                 display: -webkit-box;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
@@ -1581,17 +1629,35 @@
                 padding: 0.3rem 0.55rem;
             }
             #chuong-trinh .p1-video {
-                flex: 1 1 24%;
+                flex: 1 1 18%;
                 height: auto;
                 aspect-ratio: auto !important;
                 max-height: none;
                 min-height: 0;
             }
-            #chuong-trinh .p1-hover-card.relative > .relative {
-                padding: 0.35rem 0.65rem;
+            #chuong-trinh .p1-speaker-card,
+            #chuong-trinh .p1-hover-card.relative {
+                flex: 0 0 22%;
             }
+            #chuong-trinh .p1-speaker-inner {
+                padding: 0.25rem 0.1rem;
+            }
+            #chuong-trinh .p1-speaker-copy {
+                max-width: 55%;
+                gap: 0.08rem;
+            }
+            #chuong-trinh .p1-speaker-photo {
+                max-width: 9.5rem;
+            }
+            #chuong-trinh .p1-speaker-name,
             #chuong-trinh .p1-hover-card.relative h3 {
                 font-size: 1.3rem;
+            }
+            #chuong-trinh .p1-speaker-desc,
+            #chuong-trinh .p1-hover-card.relative p.text-slate-600,
+            #chuong-trinh .p1-hover-card.relative p.text-gray-600 {
+                font-size: 0.5rem;
+                line-height: 1.2;
             }
             #chuong-trinh .p1-hover-card.flex {
                 padding: 0.3rem 0.65rem;
