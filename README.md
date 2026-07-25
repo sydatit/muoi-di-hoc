@@ -47,8 +47,40 @@ Sau đó mở trình duyệt tại `http://localhost:8080`.
 
 - `index.html` — markup trang
 - `styles.css` — style bổ sung
-- `app.js` — tương tác UI, scroll theo section, form đăng ký
+- `app.js` — tương tác UI, scroll theo section, form đăng ký, visit beacon
 - `assets/` — logo và hình ảnh
+- `google-apps-script/Code.gs` — mẫu Apps Script ghi Visits + Registrations
+
+## Tracking visit & đăng ký (Google Sheet)
+
+Landing gửi sự kiện lên Google Apps Script Web App:
+
+| `eventType` | Khi nào | Sheet |
+| --- | --- | --- |
+| `visit` | Mỗi session vào trang (1 lần / tab session) | **Visits** |
+| `registration` | Submit form thành công | **Registrations** |
+
+Khách vào mà không đăng ký = visitor có trên **Visits** nhưng không có trên **Registrations** (đối chiếu `visitorId`).
+
+### Deploy Apps Script
+
+1. Mở Google Sheet → Extensions → Apps Script
+2. Dán nội dung [`google-apps-script/Code.gs`](google-apps-script/Code.gs) → Save
+3. Deploy → New deployment → Web app (Execute as: Me, Who has access: Anyone)
+4. Nếu URL đổi, cập nhật `WEB_APP_URL` trong `app.js`
+5. Đổi `REGISTRATIONS_SHEET_NAME` trong script nếu sheet đăng ký hiện tại không tên `Registrations`
+
+### Công thức tab Stats (gợi ý)
+
+Giả sử cột B = VisitorId trên cả hai sheet:
+
+```
+Tổng session visit   =COUNTA(Visits!B:B)-1
+Unique visitor       =COUNTA(UNIQUE(Visits!B2:B))
+Số đăng ký           =COUNTA(Registrations!B:B)-1
+Chưa đăng ký         =COUNTA(UNIQUE(FILTER(Visits!B2:B, COUNTIF(Registrations!B:B, Visits!B2:B)=0)))
+Conversion           =IFERROR(COUNTA(UNIQUE(Registrations!B2:B))/COUNTA(UNIQUE(Visits!B2:B)), 0)
+```
 
 ## Giấy phép
 

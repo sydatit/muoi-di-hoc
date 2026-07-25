@@ -1,6 +1,9 @@
         // -------------------------------------------------------------
         // 1. CHỨC NĂNG TRACKING KHÁCH HÀNG (DEVELOPER REQUIREMENTS)
         // -------------------------------------------------------------
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxutSomf-NS02ZhPuhcPsI9KhmbMJf7eDFHNdkt4BrF5ow8yCzI2GYLTbU6_yaGdcnj/exec";
+        const VISIT_SESSION_KEY = 'mdh_visit_logged';
+
         const trackingState = {
             visitorId: '',
             cd: 'N/A (Truy cập trực tiếp)',
@@ -54,6 +57,49 @@
             }, 1000);
 
             updateDevConsoleUI();
+            sendVisitBeacon();
+        }
+
+        /** Ghi 1 lần visit / session lên Google Sheet (kể cả khi không đăng ký). */
+        function sendVisitBeacon() {
+            if (sessionStorage.getItem(VISIT_SESSION_KEY) === 'true') {
+                return;
+            }
+            // Đánh dấu ngay để tránh gửi trùng khi refresh nhanh; nếu fail mạng sẽ retry ở session sau.
+            sessionStorage.setItem(VISIT_SESSION_KEY, 'true');
+
+            const payload = {
+                eventType: 'visit',
+                visitorId: trackingState.visitorId,
+                campaignCd: trackingState.cd,
+                referrer: document.referrer || '',
+                landedAt: new Date().toLocaleString('vi-VN'),
+                path: window.location.pathname + window.location.search
+            };
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Visit beacon HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then((result) => {
+                    if (!result || result.status !== 'success') {
+                        throw new Error((result && result.message) || 'Visit beacon failed');
+                    }
+                })
+                .catch((error) => {
+                    console.warn('Không gửi được visit beacon:', error);
+                    sessionStorage.removeItem(VISIT_SESSION_KEY);
+                });
         }
 
         function updateDevConsoleUI() {
@@ -82,6 +128,7 @@
             localStorage.removeItem('mdh_visitor_id');
             localStorage.removeItem('mdh_campaign_cd');
             localStorage.removeItem('mdh_form_completed');
+            sessionStorage.removeItem(VISIT_SESSION_KEY);
             window.location.href = window.location.pathname;
         }
 
@@ -775,6 +822,7 @@
             const youtubeExperienceEl = document.getElementById('youtubeExperience');
             const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
             const formData = {
+                eventType: 'registration',
                 visitorId: trackingState.visitorId,
                 campaignCd: trackingState.cd,
                 timeSpent: trackingState.timeSpent + ' giây',
@@ -793,10 +841,8 @@
                 submittedAt: new Date().toLocaleString('vi-VN')
             };
 
-            const webAppUrl = "https://script.google.com/macros/s/AKfycbxutSomf-NS02ZhPuhcPsI9KhmbMJf7eDFHNdkt4BrF5ow8yCzI2GYLTbU6_yaGdcnj/exec";
-
             // Gửi dữ liệu thực tế tới Google Apps Script Web App sử dụng POST fetch api
-            fetch(webAppUrl, {
+            fetch(WEB_APP_URL, {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
