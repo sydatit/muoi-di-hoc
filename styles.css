@@ -1475,8 +1475,8 @@
                 border-radius: 999px;
                 background: radial-gradient(
                     circle,
-                    rgba(255, 176, 150, 0.62) 0%,
-                    rgba(255, 200, 175, 0.32) 42%,
+                    rgba(255, 176, 150, 0.40) 0%,
+                    rgba(255, 200, 175, 0.18) 42%,
                     transparent 72%
                 );
                 filter: blur(10px);
