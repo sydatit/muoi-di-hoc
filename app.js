@@ -203,9 +203,42 @@
         let pageOnePlayerReady = false;
         let pageOneSavedTime = 0;
         let pageOneResumePending = false;
+        let pageOneAutoplayRetried = false;
 
         function prefersReducedMotion() {
             return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
+        function isPageOneSectionCurrent() {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return false;
+            if (section.classList.contains('active')) return true;
+            // Normal-scroll fallback (fp-responsive): section crosses viewport midpoint.
+            const rect = section.getBoundingClientRect();
+            const mid = window.innerHeight / 2;
+            return rect.top < mid && rect.bottom > mid;
+        }
+
+        function isPageOneVideoPlaying() {
+            if (!pageOnePlayer || !pageOnePlayerReady) return false;
+            if (typeof YT === 'undefined' || !YT.PlayerState) return false;
+            try {
+                const state = pageOnePlayer.getPlayerState();
+                return state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // In-app browsers (e.g. Facebook/Instagram WebView) often ignore the
+        // autoplay=1 URL param even when muted; explicitly starting muted
+        // playback through the IFrame API is the reliable path.
+        function forcePageOneMutedPlayback() {
+            if (!pageOnePlayer || !pageOnePlayerReady) return;
+            try {
+                pageOnePlayer.mute();
+                pageOnePlayer.playVideo();
+            } catch (e) { /* ignore */ }
         }
 
         function buildPageOneEmbedSrc(autoplay, startSeconds) {
@@ -277,6 +310,7 @@
                         if (reduceMotion) {
                             pageOnePlayer.pauseVideo();
                         } else {
+                            pageOnePlayer.mute();
                             pageOnePlayer.playVideo();
                         }
                     } catch (e) { /* ignore */ }
@@ -319,7 +353,32 @@
                                 restartPageOneVideo();
                             } else if (prefersReducedMotion()) {
                                 try { pageOnePlayer.pauseVideo(); } catch (e) { /* ignore */ }
+                            } else if (isPageOneSectionCurrent()) {
+                                forcePageOneMutedPlayback();
+                                // If the WebView still rejected playback, the player
+                                // stays UNSTARTED/CUED — retry once shortly after.
+                                setTimeout(() => {
+                                    if (pageOneAutoplayRetried) return;
+                                    if (prefersReducedMotion() || !isPageOneSectionCurrent()) return;
+                                    if (isPageOneVideoPlaying()) return;
+                                    try {
+                                        const state = pageOnePlayer.getPlayerState();
+                                        if (state === YT.PlayerState.UNSTARTED || state === YT.PlayerState.CUED) {
+                                            pageOneAutoplayRetried = true;
+                                            forcePageOneMutedPlayback();
+                                        }
+                                    } catch (e) { /* ignore */ }
+                                }, 1600);
                             }
+                        },
+                        onStateChange(event) {
+                            // Autoplay rejected: YT cues the video instead of playing it.
+                            if (pageOneAutoplayRetried || prefersReducedMotion()) return;
+                            if (typeof YT === 'undefined' || !YT.PlayerState) return;
+                            if (event.data !== YT.PlayerState.CUED) return;
+                            if (!isPageOneSectionCurrent()) return;
+                            pageOneAutoplayRetried = true;
+                            forcePageOneMutedPlayback();
                         }
                     }
                 });
@@ -341,6 +400,44 @@
                 tag.src = 'https://www.youtube.com/iframe_api';
                 document.head.appendChild(tag);
             }
+        }
+
+        // Last-resort fallback for WebViews that require a user gesture before
+        // any media can start: the first touch anywhere unlocks muted playback.
+        function initPageOneAutoplayGestureFallback() {
+            const events = ['pointerdown', 'touchstart', 'click'];
+            let detached = false;
+            const detach = () => {
+                if (detached) return;
+                detached = true;
+                events.forEach((ev) => document.removeEventListener(ev, onGesture, true));
+            };
+            const onGesture = () => {
+                if (prefersReducedMotion()) {
+                    detach();
+                    return;
+                }
+                // Player not bound yet — keep waiting for a later gesture.
+                if (!pageOnePlayer || !pageOnePlayerReady) return;
+                // Off-section: the unlock is still needed once the user reaches
+                // section 1, so keep listening instead of spending it here.
+                if (!isPageOneSectionCurrent()) return;
+                if (typeof YT === 'undefined' || !YT.PlayerState) return;
+
+                let state;
+                try {
+                    state = pageOnePlayer.getPlayerState();
+                } catch (e) {
+                    return;
+                }
+                // Anything other than UNSTARTED/CUED means autoplay already
+                // worked or the user chose to pause/stop — never override that.
+                if (state === YT.PlayerState.UNSTARTED || state === YT.PlayerState.CUED) {
+                    forcePageOneMutedPlayback();
+                }
+                detach();
+            };
+            events.forEach((ev) => document.addEventListener(ev, onGesture, { capture: true, passive: true }));
         }
 
         function openVideoModal(embedUrl) {
@@ -1433,6 +1530,7 @@
             syncAppHeight();
             syncPageOneVideoMotionPreference();
             initPageOneVideoPlayer();
+            initPageOneAutoplayGestureFallback();
             initFullPageScroll();
             lucide.createIcons();
 
