@@ -743,8 +743,21 @@
         <button type="button" class="image-lightbox-close" data-lightbox-close aria-label="Đóng ảnh">
             <i data-lucide="x" class="w-6 h-6" aria-hidden="true"></i>
         </button>
+        <div class="image-lightbox-controls" data-lightbox-content role="toolbar" aria-label="Phóng to thu nhỏ ảnh">
+            <button type="button" class="image-lightbox-zoom-btn" data-lightbox-zoom-out aria-label="Thu nhỏ">
+                <i data-lucide="zoom-out" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="image-lightbox-zoom-btn" data-lightbox-zoom-reset aria-label="Về kích thước gốc">
+                <i data-lucide="rotate-ccw" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="image-lightbox-zoom-btn" data-lightbox-zoom-in aria-label="Phóng to">
+                <i data-lucide="zoom-in" class="w-5 h-5" aria-hidden="true"></i>
+            </button>
+        </div>
         <figure class="image-lightbox-figure" data-lightbox-content>
-            <img id="imageLightboxImg" alt="">
+            <div class="image-lightbox-stage" data-lightbox-stage>
+                <img id="imageLightboxImg" alt="">
+            </div>
             <figcaption id="imageLightboxCaption" class="image-lightbox-caption"></figcaption>
         </figure>
     </div>
