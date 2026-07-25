@@ -1416,6 +1416,9 @@
                 grid-template-rows: 1fr;
                 align-content: stretch;
                 align-items: stretch;
+                position: relative;
+                z-index: 2;
+                background-color: #fff;
             }
             #chuong-trinh .p1-hover-card.grid > div {
                 padding: 0.45rem 0.65rem;
@@ -1452,7 +1455,7 @@
             #chuong-trinh .p1-hover-card.relative {
                 flex: 0 0 22%;
                 min-height: 0;
-                overflow: visible;
+                overflow: hidden;
                 height: auto;
                 background: transparent !important;
                 border: none !important;
