@@ -64,7 +64,7 @@ Khách vào mà không đăng ký = visitor có trên **Visits** nhưng không c
 
 ### Tracking thiết bị (mobile / tablet / desktop)
 
-Cả 2 loại sự kiện đều gửi kèm 8 cột thiết bị, được ghi vào cuối mỗi sheet:
+Cả 2 loại sự kiện đều gửi kèm 6 cột thiết bị, được ghi vào cuối mỗi sheet:
 
 | Cột | Ví dụ | Ghi chú |
 | --- | --- | --- |
@@ -74,8 +74,6 @@ Cả 2 loại sự kiện đều gửi kèm 8 cột thiết bị, được ghi v
 | Màn hình (Screen) | `390x844` | `screen.width x screen.height` |
 | Viewport | `390x664` | Kích thước thật lúc gửi event |
 | Hướng màn hình | `Portrait` / `Landscape` | |
-| Ngôn ngữ | `vi-VN` | `navigator.language` |
-| User Agent | chuỗi UA đầy đủ | Để đối chiếu khi nhận diện sai |
 
 Sheet đang có dữ liệu sẽ tự được bổ sung tiêu đề cho các cột mới ở lần ghi đầu tiên sau khi deploy — không cần sửa tay và không ảnh hưởng cột cũ.
 

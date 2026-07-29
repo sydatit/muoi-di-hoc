@@ -108,9 +108,7 @@
             deviceBrowser: detectDeviceBrowser(),
             screenSize: getScreenSize(),
             devicePixelRatio: String(window.devicePixelRatio || 1),
-            language: navigator.language || '',
-            touchPoints: String(navigator.maxTouchPoints || 0),
-            userAgent: navigator.userAgent || ''
+            touchPoints: String(navigator.maxTouchPoints || 0)
         };
 
         /** Snapshot thiết bị gửi kèm mọi event (viewport/orientation lấy theo thời điểm gửi). */
@@ -123,9 +121,7 @@
                 viewportSize: getViewportSize(),
                 orientation: getScreenOrientation(),
                 devicePixelRatio: deviceProfile.devicePixelRatio,
-                language: deviceProfile.language,
-                touchPoints: deviceProfile.touchPoints,
-                userAgent: deviceProfile.userAgent
+                touchPoints: deviceProfile.touchPoints
             };
         }
 

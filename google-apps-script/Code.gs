@@ -11,8 +11,8 @@
  * 3. Deploy → Manage deployments → Edit → Version: New version → Deploy
  * 4. Giữ quyền "Anyone". URL Web App không đổi → không cần sửa app.js
  *
- * Cả 2 sheet đều ghi thêm 8 cột thiết bị ở cuối (loại thiết bị mobile/tablet/desktop,
- * hệ điều hành, trình duyệt, màn hình, viewport, hướng, ngôn ngữ, user agent).
+ * Cả 2 sheet đều ghi thêm 6 cột thiết bị ở cuối (loại thiết bị mobile/tablet/desktop,
+ * hệ điều hành, trình duyệt, màn hình, viewport, hướng).
  * Sheet đang có dữ liệu sẽ được bổ sung tiêu đề cho các cột mới ngay lần ghi kế tiếp.
  *
  * === Công thức gợi ý (tab Stats) — cột B của cả 2 sheet là VisitorId ===
@@ -40,9 +40,7 @@ const DEVICE_HEADERS = [
   "Trình duyệt",
   "Màn hình (Screen)",
   "Viewport",
-  "Hướng màn hình",
-  "Ngôn ngữ",
-  "User Agent"
+  "Hướng màn hình"
 ];
 
 const VISITS_HEADERS = [
@@ -148,7 +146,7 @@ function appendVisit_(data) {
   ].concat(deviceColumns_(data)));
 }
 
-/** Giá trị 8 cột thiết bị, đúng thứ tự DEVICE_HEADERS. */
+/** Giá trị 6 cột thiết bị, đúng thứ tự DEVICE_HEADERS. */
 function deviceColumns_(data) {
   return [
     data.deviceType || "Không rõ",
@@ -156,9 +154,7 @@ function deviceColumns_(data) {
     data.deviceBrowser || "",
     data.screenSize || "",
     data.viewportSize || "",
-    data.orientation || "",
-    data.language || "",
-    data.userAgent || ""
+    data.orientation || ""
   ];
 }
 
@@ -316,9 +312,7 @@ function testAppendSampleRow() {
     deviceBrowser: "Facebook (in-app)",
     screenSize: "390x844",
     viewportSize: "390x664",
-    orientation: "Portrait",
-    language: "vi-VN",
-    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) FBAN/FBIOS"
+    orientation: "Portrait"
   };
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -342,8 +336,6 @@ function testAppendSampleVisit() {
     deviceBrowser: "Safari",
     screenSize: "1024x1366",
     viewportSize: "1024x1180",
-    orientation: "Portrait",
-    language: "vi-VN",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Version/17.0 Safari/605.1.15"
+    orientation: "Portrait"
   });
 }
