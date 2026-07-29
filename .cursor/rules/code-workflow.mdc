@@ -1,0 +1,55 @@
+---
+description: Bắt buộc ghi file MD mô tả thay đổi; chỉ commit và tạo nhánh, không tự merge
+alwaysApply: true
+---
+
+# Quy trình code & Git
+
+## 1. Luôn tạo file MD mô tả thay đổi
+
+Trước khi sửa code (hoặc ngay khi bắt đầu task), tạo hoặc cập nhật một file Markdown mô tả **phần sẽ thay đổi**:
+
+- **Đường dẫn:** `changes/<tên-nhánh>.md` (ví dụ `changes/cursor/track-device-type-67f8.md`)
+- **Nội dung tối thiểu:**
+  - Mục tiêu / yêu cầu
+  - File sẽ sửa (liệt kê đường dẫn)
+  - Tóm tắt thay đổi dự kiến hoặc đã làm
+  - Cách kiểm tra / deploy (nếu có)
+
+Khi code xong, cập nhật lại file này cho khớp thực tế (đừng để mô tả lệch với diff).
+
+```markdown
+# Thay đổi: Tracking loại thiết bị
+
+## Mục tiêu
+Ghi mobile/tablet/desktop vào Google Sheet.
+
+## File thay đổi
+- app.js — thêm detectDeviceType, gửi kèm visit/registration
+- google-apps-script/Code.gs — thêm cột thiết bị
+
+## Kiểm tra
+Mở dev console, xem payload visit có deviceType.
+```
+
+Không bắt đầu commit nếu chưa có file MD tương ứng với nhánh đang làm.
+
+## 2. Git — chỉ commit và tạo nhánh
+
+**Được phép (mặc định):**
+- Tạo nhánh mới: `cursor/<mô-tả-ngắn>-67f8`
+- Commit với message rõ ràng
+- Push nhánh lên `origin`
+- Tạo hoặc cập nhật pull request (draft hoặc open)
+
+**Tuyệt đối không làm khi chưa được user cho phép:**
+- Merge PR vào `master` / `main` hoặc nhánh chính khác
+- `git merge` vào nhánh chính rồi push
+- `git push origin master` (hoặc nhánh protected)
+- Đánh dấu PR ready + merge trong một bước mà user chưa yêu cầu merge
+
+Nếu user nói "push lên master" nhưng repo có branch protection, **báo lại** và hỏi có muốn merge PR không — không tự merge.
+
+## 3. Kết thúc task
+
+Tóm tắt cho user: nhánh nào, commit nào, file `changes/*.md` nào, link PR (nếu có). Nhắc user tự merge khi sẵn sàng.
