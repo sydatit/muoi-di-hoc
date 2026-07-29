@@ -13,6 +13,116 @@
             entryPoint: ''
         };
 
+        // -------------------------------------------------------------
+        // 1b. NHẬN DIỆN THIẾT BỊ (Mobile / Tablet / Desktop)
+        // -------------------------------------------------------------
+        const DEVICE_TABLET_PATTERN = /iPad|Tablet|PlayBook|Silk|Kindle|Nexus (?:7|9|10)|SM-T|GT-P|Lenovo TB|Transformer/i;
+        const DEVICE_MOBILE_PATTERN = /Mobi|iPhone|iPod|Windows Phone|IEMobile|BlackBerry|BB10|Opera Mini|webOS/i;
+
+        // Messenger/Instagram cũng chứa FBAN nên phải kiểm tra trước Facebook.
+        const IN_APP_BROWSER_PATTERNS = [
+            { name: 'Messenger', pattern: /Messenger|MessengerForiOS|MessengerLite/i },
+            { name: 'Instagram', pattern: /Instagram/i },
+            { name: 'Facebook', pattern: /FBAN|FBAV|FB_IAB|FBIOS/i },
+            { name: 'Zalo', pattern: /Zalo/i },
+            { name: 'TikTok', pattern: /BytedanceWebview|musical_ly|TikTok/i },
+            { name: 'Line', pattern: /\bLine\//i }
+        ];
+
+        function detectDeviceType() {
+            const ua = navigator.userAgent || '';
+            const touchPoints = navigator.maxTouchPoints || 0;
+
+            // iPadOS 13+ khai báo user agent giống macOS, chỉ còn touch để phân biệt.
+            if (/Macintosh/i.test(ua) && touchPoints > 1) return 'Tablet';
+            if (DEVICE_TABLET_PATTERN.test(ua)) return 'Tablet';
+            if (/Android/i.test(ua) && !/Mobile/i.test(ua)) return 'Tablet';
+            if (DEVICE_MOBILE_PATTERN.test(ua)) return 'Mobile';
+
+            const uaData = navigator.userAgentData;
+            if (uaData && typeof uaData.mobile === 'boolean') {
+                return uaData.mobile ? 'Mobile' : 'Desktop';
+            }
+            return 'Desktop';
+        }
+
+        function detectDeviceOs() {
+            const ua = navigator.userAgent || '';
+            const touchPoints = navigator.maxTouchPoints || 0;
+            if (/Windows Phone/i.test(ua)) return 'Windows Phone';
+            if (/Windows NT/i.test(ua)) return 'Windows';
+            if (/Android/i.test(ua)) return 'Android';
+            if (/iPad/i.test(ua)) return 'iPadOS';
+            if (/iPhone|iPod/i.test(ua)) return 'iOS';
+            if (/Macintosh/i.test(ua)) return touchPoints > 1 ? 'iPadOS' : 'macOS';
+            if (/CrOS/i.test(ua)) return 'Chrome OS';
+            if (/Linux/i.test(ua)) return 'Linux';
+            return 'Khác';
+        }
+
+        function detectDeviceBrowser() {
+            const ua = navigator.userAgent || '';
+            for (let i = 0; i < IN_APP_BROWSER_PATTERNS.length; i += 1) {
+                if (IN_APP_BROWSER_PATTERNS[i].pattern.test(ua)) {
+                    return IN_APP_BROWSER_PATTERNS[i].name + ' (in-app)';
+                }
+            }
+            if (/Edg[A-Za-z]*\//.test(ua)) return 'Edge';
+            if (/OPR\/|Opera/i.test(ua)) return 'Opera';
+            if (/SamsungBrowser/i.test(ua)) return 'Samsung Internet';
+            if (/CriOS/i.test(ua)) return 'Chrome (iOS)';
+            if (/FxiOS/i.test(ua)) return 'Firefox (iOS)';
+            if (/Firefox\//i.test(ua)) return 'Firefox';
+            if (/Chrome\//i.test(ua)) return 'Chrome';
+            if (/Safari\//i.test(ua)) return 'Safari';
+            return 'Khác';
+        }
+
+        function getScreenSize() {
+            const screenInfo = window.screen || {};
+            return (screenInfo.width || 0) + 'x' + (screenInfo.height || 0);
+        }
+
+        function getViewportSize() {
+            return (window.innerWidth || 0) + 'x' + (window.innerHeight || 0);
+        }
+
+        function getScreenOrientation() {
+            const orientation = window.screen && window.screen.orientation;
+            if (orientation && typeof orientation.type === 'string') {
+                return orientation.type.indexOf('portrait') === 0 ? 'Portrait' : 'Landscape';
+            }
+            return (window.innerHeight || 0) >= (window.innerWidth || 0) ? 'Portrait' : 'Landscape';
+        }
+
+        // Các thuộc tính không đổi trong suốt session → tính một lần.
+        const deviceProfile = {
+            deviceType: detectDeviceType(),
+            deviceOs: detectDeviceOs(),
+            deviceBrowser: detectDeviceBrowser(),
+            screenSize: getScreenSize(),
+            devicePixelRatio: String(window.devicePixelRatio || 1),
+            language: navigator.language || '',
+            touchPoints: String(navigator.maxTouchPoints || 0),
+            userAgent: navigator.userAgent || ''
+        };
+
+        /** Snapshot thiết bị gửi kèm mọi event (viewport/orientation lấy theo thời điểm gửi). */
+        function getDeviceSnapshot() {
+            return {
+                deviceType: deviceProfile.deviceType,
+                deviceOs: deviceProfile.deviceOs,
+                deviceBrowser: deviceProfile.deviceBrowser,
+                screenSize: deviceProfile.screenSize,
+                viewportSize: getViewportSize(),
+                orientation: getScreenOrientation(),
+                devicePixelRatio: deviceProfile.devicePixelRatio,
+                language: deviceProfile.language,
+                touchPoints: deviceProfile.touchPoints,
+                userAgent: deviceProfile.userAgent
+            };
+        }
+
         function initTracking() {
             let storedId = localStorage.getItem('mdh_visitor_id');
             if (!storedId) {
@@ -68,14 +178,14 @@
             // Đánh dấu ngay để tránh gửi trùng khi refresh nhanh; nếu fail mạng sẽ retry ở session sau.
             sessionStorage.setItem(VISIT_SESSION_KEY, 'true');
 
-            const payload = {
+            const payload = Object.assign({
                 eventType: 'visit',
                 visitorId: trackingState.visitorId,
                 campaignCd: trackingState.cd,
                 referrer: document.referrer || '',
                 landedAt: new Date().toLocaleString('vi-VN'),
                 path: window.location.pathname + window.location.search
-            };
+            }, getDeviceSnapshot());
 
             fetch(WEB_APP_URL, {
                 method: 'POST',
@@ -111,6 +221,13 @@
             if(devCd) devCd.innerText = trackingState.cd;
             if(devTime) devTime.innerText = trackingState.timeSpent + ' giây';
             if(devClicks) devClicks.innerText = trackingState.clicks + ' lần';
+
+            const devDevice = document.getElementById('dev_device');
+            const devPlatform = document.getElementById('dev_platform');
+            const devScreen = document.getElementById('dev_screen');
+            if(devDevice) devDevice.innerText = deviceProfile.deviceType;
+            if(devPlatform) devPlatform.innerText = deviceProfile.deviceOs + ' · ' + deviceProfile.deviceBrowser;
+            if(devScreen) devScreen.innerText = getViewportSize() + ' (' + getScreenOrientation() + ')';
             
             const formStatusEl = document.getElementById('dev_form_status');
             if (formStatusEl) {
@@ -162,6 +279,7 @@
             document.getElementById('track_timeSpent').value = trackingState.timeSpent;
             document.getElementById('track_clicks').value = trackingState.clicks;
             document.getElementById('track_entryPoint').value = trackingState.entryPoint;
+            document.getElementById('track_deviceType').value = deviceProfile.deviceType;
 
             document.body.classList.add('modal-open');
             if (form) form.scrollTop = 0;
@@ -918,7 +1036,7 @@
             const expertQuestion = expertQuestionEl ? expertQuestionEl.value.trim() : '';
             const youtubeExperienceEl = document.getElementById('youtubeExperience');
             const incomePotential = document.querySelector('input[name="incomePotential"]:checked');
-            const formData = {
+            const formData = Object.assign({
                 eventType: 'registration',
                 visitorId: trackingState.visitorId,
                 campaignCd: trackingState.cd,
@@ -936,7 +1054,7 @@
                 email: 'Không thu thập',
                 message: expertQuestion || 'Không có câu hỏi',
                 submittedAt: new Date().toLocaleString('vi-VN')
-            };
+            }, getDeviceSnapshot());
 
             // Gửi dữ liệu thực tế tới Google Apps Script Web App sử dụng POST fetch api
             fetch(WEB_APP_URL, {

@@ -62,6 +62,25 @@ Landing gửi sự kiện lên Google Apps Script Web App:
 
 Khách vào mà không đăng ký = visitor có trên **Visits** nhưng không có trên **Registrations** (đối chiếu `visitorId`).
 
+### Tracking thiết bị (mobile / tablet / desktop)
+
+Cả 2 loại sự kiện đều gửi kèm 8 cột thiết bị, được ghi vào cuối mỗi sheet:
+
+| Cột | Ví dụ | Ghi chú |
+| --- | --- | --- |
+| Loại thiết bị | `Mobile` / `Tablet` / `Desktop` | Nhận diện theo user agent; iPad chạy iPadOS 13+ (user agent giống macOS) được nhận ra qua `maxTouchPoints` |
+| Hệ điều hành | `iOS`, `iPadOS`, `Android`, `Windows`, `macOS` | |
+| Trình duyệt | `Chrome`, `Safari`, `Facebook (in-app)` | Nhận diện in-app browser: Facebook, Messenger, Instagram, Zalo, TikTok, Line |
+| Màn hình (Screen) | `390x844` | `screen.width x screen.height` |
+| Viewport | `390x664` | Kích thước thật lúc gửi event |
+| Hướng màn hình | `Portrait` / `Landscape` | |
+| Ngôn ngữ | `vi-VN` | `navigator.language` |
+| User Agent | chuỗi UA đầy đủ | Để đối chiếu khi nhận diện sai |
+
+Sheet đang có dữ liệu sẽ tự được bổ sung tiêu đề cho các cột mới ở lần ghi đầu tiên sau khi deploy — không cần sửa tay và không ảnh hưởng cột cũ.
+
+Bảng dev console (góc phải trang, bấm icon để mở) hiển thị sẵn loại thiết bị / hệ điều hành / trình duyệt / viewport để kiểm tra nhanh trước khi xem sheet.
+
 ### Deploy Apps Script
 
 1. Mở Google Sheet → Extensions → Apps Script
@@ -80,6 +99,12 @@ Unique visitor       =COUNTA(UNIQUE(Visits!B2:B))
 Số đăng ký           =COUNTA(Registrations!B:B)-1
 Chưa đăng ký         =COUNTA(UNIQUE(FILTER(Visits!B2:B, COUNTIF(Registrations!B:B, Visits!B2:B)=0)))
 Conversion           =IFERROR(COUNTA(UNIQUE(Registrations!B2:B))/COUNTA(UNIQUE(Visits!B2:B)), 0)
+```
+
+Thống kê visit theo thiết bị (cột G của sheet **Visits** là Loại thiết bị):
+
+```
+=QUERY(Visits!G2:G, "select Col1, count(Col1) where Col1 is not null group by Col1 label count(Col1) 'Số visit'")
 ```
 
 ## Giấy phép

@@ -11,11 +11,16 @@
  * 3. Deploy → Manage deployments → Edit → Version: New version → Deploy
  * 4. Giữ quyền "Anyone". URL Web App không đổi → không cần sửa app.js
  *
+ * Cả 2 sheet đều ghi thêm 8 cột thiết bị ở cuối (loại thiết bị mobile/tablet/desktop,
+ * hệ điều hành, trình duyệt, màn hình, viewport, hướng, ngôn ngữ, user agent).
+ * Sheet đang có dữ liệu sẽ được bổ sung tiêu đề cho các cột mới ngay lần ghi kế tiếp.
+ *
  * === Công thức gợi ý (tab Stats) — cột B của cả 2 sheet là VisitorId ===
  *   Tổng session visit:   =COUNTA(Visits!B:B)-1
  *   Unique visitor:       =COUNTA(UNIQUE(Visits!B2:B))
  *   Số đăng ký:           =COUNTA(Registrations!K:K)-1   // cột "Visitor ID" ở sheet đăng ký
  *   Unique chưa đăng ký:  =COUNTA(UNIQUE(FILTER(Visits!B2:B, COUNTIF(Registrations!K:K, Visits!B2:B)=0)))
+ *   Visit theo thiết bị:  =QUERY(Visits!G2:G, "select Col1, count(Col1) where Col1 is not null group by Col1 label count(Col1) 'Số visit'")
  */
 
 // =========================================================================
@@ -28,6 +33,18 @@ const TELEGRAM_CHAT_ID = "";
 // Sheet đăng ký vẫn dùng getActiveSheet() như code cũ để không phá cấu hình hiện tại.
 const VISITS_SHEET_NAME = "Visits";
 
+// Cột thiết bị dùng chung cho cả 2 sheet (luôn nằm ở cuối để không phá thứ tự cột cũ).
+const DEVICE_HEADERS = [
+  "Loại thiết bị",
+  "Hệ điều hành",
+  "Trình duyệt",
+  "Màn hình (Screen)",
+  "Viewport",
+  "Hướng màn hình",
+  "Ngôn ngữ",
+  "User Agent"
+];
+
 const VISITS_HEADERS = [
   "Thời gian ghi nhận",
   "Visitor ID",
@@ -35,7 +52,7 @@ const VISITS_HEADERS = [
   "Nguồn giới thiệu (Referrer)",
   "Đường dẫn (Path)",
   "Thời gian vào trang"
-];
+].concat(DEVICE_HEADERS);
 
 const SHEET_HEADERS = [
   "Thời gian gửi",
@@ -53,7 +70,7 @@ const SHEET_HEADERS = [
   "Thời gian xem",
   "Số lượt click",
   "Vị trí đăng ký"
-];
+].concat(DEVICE_HEADERS);
 
 function doPost(e) {
   try {
@@ -119,10 +136,7 @@ function appendVisit_(data) {
   if (!sheet) {
     sheet = ss.insertSheet(VISITS_SHEET_NAME);
   }
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(VISITS_HEADERS);
-    sheet.getRange(1, 1, 1, VISITS_HEADERS.length).setFontWeight("bold");
-  }
+  ensureSheetHeaders_(sheet, VISITS_HEADERS);
 
   sheet.appendRow([
     new Date().toLocaleString("vi-VN"),
@@ -131,15 +145,53 @@ function appendVisit_(data) {
     data.referrer || "",
     data.path || "",
     data.landedAt || ""
-  ]);
+  ].concat(deviceColumns_(data)));
+}
+
+/** Giá trị 8 cột thiết bị, đúng thứ tự DEVICE_HEADERS. */
+function deviceColumns_(data) {
+  return [
+    data.deviceType || "Không rõ",
+    data.deviceOs || "",
+    data.deviceBrowser || "",
+    data.screenSize || "",
+    data.viewportSize || "",
+    data.orientation || "",
+    data.language || "",
+    data.userAgent || ""
+  ];
 }
 
 function ensureHeaders_(sheet) {
-  if (sheet.getLastRow() > 0) {
+  ensureSheetHeaders_(sheet, SHEET_HEADERS);
+}
+
+/**
+ * Đảm bảo hàng tiêu đề đủ rộng cho bộ cột hiện tại.
+ * Sheet đã có dữ liệu chỉ được bổ sung tiêu đề cho các cột mới ở cuối,
+ * tiêu đề cũ giữ nguyên để không phá công thức / bộ lọc đang dùng.
+ */
+function ensureSheetHeaders_(sheet, headers) {
+  const maxColumns = sheet.getMaxColumns();
+  if (maxColumns < headers.length) {
+    sheet.insertColumnsAfter(maxColumns, headers.length - maxColumns);
+  }
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
     return;
   }
-  sheet.appendRow(SHEET_HEADERS);
-  sheet.getRange(1, 1, 1, SHEET_HEADERS.length).setFontWeight("bold");
+
+  const filledColumns = sheet.getLastColumn();
+  if (filledColumns >= headers.length) {
+    return;
+  }
+
+  const missing = headers.slice(filledColumns);
+  sheet.getRange(1, filledColumns + 1, 1, missing.length)
+    .setValues([missing])
+    .setFontWeight("bold");
 }
 
 function normalizeRow_(data) {
@@ -170,7 +222,7 @@ function normalizeRow_(data) {
     value("timeSpent"),
     value("clicks"),
     value("entryPoint")
-  ];
+  ].concat(deviceColumns_(data));
 }
 
 function sendTelegramNotification(data) {
@@ -192,6 +244,10 @@ function sendTelegramNotification(data) {
     "▫️ *Thời gian xem:* " + escapeMarkdown_(data.timeSpent) + "\n" +
     "▫️ *Số lượt click:* " + escapeMarkdown_(data.clicks) + "\n" +
     "▫️ *Vị trí bấm đăng ký:* " + escapeMarkdown_(data.entryPoint) + "\n" +
+    "▫️ *Thiết bị:* " + escapeMarkdown_(data.deviceType || "Không rõ") +
+      " (" + escapeMarkdown_(data.deviceOs) + " · " + escapeMarkdown_(data.deviceBrowser) + ")\n" +
+    "▫️ *Màn hình:* " + escapeMarkdown_(data.screenSize) +
+      " | viewport " + escapeMarkdown_(data.viewportSize) + " | " + escapeMarkdown_(data.orientation) + "\n" +
     "▫️ *Mã khách (Visitor ID):* `" + escapeMarkdown_(data.visitorId) + "`\n" +
     "▫️ *Thời gian gửi:* " + escapeMarkdown_(data.submittedAt);
 
@@ -254,7 +310,15 @@ function testAppendSampleRow() {
     campaignCd: "test",
     timeSpent: "120 giây",
     clicks: "5 lần",
-    entryPoint: "test"
+    entryPoint: "test",
+    deviceType: "Mobile",
+    deviceOs: "iOS",
+    deviceBrowser: "Facebook (in-app)",
+    screenSize: "390x844",
+    viewportSize: "390x664",
+    orientation: "Portrait",
+    language: "vi-VN",
+    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) FBAN/FBIOS"
   };
 
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -272,6 +336,14 @@ function testAppendSampleVisit() {
     campaignCd: "test",
     referrer: "https://facebook.com",
     path: "/?cd=test",
-    landedAt: new Date().toLocaleString("vi-VN")
+    landedAt: new Date().toLocaleString("vi-VN"),
+    deviceType: "Tablet",
+    deviceOs: "iPadOS",
+    deviceBrowser: "Safari",
+    screenSize: "1024x1366",
+    viewportSize: "1024x1180",
+    orientation: "Portrait",
+    language: "vi-VN",
+    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Version/17.0 Safari/605.1.15"
   });
 }
