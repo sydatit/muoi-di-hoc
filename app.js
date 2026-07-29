@@ -33,8 +33,9 @@
             const ua = navigator.userAgent || '';
             const touchPoints = navigator.maxTouchPoints || 0;
 
-            // iPadOS 13+ khai báo user agent giống macOS, chỉ còn touch để phân biệt.
-            if (/Macintosh/i.test(ua) && touchPoints > 1) return 'Tablet';
+            // iPadOS 13+ khai báo user agent giống macOS, chỉ còn touch để phân biệt
+            // (Safari/Chrome trên macOS luôn báo maxTouchPoints = 0).
+            if (/Macintosh/i.test(ua) && touchPoints > 0) return 'Tablet';
             if (DEVICE_TABLET_PATTERN.test(ua)) return 'Tablet';
             if (/Android/i.test(ua) && !/Mobile/i.test(ua)) return 'Tablet';
             if (DEVICE_MOBILE_PATTERN.test(ua)) return 'Mobile';
@@ -54,7 +55,7 @@
             if (/Android/i.test(ua)) return 'Android';
             if (/iPad/i.test(ua)) return 'iPadOS';
             if (/iPhone|iPod/i.test(ua)) return 'iOS';
-            if (/Macintosh/i.test(ua)) return touchPoints > 1 ? 'iPadOS' : 'macOS';
+            if (/Macintosh/i.test(ua)) return touchPoints > 0 ? 'iPadOS' : 'macOS';
             if (/CrOS/i.test(ua)) return 'Chrome OS';
             if (/Linux/i.test(ua)) return 'Linux';
             return 'Khác';
@@ -92,6 +93,11 @@
             if (orientation && typeof orientation.type === 'string') {
                 return orientation.type.indexOf('portrait') === 0 ? 'Portrait' : 'Landscape';
             }
+            // iOS < 16.4 chưa có screen.orientation, dùng window.orientation (0/180 = dọc).
+            if (typeof window.orientation === 'number') {
+                return Math.abs(window.orientation) === 90 ? 'Landscape' : 'Portrait';
+            }
+            // Chốt hạ theo viewport: kém chính xác trên mobile khi bàn phím ảo đang mở.
             return (window.innerHeight || 0) >= (window.innerWidth || 0) ? 'Portrait' : 'Landscape';
         }
 
