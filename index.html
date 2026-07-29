@@ -582,6 +582,7 @@
                 <input type="hidden" id="track_timeSpent" name="timeSpent">
                 <input type="hidden" id="track_clicks" name="clicks">
                 <input type="hidden" id="track_entryPoint" name="entryPoint">
+                <input type="hidden" id="track_deviceType" name="deviceType">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div class="rounded-xl border border-brand-orange/30 bg-orange-50 p-3 flex gap-3">
@@ -793,6 +794,24 @@
                 <div class="pt-2 flex justify-between items-center">
                     <span class="text-slate-500">Tham số "cd" (Campaign):</span>
                     <span id="dev_cd" class="text-amber-400 font-bold bg-amber-950/50 px-2 py-0.5 rounded border border-amber-900/30"></span>
+                </div>
+
+                <!-- Row: Device type -->
+                <div class="pt-2 flex justify-between items-center">
+                    <span class="text-slate-500">Loại thiết bị:</span>
+                    <span id="dev_device" class="text-cyan-400 font-bold bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-900/30"></span>
+                </div>
+
+                <!-- Row: OS + browser -->
+                <div class="pt-2 flex justify-between items-start">
+                    <span class="text-slate-500">Hệ điều hành / Trình duyệt:</span>
+                    <span id="dev_platform" class="text-cyan-300 text-right font-semibold"></span>
+                </div>
+
+                <!-- Row: Viewport + orientation -->
+                <div class="pt-2 flex justify-between items-center">
+                    <span class="text-slate-500">Viewport (hướng):</span>
+                    <span id="dev_screen" class="text-teal-400 font-bold"></span>
                 </div>
 
                 <!-- Row: Time spent -->
