@@ -85,7 +85,23 @@ Bảng dev console (góc phải trang, bấm icon để mở) hiển thị sẵn
 2. Dán nội dung [`google-apps-script/Code.gs`](google-apps-script/Code.gs) → Save
 3. Deploy → New deployment → Web app (Execute as: Me, Who has access: Anyone)
 4. Nếu URL đổi, cập nhật `WEB_APP_URL` trong `app.js`
-5. Đổi `REGISTRATIONS_SHEET_NAME` trong script nếu sheet đăng ký hiện tại không tên `Registrations`
+
+### Cấu hình Telegram (tuỳ chọn)
+
+Token **không** đặt trong `Code.gs` — repo là public, commit nhầm một lần là bot bị chiếm. Script đọc token từ Script Properties:
+
+1. Apps Script Editor → Project Settings → Script Properties → Add script property
+2. Thêm `TELEGRAM_BOT_TOKEN` và `TELEGRAM_CHAT_ID`
+
+Chưa cấu hình thì script bỏ qua bước gửi Telegram và vẫn lưu Google Sheet bình thường.
+
+### Sheet đăng ký
+
+Script ghi đăng ký vào sheet tên `Registrations`. Nếu không có sheet nào tên như vậy, nó ghi vào **sheet đầu tiên** của bảng tính (giữ nguyên đích ghi của các bản deploy cũ) và không tự tạo sheet mới. Muốn đổi tên khác thì sửa hằng `REGISTRATIONS_SHEET_NAME` trong `Code.gs`.
+
+### Dữ liệu người dùng gửi lên
+
+Mọi giá trị đều được khử trước khi ghi Sheet: chuỗi mở đầu bằng `=`, `+`, `-`, `@` được thêm dấu nháy đơn để Sheets hiểu là text thay vì biên dịch thành công thức, và bị cắt tối đa 500 ký tự (2000 với ô văn bản dài). Đăng ký còn được validate lại phía server (họ tên, số điện thoại, tuổi, kinh nghiệm, xác nhận) — sai thì không ghi Sheet.
 
 ### Công thức tab Stats (gợi ý)
 
