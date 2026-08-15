@@ -749,10 +749,52 @@
             }
         }
 
-        function syncHeaderHeight() {
+        // Layout follows width; fit and scroll decisions follow height and the
+        // height the content actually needs. Everything below derives from the
+        // live viewport instead of a table of device sizes.
+        const VIEWPORT_TABLET_MIN_WIDTH = 768;
+        const VIEWPORT_DESKTOP_MIN_WIDTH = 1200;
+
+        function getHeaderHeight() {
             const header = document.getElementById('siteHeader') || document.querySelector('header.site-header');
-            if (!header) return;
-            document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+            return header ? header.offsetHeight : 0;
+        }
+
+        function readViewportMetrics() {
+            const vv = window.visualViewport;
+            const width = Math.round((vv && vv.width) || window.innerWidth);
+            const height = Math.round((vv && vv.height) || window.innerHeight);
+            let orientation = 'square';
+            if (width > height) orientation = 'landscape';
+            else if (width < height) orientation = 'portrait';
+            return {
+                width,
+                height,
+                orientation,
+                aspectRatio: height > 0 ? width / height : 1,
+                profile: width < VIEWPORT_TABLET_MIN_WIDTH
+                    ? 'mobile'
+                    : (width < VIEWPORT_DESKTOP_MIN_WIDTH ? 'tablet' : 'desktop')
+            };
+        }
+
+        function getAvailableHeight() {
+            return Math.max(0, readViewportMetrics().height - getHeaderHeight());
+        }
+
+        function publishViewportMetrics() {
+            const root = document.documentElement;
+            const metrics = readViewportMetrics();
+            if (root.dataset.vpProfile !== metrics.profile) root.dataset.vpProfile = metrics.profile;
+            if (root.dataset.vpOrient !== metrics.orientation) root.dataset.vpOrient = metrics.orientation;
+            root.style.setProperty('--avail-h', `${getAvailableHeight()}px`);
+            return metrics;
+        }
+
+        function syncHeaderHeight() {
+            const height = getHeaderHeight();
+            if (!height) return;
+            document.documentElement.style.setProperty('--header-h', `${height}px`);
         }
 
         function syncRegisterModalViewport() {
@@ -777,6 +819,7 @@
             if (!height || height < 1) return;
             document.documentElement.style.setProperty('--app-height', `${Math.round(height)}px`);
             syncHeaderHeight();
+            publishViewportMetrics();
             syncRegisterModalViewport();
             // While the register modal is open, avoid fighting Chrome's focus/keyboard pan.
             if (document.body.classList.contains('modal-open') || isRegisterModalOpen()) {
@@ -892,30 +935,20 @@
             }, 120);
         }
 
-        // Mobile: fit one screen (fp-noscroll). Tablet/desktop: allow scrollOverflow when content overflows.
-        const pageOneMobileFitMq = window.matchMedia('(max-width: 639px)');
-        const SHORT_VIEWPORT_HEIGHT = 650;
-        let shortViewportResponsive = false;
+        const PAGE_ONE_FIT_TOLERANCE_PX = 8;
+        // Up to roughly one extra screen the section still reads as "one screen
+        // plus a bit" and snapping with an internal scroller feels right. Past
+        // that it is really a long page, so let the document scroll normally.
+        const PAGE_ONE_SEVERE_OVERFLOW_RATIO = 2;
 
-        function syncPageOneScrollMode() {
-            const section = document.getElementById('chuong-trinh');
-            if (!section) return false;
-            const wantNoScroll = pageOneMobileFitMq.matches;
-            const hasNoScroll = section.classList.contains('fp-noscroll');
-            if (wantNoScroll === hasNoScroll) return false;
-            section.classList.toggle('fp-noscroll', wantNoScroll);
-            return true;
-        }
+        let pageOneFitState = '';
+        let pageOneFitKey = '';
+        let fullPageResponsive = false;
 
-        // Only tablet/desktop short height enters fp-responsive — never mobile (keeps % fit + snap).
-        function syncShortViewportResponsive() {
-            if (!fullpageApi) return false;
-            const width = window.innerWidth;
-            const vv = window.visualViewport;
-            const height = vv && typeof vv.height === 'number' ? vv.height : window.innerHeight;
-            const wantResponsive = width >= 640 && height > 0 && height < SHORT_VIEWPORT_HEIGHT;
-            if (wantResponsive === shortViewportResponsive) return false;
-            shortViewportResponsive = wantResponsive;
+        function applyFullPageResponsive(wantResponsive) {
+            // fullPage decides whether it is already responsive by looking for
+            // the class on <body>, so the API call has to come before we sync
+            // the classes ourselves or it silently does nothing.
             if (typeof fullpageApi.setResponsive === 'function') {
                 fullpageApi.setResponsive(wantResponsive);
             } else {
@@ -926,9 +959,122 @@
                     fullpageApi.setFitToSection(!wantResponsive);
                 }
             }
-            // Always sync classes — CSS unlocks for Page 1 + Page 3 depend on them.
+            // CSS unlocks for Page 1 + Page 3 depend on both classes.
             document.documentElement.classList.toggle('fp-responsive', wantResponsive);
             document.body.classList.toggle('fp-responsive', wantResponsive);
+        }
+
+        function setFullPageResponsive(wantResponsive) {
+            if (wantResponsive === fullPageResponsive) return false;
+            fullPageResponsive = wantResponsive;
+            // Before fullPage exists there is nothing to switch; initFullPageScroll()
+            // hands the recorded state over once it has built.
+            if (fullpageApi) applyFullPageResponsive(wantResponsive);
+            return true;
+        }
+
+        function getPageOneContent() {
+            const section = document.getElementById('chuong-trinh');
+            return section ? section.querySelector('.max-w-6xl') : null;
+        }
+
+        // How tall the content would be with the one-screen budgets dropped.
+        // Only used to grade how bad an overflow is — not to detect one, because
+        // the budgets cap things like the video on purpose and an uncapped
+        // measurement would read that as a problem.
+        function measurePageOneUnlockedHeight() {
+            const content = getPageOneContent();
+            if (!content) return 0;
+            const root = document.documentElement;
+            const alreadyUnlocked = root.classList.contains('p1-unlocked');
+            if (!alreadyUnlocked) root.classList.add('p1-unlocked');
+            // Reading the rect forces layout; nothing can paint before we restore.
+            const height = content.getBoundingClientRect().height;
+            if (!alreadyUnlocked) root.classList.remove('p1-unlocked');
+            return Math.round(height);
+        }
+
+        // Totals fitting is not the same as nothing being cut: the budgets hand
+        // each block a fixed share, so a block can still clip a line while the
+        // page as a whole has room. These are the blocks that must show all of
+        // their text — the speaker card is left out because its photo overflows
+        // the card by design.
+        const PAGE_ONE_CLIP_GUARDS = [
+            '.p1-desc',
+            '.p1-title',
+            '.p1-hover-card.grid',
+            '.p1-achievements-card',
+            '.p1-achievements-list'
+        ];
+        const PAGE_ONE_CLIP_TOLERANCE_PX = 2;
+
+        function pageOneHasClippedText() {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return false;
+            return PAGE_ONE_CLIP_GUARDS.some((selector) => {
+                const el = section.querySelector(selector);
+                if (!el) return false;
+                const style = window.getComputedStyle(el);
+                if (style.overflowY === 'visible') return false;
+                return el.scrollHeight - el.clientHeight > PAGE_ONE_CLIP_TOLERANCE_PX;
+            });
+        }
+
+        // Read the real layout: how much room it takes, and whether it is buying
+        // that fit by cutting text.
+        function inspectPageOneLayout() {
+            const content = getPageOneContent();
+            if (!content) return { height: 0, clipped: false };
+            const root = document.documentElement;
+            const wasUnlocked = root.classList.contains('p1-unlocked');
+            if (wasUnlocked) root.classList.remove('p1-unlocked');
+            const height = Math.round(content.getBoundingClientRect().height);
+            const clipped = pageOneHasClippedText();
+            if (wasUnlocked) root.classList.add('p1-unlocked');
+            return { height, clipped };
+        }
+
+        function applyPageOneFitState(state) {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return;
+            document.documentElement.dataset.p1Fit = state;
+            document.documentElement.classList.toggle('p1-unlocked', state !== 'fit');
+            section.classList.toggle('fp-noscroll', state === 'fit');
+            setFullPageResponsive(state === 'scroll-page');
+        }
+
+        function evaluatePageOneFit(force) {
+            const section = document.getElementById('chuong-trinh');
+            if (!section) return false;
+
+            const metrics = readViewportMetrics();
+            const key = `${metrics.width}x${metrics.height}`;
+            if (!force && key === pageOneFitKey && pageOneFitState) return false;
+            pageOneFitKey = key;
+
+            const available = getAvailableHeight();
+            if (available <= 0) return false;
+
+            const layout = inspectPageOneLayout();
+            let overflows = layout.height > available + PAGE_ONE_FIT_TOLERANCE_PX;
+            let ratio = layout.height / available;
+
+            // Where the budgets clamp the layout to the viewport (mobile), an
+            // overflow can never show up as height — it shows up as a cut line.
+            // Grade those by how much room the content actually wants.
+            if (!overflows && layout.clipped) {
+                overflows = true;
+                ratio = measurePageOneUnlockedHeight() / available;
+            }
+
+            let state = 'fit';
+            if (overflows) {
+                state = ratio >= PAGE_ONE_SEVERE_OVERFLOW_RATIO ? 'scroll-page' : 'scroll-section';
+            }
+
+            if (state === pageOneFitState) return false;
+            pageOneFitState = state;
+            applyPageOneFitState(state);
             return true;
         }
 
@@ -937,7 +1083,8 @@
             const container = document.getElementById('fullpage');
             if (!container) return;
 
-            syncPageOneScrollMode();
+            // fullPage reads fp-noscroll while building, so decide the fit state first.
+            evaluatePageOneFit(true);
 
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const hashId = window.location.hash.replace(/^#/, '');
@@ -960,8 +1107,8 @@
                 scrollBar: false,
                 scrollOverflow: true,
                 scrollOverflowMacStyle: true,
-                // Do not use responsiveHeight — short mobile would break % fit.
-                // Short tablet/desktop handled by syncShortViewportResponsive().
+                // Do not use responsiveHeight — a fixed height threshold cannot
+                // tell whether the content fits. evaluatePageOneFit() measures.
                 fixedElements: '#siteHeader',
                 normalScrollElements: '#registerModal, #videoModal, #imageLightbox, #modalCard, #enrollmentForm',
                 verticalCentered: false,
@@ -993,7 +1140,8 @@
             // Expose for modal helpers / debugging.
             window.fullpage_api = fullpageApi;
 
-            syncShortViewportResponsive();
+            // The state was decided before fullPage existed; hand it over now.
+            if (fullPageResponsive) applyFullPageResponsive(true);
 
             document.querySelectorAll('a[href^="#"]').forEach((link) => {
                 const id = (link.getAttribute('href') || '').slice(1);
@@ -1016,14 +1164,12 @@
                 scrollHint.addEventListener('click', handleSectionScrollHintClick);
             }
 
-            const onPageOneFitChange = () => {
-                if (syncPageOneScrollMode()) scheduleFullPageRebuild();
-                syncShortViewportResponsive();
-            };
-            if (typeof pageOneMobileFitMq.addEventListener === 'function') {
-                pageOneMobileFitMq.addEventListener('change', onPageOneFitChange);
-            } else if (typeof pageOneMobileFitMq.addListener === 'function') {
-                pageOneMobileFitMq.addListener(onPageOneFitChange);
+            // Web fonts change how tall the content is, so measure again once
+            // they have settled.
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                    if (evaluatePageOneFit(true)) scheduleFullPageRebuild();
+                });
             }
         }
 
@@ -1821,17 +1967,24 @@
                 reduceMotionMq.addListener(onMotionPrefChange);
             }
 
-            window.addEventListener('resize', () => {
+            // Measuring forces layout, so coalesce bursts of resize events into
+            // one measurement per frame. evaluatePageOneFit() is keyed by
+            // viewport size, so repeat calls at the same size cost nothing.
+            let viewportChangeFrame = null;
+            const handleViewportChange = () => {
                 syncAppHeight();
-                syncShortViewportResponsive();
-                scheduleFullPageRebuild();
-            });
-            if (window.visualViewport) {
-                window.visualViewport.addEventListener('resize', () => {
-                    syncAppHeight();
-                    syncShortViewportResponsive();
+                if (viewportChangeFrame !== null) window.cancelAnimationFrame(viewportChangeFrame);
+                viewportChangeFrame = window.requestAnimationFrame(() => {
+                    viewportChangeFrame = null;
+                    evaluatePageOneFit();
                     scheduleFullPageRebuild();
                 });
+            };
+
+            window.addEventListener('resize', handleViewportChange);
+            window.addEventListener('orientationchange', handleViewportChange);
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', handleViewportChange);
                 window.visualViewport.addEventListener('scroll', syncAppHeight);
             }
 
