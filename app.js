@@ -319,11 +319,19 @@
         const PAGE_ONE_VIDEO_ID = 'UptVsKjjPsU';
         const INTRO_VIDEO_EMBED = 'https://www.youtube.com/embed/iGl9y1BA4j8?autoplay=1&rel=0';
 
+        const PAGE_ONE_SOUND_OPT_OUT_KEY = 'mdh_p1_sound_off';
+        const PAGE_ONE_SOUND_VOLUME = 60;
+        const PAGE_ONE_UNMUTE_VERIFY_MS = 350;
+        const PAGE_ONE_UNMUTE_MAX_ATTEMPTS = 2;
+
         let pageOnePlayer = null;
         let pageOnePlayerReady = false;
         let pageOneSavedTime = 0;
         let pageOneResumePending = false;
         let pageOneAutoplayRetried = false;
+        let pageOneSoundOn = false;
+        let pageOneUnmuteAttempts = 0;
+        let pageOneGestureDetach = null;
 
         function prefersReducedMotion() {
             return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -361,13 +369,130 @@
             } catch (e) { /* ignore */ }
         }
 
+        function readPageOneSoundOptOut() {
+            try {
+                return sessionStorage.getItem(PAGE_ONE_SOUND_OPT_OUT_KEY) === '1';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function writePageOneSoundOptOut(optOut) {
+            try {
+                if (optOut) sessionStorage.setItem(PAGE_ONE_SOUND_OPT_OUT_KEY, '1');
+                else sessionStorage.removeItem(PAGE_ONE_SOUND_OPT_OUT_KEY);
+            } catch (e) { /* ignore */ }
+        }
+
+        function syncPageOneSoundButton() {
+            const button = document.getElementById('pageOneSoundToggle');
+            if (!button) return;
+            button.classList.toggle('is-on', pageOneSoundOn);
+            if (pageOneSoundOn) button.classList.remove('is-hinting');
+            button.setAttribute('aria-pressed', pageOneSoundOn ? 'true' : 'false');
+            button.setAttribute('aria-label', pageOneSoundOn ? 'Tắt âm thanh video' : 'Bật âm thanh video');
+        }
+
+        function hintPageOneSoundButton() {
+            const button = document.getElementById('pageOneSoundToggle');
+            if (!button || prefersReducedMotion()) return;
+            button.classList.remove('is-hinting');
+            void button.offsetWidth;
+            button.classList.add('is-hinting');
+        }
+
+        // A gesture on the parent page does not always reach a cross-origin
+        // iframe (iOS/WebKit notably), where unMute() pauses playback instead
+        // of turning sound on. Verify the outcome and fall back to muted
+        // playback so the video never stalls.
+        function tryEnablePageOneSound() {
+            if (!pageOnePlayer || !pageOnePlayerReady) return false;
+            if (prefersReducedMotion()) return false;
+
+            try {
+                pageOnePlayer.unMute();
+                pageOnePlayer.setVolume(PAGE_ONE_SOUND_VOLUME);
+                pageOnePlayer.playVideo();
+            } catch (e) {
+                return false;
+            }
+
+            pageOneUnmuteAttempts += 1;
+            pageOneSoundOn = true;
+            syncPageOneSoundButton();
+
+            window.setTimeout(() => {
+                if (!pageOneSoundOn || !pageOnePlayer || !pageOnePlayerReady) return;
+
+                let muted = true;
+                let state = -1;
+                try {
+                    muted = pageOnePlayer.isMuted();
+                    state = pageOnePlayer.getPlayerState();
+                } catch (e) {
+                    return;
+                }
+
+                const playing = typeof YT !== 'undefined' && YT.PlayerState
+                    ? (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING)
+                    : true;
+                if (!muted && playing) {
+                    if (pageOneGestureDetach) pageOneGestureDetach();
+                    return;
+                }
+
+                pageOneSoundOn = false;
+                syncPageOneSoundButton();
+                forcePageOneMutedPlayback();
+                hintPageOneSoundButton();
+            }, PAGE_ONE_UNMUTE_VERIFY_MS);
+
+            return true;
+        }
+
+        function disablePageOneSound(manual) {
+            pageOneSoundOn = false;
+            if (manual) {
+                writePageOneSoundOptOut(true);
+                if (pageOneGestureDetach) pageOneGestureDetach();
+            }
+            syncPageOneSoundButton();
+            if (!pageOnePlayer || !pageOnePlayerReady) return;
+            try { pageOnePlayer.mute(); } catch (e) { /* ignore */ }
+        }
+
+        function initPageOneSoundToggle() {
+            const button = document.getElementById('pageOneSoundToggle');
+            if (!button || button.dataset.bound) return;
+            button.dataset.bound = '1';
+            syncPageOneSoundButton();
+
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (pageOneSoundOn) {
+                    disablePageOneSound(true);
+                    return;
+                }
+                writePageOneSoundOptOut(false);
+                pageOneUnmuteAttempts = 0;
+                if (!tryEnablePageOneSound()) hintPageOneSoundButton();
+            });
+        }
+
         function buildPageOneEmbedSrc(autoplay, startSeconds) {
             const params = new URLSearchParams({
                 autoplay: autoplay ? '1' : '0',
                 mute: '1',
                 loop: '1',
                 playlist: PAGE_ONE_VIDEO_ID,
-                controls: '1',
+                // Without autoplay the native controls are the only way left to
+                // start the video, so keep them for reduced-motion visitors.
+                controls: autoplay ? '0' : '1',
+                disablekb: '1',
+                fs: '0',
+                iv_load_policy: '3',
+                cc_load_policy: '0',
                 rel: '0',
                 playsinline: '1',
                 enablejsapi: '1'
@@ -405,6 +530,9 @@
                         if (typeof t === 'number' && !Number.isNaN(t)) {
                             pageOneSavedTime = t;
                         }
+                        // Mute first (keeping pageOneSoundOn) so returning to the
+                        // section cannot leak a burst of audio before we re-check.
+                        pageOnePlayer.mute();
                         pageOnePlayer.pauseVideo();
                     } catch (e) { /* ignore */ }
                 }
@@ -430,10 +558,12 @@
                         if (reduceMotion) {
                             pageOnePlayer.pauseVideo();
                         } else {
-                            pageOnePlayer.mute();
-                            pageOnePlayer.playVideo();
+                            forcePageOneMutedPlayback();
                         }
                     } catch (e) { /* ignore */ }
+                    if (!reduceMotion && pageOneSoundOn && !readPageOneSoundOptOut()) {
+                        tryEnablePageOneSound();
+                    }
                 } else {
                     pageOneResumePending = true;
                 }
@@ -499,6 +629,15 @@
                             if (!isPageOneSectionCurrent()) return;
                             pageOneAutoplayRetried = true;
                             forcePageOneMutedPlayback();
+                        },
+                        onAutoplayBlocked() {
+                            if (!pageOneSoundOn) return;
+                            // Sound was the thing that got blocked: drop back to
+                            // muted playback and let the button take over.
+                            pageOneSoundOn = false;
+                            syncPageOneSoundButton();
+                            forcePageOneMutedPlayback();
+                            hintPageOneSoundButton();
                         }
                     }
                 });
@@ -522,9 +661,10 @@
             }
         }
 
-        // Last-resort fallback for WebViews that require a user gesture before
-        // any media can start: the first touch anywhere unlocks muted playback.
-        function initPageOneAutoplayGestureFallback() {
+        // A single document-level handler covers both jobs: unlocking muted
+        // playback in WebViews that demand a gesture, then turning sound on at
+        // the first tap anywhere on the page.
+        function initPageOneVideoGesture() {
             const events = ['pointerdown', 'touchstart', 'click'];
             let detached = false;
             const detach = () => {
@@ -532,11 +672,17 @@
                 detached = true;
                 events.forEach((ev) => document.removeEventListener(ev, onGesture, true));
             };
-            const onGesture = () => {
-                if (prefersReducedMotion()) {
+            const onGesture = (event) => {
+                if (prefersReducedMotion() || readPageOneSoundOptOut()) {
                     detach();
                     return;
                 }
+                // The sound button owns its own taps, and a visitor filling in
+                // the form should not get audio thrown at them.
+                const target = event.target;
+                if (target && typeof target.closest === 'function' && target.closest('#pageOneSoundToggle')) return;
+                if (document.body.classList.contains('modal-open')) return;
+
                 // Player not bound yet — keep waiting for a later gesture.
                 if (!pageOnePlayer || !pageOnePlayerReady) return;
                 // Off-section: the unlock is still needed once the user reaches
@@ -550,14 +696,26 @@
                 } catch (e) {
                     return;
                 }
-                // Anything other than UNSTARTED/CUED means autoplay already
-                // worked or the user chose to pause/stop — never override that.
+                // Autoplay never started: spend this gesture on muted playback,
+                // sound can follow on the next one.
                 if (state === YT.PlayerState.UNSTARTED || state === YT.PlayerState.CUED) {
                     forcePageOneMutedPlayback();
+                    return;
                 }
-                detach();
+
+                // An attempt is already in flight (pointerdown and click both
+                // fire for one tap) or sound is confirmed on.
+                if (pageOneSoundOn) return;
+                if (pageOneUnmuteAttempts >= PAGE_ONE_UNMUTE_MAX_ATTEMPTS) {
+                    detach();
+                    return;
+                }
+                // Stays attached on purpose: the verify step can roll this back,
+                // and tryEnablePageOneSound() detaches once sound is confirmed.
+                tryEnablePageOneSound();
             };
             events.forEach((ev) => document.addEventListener(ev, onGesture, { capture: true, passive: true }));
+            pageOneGestureDetach = detach;
         }
 
         function openVideoModal(embedUrl) {
@@ -1650,7 +1808,8 @@
             syncAppHeight();
             syncPageOneVideoMotionPreference();
             initPageOneVideoPlayer();
-            initPageOneAutoplayGestureFallback();
+            initPageOneSoundToggle();
+            initPageOneVideoGesture();
             initFullPageScroll();
             lucide.createIcons();
 
