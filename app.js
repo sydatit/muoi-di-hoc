@@ -388,6 +388,7 @@
             const button = document.getElementById('pageOneSoundToggle');
             if (!button) return;
             button.classList.toggle('is-on', pageOneSoundOn);
+            if (pageOneSoundOn) button.classList.remove('is-hinting');
             button.setAttribute('aria-pressed', pageOneSoundOn ? 'true' : 'false');
             button.setAttribute('aria-label', pageOneSoundOn ? 'Tắt âm thanh video' : 'Bật âm thanh video');
         }

@@ -61,7 +61,19 @@ Xóa ~65 dòng CSS chết `.p1-video-poster*` (`styles.css`) — markup poster �
 - Mục 1.6 của plan (bỏ `aspect-ratio: auto !important` trên mobile) **hoãn sang Phase 2/3**: hiện mobile dựa vào `flex: 1 1 18%` để video hút phần không gian thừa; ép lại 16:9 khi chưa có Fit Engine sẽ làm tràn section trên máy thấp.
 - Không thêm tham số `origin=` vào embed: `index.html` là trang tĩnh không biết origin lúc render, thêm ở phía JS sẽ khiến iframe bị reload thừa một lần ngay khi tải trang.
 
-## Cách kiểm tra
+## Đã kiểm tra
+
+Chạy tự động bằng Playwright (Chromium) trên trang thật `http://localhost:8000`:
+
+- Tham số embed đúng cho cả hai chế độ (`controls=0` bình thường, `controls=1` khi reduced motion), `pointer-events: none` trên iframe, nút loa hiện/ẩn đúng.
+- YouTube chặn phát video trong môi trường tự động ("Sign in to confirm you're not a bot"), nên phần logic âm thanh được kiểm tra bằng một mock của IFrame Player API để dựng đủ các tình huống — 18/18 check pass:
+  - **Cho phép unmute** (Chrome/Android): autoplay muted → nhấn vào trang → có tiếng ở volume 60, chỉ 1 lần thử; nút loa tắt tiếng + ghi opt-out; click tiếp không tự bật lại; bấm nút bật lại được; rời section 1 thì mute + pause; quay lại thì khôi phục tiếng.
+  - **Chặn unmute kiểu iOS**: rollback về muted playback, video **vẫn chạy** (không đứng hình), nút loa nhấp nháy, thử tối đa 2 lần rồi dừng.
+  - **Unmute được nhận nhưng playback bị từ chối**: phát hiện qua trạng thái player và khôi phục muted playback.
+  - **Guard**: không bật tiếng khi đang mở modal đăng ký; bật lại bình thường sau khi đóng modal; reduced motion không autoplay và không auto-unmute.
+- Nút loa nằm gọn trong khung video ở cả `1366×768`, `390×844` và `414×630`; vùng chạm 44px trong khi phần nhìn thấy là 32px.
+
+## Cách kiểm tra thủ công
 
 ```bash
 python3 -m http.server 8000   # http://localhost:8000
