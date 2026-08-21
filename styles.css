@@ -274,6 +274,47 @@
                 align-self: stretch;
             }
         }
+        /*
+         * Page 1 fit engine: when the measurement says the content needs more
+         * room than the viewport has, drop the one-screen percentage budgets so
+         * every block keeps its natural height and the section scrolls instead
+         * of clipping. The same class is applied for a beat while measuring.
+         */
+        html.p1-unlocked #chuong-trinh .max-w-6xl,
+        html.p1-unlocked #chuong-trinh .max-w-6xl > .grid {
+            flex: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            justify-content: flex-start !important;
+        }
+        html.p1-unlocked #chuong-trinh .p1-title,
+        html.p1-unlocked #chuong-trinh .p1-hover-card,
+        html.p1-unlocked #chuong-trinh .p1-speaker-card,
+        html.p1-unlocked #chuong-trinh .p1-expert-block,
+        html.p1-unlocked #chuong-trinh .max-w-6xl > div:last-child {
+            flex: 0 0 auto !important;
+            height: auto !important;
+            max-height: none !important;
+            min-height: 0 !important;
+        }
+        /* The speaker photo bleeds past its card on purpose, so that one keeps
+         * clipping; every other block must show all of its text. */
+        html.p1-unlocked #chuong-trinh .p1-title,
+        html.p1-unlocked #chuong-trinh .p1-desc,
+        html.p1-unlocked #chuong-trinh .p1-hover-card:not(.p1-speaker-card) {
+            overflow: visible !important;
+        }
+        /* Without a height budget the video box has no size of its own. The
+         * design's own max-height caps are left alone so it cannot grow past
+         * what each breakpoint intends. */
+        html.p1-unlocked #chuong-trinh .p1-video {
+            flex: 0 0 auto !important;
+            height: auto !important;
+            min-height: 0 !important;
+            aspect-ratio: 16 / 9 !important;
+        }
+
         /* Fixed site header above fullPage sections */
         .site-header {
             height: auto;
